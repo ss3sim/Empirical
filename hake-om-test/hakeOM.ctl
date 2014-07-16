@@ -201,7 +201,7 @@
 
 1	# Lambda phasing: 1=none, 2+=change beginning in phase 1
 1	# Growth offset likelihood constant for Log(s): 1=include, 2=not
-0 # N changes to default Lambdas = 1.0
+1 # N changes to default Lambdas = 1.0
 # Component codes:
 #  1=Survey, 2=discard, 3=mean body weight
 #  4=length frequency, 5=age frequency, 6=Weight frequency
