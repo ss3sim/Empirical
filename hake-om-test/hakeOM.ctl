@@ -72,8 +72,8 @@
 1 # Recruitment deviation type: 0=none; 1=devvector; 2=simple deviations
 
 # Recruitment deviations
-1946	# Start year standard recruitment devs
-2013	# End year standard recruitment devs
+33	# Start year standard recruitment devs
+100	# End year standard recruitment devs
 1	# Rec Dev phase
 
 0 # Read 13 advanced recruitment options: 0=no, 1=yes
@@ -81,10 +81,10 @@
 3 	# Phase for early rec devs
 5	# Phase for forecast recruit deviations
 1 	# Lambda for forecast recr devs before endyr+1
-1965 	# Last recruit dev with no bias_adjustment
-1971 	# First year of full bias correction (linear ramp from year above)
-2010 	# Last year for full bias correction in_MPD
-2012 	# First_recent_yr_nobias_adj_in_MPD
+52 	# Last recruit dev with no bias_adjustment
+58 	# First year of full bias correction (linear ramp from year above)
+97 	# Last year for full bias correction in_MPD
+99 	# First_recent_yr_nobias_adj_in_MPD
 0 	# Maximum bias adjustment in MPD  (-1 to override ramp and set biasadj=1.0 for all estimated recdevs) ###THINK ABOUT THIS AND WHAT WE WANT TO INPUT
 0 	# Period of cycles in recruitment (N parms read below)
 -6	# Lower bound rec devs
@@ -99,7 +99,7 @@
 0.2 1 1 # overall start F value; overall phase; N detailed inputs to read
 # N iterations for tuning F in hybrid method (recommend 3 to 7)
 #Fleet  Year   Seas    F_value  SE     Phase
-1 1966  1 0.05 0.01 -1
+1 53  1 0.05 0.01 -1
 
 # Init F parameters by fleet
 #LO	HI	INIT	PRIOR	PR_type	SD	PHASE
