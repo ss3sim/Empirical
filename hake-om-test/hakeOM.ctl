@@ -72,8 +72,8 @@
 1 # Recruitment deviation type: 0=none; 1=devvector; 2=simple deviations
 
 # Recruitment deviations
-1946	# Start year standard recruitment devs
-2013	# End year standard recruitment devs
+1	# Start year standard recruitment devs
+100	# End year standard recruitment devs
 1	# Rec Dev phase
 
 1 # Read 13 advanced recruitment options: 0=no, 1=yes
