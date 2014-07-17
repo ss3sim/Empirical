@@ -76,7 +76,7 @@
 100	# End year standard recruitment devs
 1	# Rec Dev phase
 
-1 # Read 13 advanced recruitment options: 0=no, 1=yes
+0 # Read 13 advanced recruitment options: 0=no, 1=yes
 0	# Start year for early rec devs
 3 	# Phase for early rec devs
 5	# Phase for forecast recruit deviations
