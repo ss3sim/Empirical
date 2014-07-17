@@ -7,7 +7,7 @@
 1966	# Start year
 2013	# End year
 1   	# Number of seasons/year
-12 	# Number of months/season
+#12 	# Number of months/season
 1	# Spawning occurs at beginning of season
 1	# Number of fishing fleets
 1	# Number of surveys
