@@ -95,7 +95,7 @@
 0.1 	# F ballpark for tuning early phases
 -1999 	# F ballpark year
 2 	# F method:  1=Pope's; 2=Instan. F; 3=Hybrid
-4 	# Max F or harvest rate (depends on F_Method)
+6 	# Max F or harvest rate (depends on F_Method)
 0.2 1 1 # overall start F value; overall phase; N detailed inputs to read
 # N iterations for tuning F in hybrid method (recommend 3 to 7)
 #Fleet  Year   Seas    F_value  SE     Phase
