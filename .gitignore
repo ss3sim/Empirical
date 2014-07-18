@@ -8,3 +8,7 @@ hake-om/runnumber.ss
 hake-om/ss3.log
 hake-om/ss3.rep
 hake-om/variance
+*.rpt
+*.log
+hake-om-test/runnumber.ss
+hake-om-test/variance
