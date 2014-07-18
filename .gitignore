@@ -9,5 +9,8 @@
 *.hes
 *.rpt
 *.log
+*.cor
+*.eva
+*.std
 runnumber.ss
 variance
