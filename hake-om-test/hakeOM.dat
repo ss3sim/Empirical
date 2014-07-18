@@ -4,14 +4,14 @@
 ########################################
 
 ### Global model specifications ###
-1	# Start year
+1	  # Start year
 100	# End year
-1   	# Number of seasons/year
+1   # Number of seasons/year
 12 	# Number of months/season
-1	# Spawning occurs at beginning of season
-1	# Number of fishing fleets
-1	# Number of surveys
-1	# Number of areas
+1	  # Spawning occurs at beginning of season
+1	  # Number of fishing fleets
+1	  # Number of surveys
+1	  # Number of areas
 Fishery%Survey
 0.5 0.5 # fleet timing_in_season
 1 1 	# Area of each fleet
@@ -25,135 +25,216 @@ Fishery%Survey
 
 100 # Number of lines of catch
 # Catch Year Season
-   1	  1	     1
-   1	  2	     1
-   1	  3	     1
-   1	  4	     1
-   1	  5	     1
-   1	  6	     1
-   1	  7	     1
-   1	  8	     1
-   1	  9	     1
-   1	  10     1
-   1	  11     1
-   1	  12     1
-   1	  13     1
-   1	  14     1
-   1	  15     1
-   1	  16     1
-   1	  17     1
-   1	  18     1
-   1	  19     1
-   1	  20     1
-   1	  21     1
-   1	  22     1
-   1	  23     1
-   1	  24     1
-   1	  25     1
-   1	  26     1
-   1	  27     1
-   1	  28     1
-   1	  29     1
-   1	  30     1
-   1	  31     1
-   1	  32     1
-   1	  33     1
-   1	  34     1
-   1	  35     1
-   1	  36     1
-   1	  37     1
-   1	  38     1
-   1	  39     1
-   1	  40     1
-   1	  41     1
-   1	  42     1
-   1	  43     1
-   1	  44     1
-   1	  45     1
-   1	  46     1
-   1	  47     1
-   1	  48     1
-   1	  49     1
-   1	  50     1
-   1	  51     1
-   1	  52     1
-   1	  53     1
-   1	  54     1
-   1	  55     1
-   1	  56     1
-   1	  57     1
-   1	  58     1
-   1	  59     1
-   1	  60     1
-   1	  61     1
-   1	  62     1
-   1	  63     1
-   1	  64     1
-   1	  65     1
-   1	  66     1
-   1	  67     1
-   1	  68     1
-   1	  69     1
-   1	  70     1
-   1	  71     1
-   1	  72     1
-   1	  73     1
-   1	  74     1
-   1	  75     1
-   1	  76     1
-   1	  77     1
-   1	  78     1
-   1	  79     1
-   1	  80     1
-   1	  81     1
-   1	  82     1
-   1	  83     1
-   1	  84     1
-   1	  85     1
-   1	  86     1
-   1	  87     1
-   1	  88     1
-   1	  89     1
-   1	  90     1
-   1	  91     1
-   1	  92     1
-   1	  93     1
-   1	  94     1
-   1	  95     1
-   1	  96     1
-   1	  97     1
-   1	  98     1
-   1	  99     1
-   1	  100	   1
+   1    1      1
+   1    2      1
+   1    3      1
+   1    4      1
+   1    5      1
+   1    6      1
+   1    7      1
+   1    8      1
+   1    9      1
+   1    10     1
+   1    11     1
+   1    12     1
+   1    13     1
+   1    14     1
+   1    15     1
+   1    16     1
+   1    17     1
+   1    18     1
+   1    19     1
+   1    20     1
+   1    21     1
+   1    22     1
+   1    23     1
+   1    24     1
+   1    25     1
+   1    26     1
+   1    27     1
+   1    28     1
+   1    29     1
+   1    30     1
+   1    31     1
+   1    32     1
+   1    33     1
+   1    34     1
+   1    35     1
+   1    36     1
+   1    37     1
+   1    38     1
+   1    39     1
+   1    40     1
+   1    41     1
+   1    42     1
+   1    43     1
+   1    44     1
+   1    45     1
+   1    46     1
+   1    47     1
+   1    48     1
+   1    49     1
+   1    50     1
+   1    51     1
+   1    52     1
+   1    53     1
+   1    54     1
+   1    55     1
+   1    56     1
+   1    57     1
+   1    58     1
+   1    59     1
+   1    60     1
+   1    61     1
+   1    62     1
+   1    63     1
+   1    64     1
+   1    65     1
+   1    66     1
+   1    67     1
+   1    68     1
+   1    69     1
+   1    70     1
+   1    71     1
+   1    72     1
+   1    73     1
+   1    74     1
+   1    75     1
+   1    76     1
+   1    77     1
+   1    78     1
+   1    79     1
+   1    80     1
+   1    81     1
+   1    82     1
+   1    83     1
+   1    84     1
+   1    85     1
+   1    86     1
+   1    87     1
+   1    88     1
+   1    89     1
+   1    90     1
+   1    91     1
+   1    92     1
+   1    93     1
+   1    94     1
+   1    95     1
+   1    96     1
+   1    97     1
+   1    98     1
+   1    99     1
+   1    100    1
 #catches from 1991 to 2013 were updated because I split at-sea fleet by CP and MS and did expansions for each instead of combined.
 
-19 # Number of index observations
+100 # Number of index observations
 # Units: 0=numbers,1=biomass,2=F; Errortype: -1=normal,0=lognormal,>0=T
 # Fleet Units Errortype
-1 1 0 # Fishery
-2 1 0 # Acoustic Survey
+1       1    0 # Fishery
+2       1    0 # Acoustic Survey
 
-# Year seas index obs se(log)
 # Acoustic survey
-1995    1       2       1517948   0.0666
-1996    1       -2            1   1         #dummy observation to get expected value
-1997    1       -2            1   1         #dummy observation to get expected value
-1998    1       2       1342740   0.0492
-1999    1       -2            1   1         #dummy observation to get expected value
-2000    1       -2            1   1         #dummy observation to get expected value
-2001    1       2        918622   0.0823
-2002    1       -2            1   1         #dummy observation to get expected value
-2003    1       2       2520641   0.0709
-2004    1       -2            1   1         #dummy observation to get expected value
-2005    1       2       1754722   0.0847
-2006    1       -2            1   1         #dummy observation to get expected value
-2007    1       2       1122809   0.0752
-2008    1       -2            1   1         #dummy observation to get expected value
-2009    1       2       1612027   0.1375
-2010    1       -2            1   1         #dummy observation to get expected value
-2011    1       2        521476   0.1015
-2012    1       2       1380724   0.0475
-2013    1       2       2422661   0.0433    #updated from 12/25/13 results on 1/7/2014
+# Year seas index obs se(log)
+1      1    -2    1   1
+2      1    -2    1   1
+3      1    -2    1   1
+4      1    -2    1   1
+5      1    -2    1   1
+6      1    -2    1   1
+7      1    -2    1   1
+8      1    -2    1   1
+9      1    -2    1   1
+10     1    -2    1   1
+11     1    -2    1   1
+12     1    -2    1   1
+13     1    -2    1   1
+14     1    -2    1   1
+15     1    -2    1   1
+16     1    -2    1   1
+17     1    -2    1   1
+18     1    -2    1   1
+19     1    -2    1   1
+20     1    -2    1   1
+21     1    -2    1   1
+22     1    -2    1   1
+23     1    -2    1   1
+24     1    -2    1   1
+25     1    -2    1   1
+26     1    -2    1   1
+27     1    -2    1   1
+28     1    -2    1   1
+29     1    -2    1   1
+30     1    -2    1   1
+31     1    -2    1   1
+32     1    -2    1   1
+33     1    -2    1   1
+34     1    -2    1   1
+35     1    -2    1   1
+36     1    -2    1   1
+37     1    -2    1   1
+38     1    -2    1   1
+39     1    -2    1   1
+40     1    -2    1   1
+41     1    -2    1   1
+42     1    -2    1   1
+43     1    -2    1   1
+44     1    -2    1   1
+45     1    -2    1   1
+46     1    -2    1   1
+47     1    -2    1   1
+48     1    -2    1   1
+49     1    -2    1   1
+50     1    -2    1   1
+51     1    -2    1   1
+52     1    -2    1   1
+53     1    -2    1   1
+54     1    -2    1   1
+55     1    -2    1   1
+56     1    -2    1   1
+57     1    -2    1   1
+58     1    -2    1   1
+59     1    -2    1   1
+60     1    -2    1   1
+61     1    -2    1   1
+62     1    -2    1   1
+63     1    -2    1   1
+64     1    -2    1   1
+65     1    -2    1   1
+66     1    -2    1   1
+67     1    -2    1   1
+68     1    -2    1   1
+69     1    -2    1   1
+70     1    -2    1   1
+71     1    -2    1   1
+72     1    -2    1   1
+73     1    -2    1   1
+74     1    -2    1   1
+75     1    -2    1   1
+76     1    -2    1   1
+77     1    -2    1   1
+78     1    -2    1   1
+79     1    -2    1   1
+80     1    -2    1   1
+81     1    -2    1   1
+82     1    -2    1   1
+83     1    -2    1   1
+84     1    -2    1   1
+85     1    -2    1   1
+86     1    -2    1   1
+87     1    -2    1   1
+88     1    -2    1   1
+89     1    -2    1   1
+90     1    -2    1   1
+91     1    -2    1   1
+92     1    -2    1   1
+93     1    -2    1   1
+94     1    -2    1   1
+95     1    -2    1   1
+96     1    -2    1   1
+97     1    -2    1   1
+98     1    -2    1   1
+99     1    -2    1   1
+100    1    -2    1   1
 
 0 #_N_fleets_with_discard
 0 #_N_discard_obs
