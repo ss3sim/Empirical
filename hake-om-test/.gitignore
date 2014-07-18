@@ -1,0 +1,18 @@
+# SS output files (might want these someday)
+*.sso
+# new SS input files (might want these someday)
+*.ss_new
+# admodel stuff (don't want)
+admodel.*
+*.bar
+*.cor
+*.eva
+*.exe
+*.log
+*.par
+*.rep
+*.std
+variance
+eigv.rpt
+fmin.log
+runnumber.ss
