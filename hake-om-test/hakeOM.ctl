@@ -128,8 +128,8 @@
 # D=Extra input (#)
 # A B C D
 # Size selectivity
-0	0	0	0  # Fishery
-0	0	0	0  # Acoustic_Survey
+24	0	0	0  # Fishery
+24	0	0	0  # Acoustic_Survey
 # Age selectivity
 17	0	0	20  # Fishery
 17	0	0	20  # Acoustic_Survey
