@@ -254,7 +254,7 @@ Fishery%Survey
 26 # Number of Data Length Bins
 # Lower edge of bins
 20 22 24 26 28 30 32 34 36 38 40 42 44 46 48 50 52 54 56 58 60 62 64 66 68 70
-0 #_N_Length_obs
+100 #_N_Length_obs
 
 # year  season   flt/svy  gender   part  nsamp 20 22 24 26 28 30 32 34 36 38 40 42 44 46 48 50 52 54 56 58 60 62 64 66 68 70
 1       1        1        0        0     20     1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1
