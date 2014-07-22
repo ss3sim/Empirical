@@ -276,7 +276,7 @@ Fishery%Survey
 200   	# Number of age comp observations
 1   	# Length bin refers to: 1=population length bin indices; 2=data length bin indices
 0 	    #_combine males into females at or below this bin number
-# Acoustic survey ages (N=10)
+# Acoustic survey ages (N=100)
 # year  season   Fleet Sex   Partition   AgeErr   LbinLo   LbinHi   nTrips   a1 a2    a3    a4    a5    a6    a7    a8    a9    a10   a11   a12   a13   a14   a15
   1     1        2     0     0           20       -1       -1       50       0  0.071 0.071 0.071 0.071 0.071 0.071 0.071 0.071 0.071 0.071 0.071 0.071 0.071 0.071
   2     1        2     0     0           20       -1       -1       50       0  0.071 0.071 0.071 0.071 0.071 0.071 0.071 0.071 0.071 0.071 0.071 0.071 0.071 0.071
@@ -381,7 +381,7 @@ Fishery%Survey
 
 
 
-#Aggregate marginal fishery age comps (n=39)
+#Aggregate marginal fishery age comps (n=100)
 #year	Season	Fleet	Sex	Partition	AgeErr	LbinLo	LbinHi	nTrips	a1	a2	a3	a4	a5	a6	a7	a8	a9	a10	a11	a12	a13	a14	a15
 1  1  2  0  0  20 -1 -1 50 0  0.071 0.071 0.071 0.071 0.071 0.071 0.071 0.071 0.071 0.071 0.071 0.071 0.071 0.071
 2  1  2  0  0  20 -1 -1 50 0  0.071 0.071 0.071 0.071 0.071 0.071 0.071 0.071 0.071 0.071 0.071 0.071 0.071 0.071
