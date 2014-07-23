@@ -113,12 +113,13 @@
 # 	   3=ln(Q) + set of devs about ln(Q) for all years. 4=ln(Q) + set of devs about Q for indexyr-1
 # A B C D
 # Create one par for each entry > 0 by row in cols A-D
-0	0	0	0	 # US_Foreign
+0	0	0	2	 # US_Foreign
 0	0	1	2	 # Acoustic_Survey
 
 #LO	 HI	   INIT	  PRIOR	  PR_type	SD	PHASE
-0.05 1.2  0.0755  0.0755  -1      0.1  4 # additive value for acoustic survey
--2   2    0.0     0.0     -1      0.1  4 # ln q for survey
+0.05 1.2  0.0755  0.0755  -1      0.1  -5 # additive value for acoustic survey
+-3   3      0      0      -1      99   -5 # Q_base_1_Fishery
+-2   2    0.0     0.0     -1      0.1  -5 # ln q for survey
 
 #_SELEX_&_RETENTION_PARAMETERS
 # Size-based setup
@@ -131,77 +132,46 @@
 24	0	0	0  # Fishery
 24	0	0	0  # Acoustic_Survey
 # Age selectivity
-17	0	0	20  # Fishery
-17	0	0	20  # Acoustic_Survey
+10	0	0	0  # Fishery
+10	0	0	0  # Acoustic_Survey
 
 # Selectivity parameters
 # Lo	Hi	Init	Prior	Prior	Prior	Param	Env	Use	Dev	Dev	Dev	Block	block
 # bnd	bnd 	value	mean	type	SD	phase	var	dev	minyr	maxyr	SD	design	switch
 # Fishery age-based
-  -1002	3 	-1000 	-1 	-1 	0.01 	-2 	0 0 0 0 0 0 0 # 0.0 at age 0
-  -1 	1 	 0.0 	-1 	-1 	0.01 	-2 	0 0 0 0 0 0 0 # Age 1 is Reference
-  -5 	9 	 2.8 	-1 	-1 	0.01 	2 	0 2 1991 2013 0.03 0 0 # Change to age 2
-  -5 	9 	 0.1 	-1 	-1 	0.01 	2 	0 2 1991 2013 0.03 0 0 # Change to age 3
-  -5 	9 	 0.1 	-1 	-1 	0.01 	2 	0 2 1991 2013 0.03 0 0 # Change to age 4
-  -5 	9 	 0.1 	-1 	-1 	0.01 	2 	0 2 1991 2013 0.03 0 0 # Change to age 5
-  -5 	9 	 0.0 	-1 	-1 	0.01 	2 	0 2 1991 2013 0.03 0 0 # Change to age 6
-  -5 	9 	 0.0 	-1 	-1 	0.01 	-2 	0 0 0 0 0 0 0 # Change to age 7
-  -5 	9 	 0.0 	-1 	-1 	0.01 	-2 	0 0 0 0 0 0 0 # Change to age 8
-  -5 	9 	 0.0 	-1 	-1 	0.01 	-2 	0 0 0 0 0 0 0 # Change to age 9
-  -5 	9 	 0.0 	-1 	-1 	0.01 	-2 	0 0 0 0 0 0 0 # Change to age 10
-  -5 	9 	 0.0 	-1 	-1 	0.01 	-2 	0 0 0 0 0 0 0 # Change to age 11
-  -5 	9 	 0.0 	-1 	-1 	0.01 	-2 	0 0 0 0 0 0 0 # Change to age 12
-  -5 	9 	 0.0 	-1 	-1 	0.01 	-2 	0 0 0 0 0 0 0 # Change to age 13
-  -5 	9 	 0.0 	-1 	-1 	0.01 	-2 	0 0 0 0 0 0 0 # Change to age 14
-  -5 	9 	 0.0 	-1 	-1 	0.01 	-2 	0 0 0 0 0 0 0 # Change to age 15
-  -5 	9 	 0.0 	-1 	-1 	0.01 	-2 	0 0 0 0 0 0 0 # Change to age 16
-  -5 	9 	 0.0 	-1 	-1 	0.01 	-2 	0 0 0 0 0 0 0 # Change to age 17
-  -5 	9 	 0.0 	-1 	-1 	0.01 	-2 	0 0 0 0 0 0 0 # Change to age 18
-  -5 	9 	 0.0 	-1 	-1 	0.01 	-2 	0 0 0 0 0 0 0 # Change to age 19
-  -5 	9 	 0.0 	-1 	-1 	0.01 	-2 	0 0 0 0 0 0 0 # Change to age 20
+15      70      52.0    45.0   -1      0.05    1       0   0   0   0   0.5   0   0  #PEAK                                                               
+-5.0    10.0    2.5     5.0   -1      0.05    -3       0   0   0   0   0.5   0   0  #TOP_WIDTH                                                             
+-4.0    12.0    5.7     3.0    -1      0.05    2       0   0   0   0   0.5   0   0  #ASC_WIDTH
+-2.0    10.0    9.0    10.0    -1      0.05   -4       0   0   0   0   0.5   0   0  #DESC_WIDTH                                                                
+-999    5.0    -999    -999    -1      0.05   -3       0   0   0   0   0.5   0   0  #INIT DECAY (-999)
+-9      9.0      8      0.5   -1      0.05    -4       0   0   0   0   0.5   0   0  #FINAL
+#Acoustic Survey
+15      70      52.0    45.0   -1      0.05    1       0   0   0   0   0.5   0   0  #PEAK                                                               
+-5.0    10.0    2.5     5.0   -1      0.05    -3       0   0   0   0   0.5   0   0  #TOP_WIDTH                                                             
+-4.0    12.0    5.7     3.0    -1      0.05    2       0   0   0   0   0.5   0   0  #ASC_WIDTH
+-2.0    10.0    9.0    10.0    -1      0.05   -4       0   0   0   0   0.5   0   0  #DESC_WIDTH                                                                
+-999    5.0    -999    -999    -1      0.05   -3       0   0   0   0   0.5   0   0  #INIT DECAY (-999)
+-9      9.0      8      0.5   -1      0.05    -4       0   0   0   0   0.5   0   0  #FINAL
 
-# Acoustic survey - nonparametric age-based selectivity
-# Acoustic Survey double non-parametric age-based selectivity
-  -1002	3 	-1000 	-1 	-1 	0.01 	-2 	0 0 0 0 0 0 0 # 0.0 at age 0
-  -1002	3 	-1000 	-1 	-1 	0.01 	-2 	0 0 0 0 0 0 0 # 0.0 at age 1
-  -1 	1 	 0.0 	-1 	-1 	0.01 	-2 	0 0 0 0 0 0 0 # Age 2 is reference
-  -5 	9 	 0.1 	-1 	-1 	0.01 	2 	0 0 0 0 0 0 0 # Change to age 3
-  -5 	9 	 0.1 	-1 	-1 	0.01 	2 	0 0 0 0 0 0 0 # Change to age 4
-  -5 	9 	 0.0 	-1 	-1 	0.01 	2 	0 0 0 0 0 0 0 # Change to age 5
-  -5 	9 	 0.0 	-1 	-1 	0.01 	2 	0 0 0 0 0 0 0 # Change to age 6
-  -5 	9 	 0.0 	-1 	-1 	0.01 	-2 	0 0 0 0 0 0 0 # Change to age 7
-  -5 	9 	 0.0 	-1 	-1 	0.01 	-2 	0 0 0 0 0 0 0 # Change to age 8
-  -5 	9 	 0.0 	-1 	-1 	0.01 	-2 	0 0 0 0 0 0 0 # Change to age 9
-  -5 	9 	 0.0 	-1 	-1 	0.01 	-2 	0 0 0 0 0 0 0 # Change to age 10
-  -5 	9 	 0.0 	-1 	-1 	0.01 	-2 	0 0 0 0 0 0 0 # Change to age 11
-  -5 	9 	 0.0 	-1 	-1 	0.01 	-2 	0 0 0 0 0 0 0 # Change to age 12
-  -5 	9 	 0.0 	-1 	-1 	0.01 	-2 	0 0 0 0 0 0 0 # Change to age 13
-  -5 	9 	 0.0 	-1 	-1 	0.01 	-2 	0 0 0 0 0 0 0 # Change to age 14
-  -5 	9 	 0.0 	-1 	-1 	0.01 	-2 	0 0 0 0 0 0 0 # Change to age 15
-  -5 	9 	 0.0 	-1 	-1 	0.01 	-2 	0 0 0 0 0 0 0 # Change to age 16
-  -5 	9 	 0.0 	-1 	-1 	0.01 	-2 	0 0 0 0 0 0 0 # Change to age 17
-  -5 	9 	 0.0 	-1 	-1 	0.01 	-2 	0 0 0 0 0 0 0 # Change to age 18
-  -5 	9 	 0.0 	-1 	-1 	0.01 	-2 	0 0 0 0 0 0 0 # Change to age 19
-  -5 	9 	 0.0 	-1 	-1 	0.01 	-2 	0 0 0 0 0 0 0 # Change to age 20
 
-4 #selparm_dev_PH
-2 #_env/block/dev_adjust_method (1=standard; 2=logistic trans to keep in base parm bounds; 3=standard w/ no bound check)
+#4 #selparm_dev_PH
+#2 #_env/block/dev_adjust_method (1=standard; 2=logistic trans to keep in base parm bounds; 3=standard w/ no bound check)
 0 # Tagging flag: 0=no tagging parameters,1=read tagging parameters
 
 ### Likelihood related quantities ###
-1 # Do variance/sample size adjustments by fleet (1)
+0 # Do variance/sample size adjustments by fleet (1)
 # # Component
- 0    0   # Constant added to index CV
- 0    0   # Constant added to discard SD
- 0    0   # Constant added to body weight SD
- 1    1   # multiplicative scalar for length comps
- 0.12 0.94 # multiplicative scalar for agecomps
- 1    1   # multiplicative scalar for length at age obs
+# 0    0   # Constant added to index CV
+# 0    0   # Constant added to discard SD
+# 0    0   # Constant added to body weight SD
+# 1    1   # multiplicative scalar for length comps
+# 1    1 # multiplicative scalar for agecomps
+# 1    1   # multiplicative scalar for length at age obs
 
 
 1	# Lambda phasing: 1=none, 2+=change beginning in phase 1
 1	# Growth offset likelihood constant for Log(s): 1=include, 2=not
-1 # N changes to default Lambdas = 1.0
+0 # N changes to default Lambdas = 1.0
 # Component codes:
 #  1=Survey, 2=discard, 3=mean body weight
 #  4=length frequency, 5=age frequency, 6=Weight frequency
@@ -210,13 +180,13 @@
 #  13=Crash penalty
 # Component fleet/survey  phase  value  wtfreq_method
 
-1	# Extra SD reporting switch
-2  2 -1 15 # selex type (fleet), len=1/age=2, year, N selex bins (4 values)
-1  1	# Growth pattern, N growth ages (2 values)
-1 -1  1	# NatAge_area(-1 for all), NatAge_yr, N Natages (3 values)
-1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 # placeholder for vector of selex bins to be reported
--1 # growth ages
--1 # NatAges
+0	# Extra SD reporting switch
+#2  2 -1 15 # selex type (fleet), len=1/age=2, year, N selex bins (4 values)
+#1  1	# Growth pattern, N growth ages (2 values)
+#1 -1  1	# NatAge_area(-1 for all), NatAge_yr, N Natages (3 values)
+#1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 # placeholder for vector of selex bins to be reported
+#-1 # growth ages
+#-1 # NatAges
 
 999 # End control file
 
