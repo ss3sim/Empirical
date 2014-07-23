@@ -99,7 +99,7 @@
 0.2 1 1 # overall start F value; overall phase; N detailed inputs to read
 # N iterations for tuning F in hybrid method (recommend 3 to 7)
 #Fleet  Year   Seas    F_value  SE     Phase
-1 1966  1 0.05 0.01 -1
+1 1  1 0.05 0.01 -1
 
 # Init F parameters by fleet
 #LO	HI	INIT	PRIOR	PR_type	SD	PHASE
