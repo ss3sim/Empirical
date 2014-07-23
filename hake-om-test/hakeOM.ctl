@@ -23,7 +23,7 @@
 20	# Age for growth Lmax
 0.0	# Constant added to SD of LAA (0.1 mimics SS2v1 for compatibility only)
 0 	# Variability of growth: 0=CV~f(LAA), 1=CV~f(A), 2=SD~f(LAA), 3=SD~f(A)
-3 	#_maturity_option:  1=length logistic; 2=age logistic; 3=read age-maturity matrix by growth_pattern; 4=read age-fecundity; 5=read fec and wt from wtatage.ss
+1 	#_maturity_option:  1=length logistic; 2=age logistic; 3=read age-maturity matrix by growth_pattern; 4=read age-fecundity; 5=read fec and wt from wtatage.ss
 2	# First age allowed to mature
 1 	# Fecundity option:(1)eggs=Wt*(a+b*Wt);(2)eggs=a*L^b;(3)eggs=a*Wt^b
 0  	# Hermaphroditism option:  0=none; 1=age-specific fxn
