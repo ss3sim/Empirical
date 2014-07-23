@@ -76,15 +76,15 @@
 100	# End year standard recruitment devs
 1	# Rec Dev phase
 
-0 # Read 13 advanced recruitment options: 0=no, 1=yes
+1 # Read 13 advanced recruitment options: 0=no, 1=yes
 0	# Start year for early rec devs
-3 	# Phase for early rec devs
-5	# Phase for forecast recruit deviations
+-3 	# Phase for early rec devs
+0	# Phase for forecast recruit deviations
 1 	# Lambda for forecast recr devs before endyr+1
-1965 	# Last recruit dev with no bias_adjustment
-1971 	# First year of full bias correction (linear ramp from year above)
-2010 	# Last year for full bias correction in_MPD
-2012 	# First_recent_yr_nobias_adj_in_MPD
+0 	# Last recruit dev with no bias_adjustment
+1 	# First year of full bias correction (linear ramp from year above)
+100 	# Last year for full bias correction in_MPD
+101 	# First_recent_yr_nobias_adj_in_MPD
 0 	# Maximum bias adjustment in MPD  (-1 to override ramp and set biasadj=1.0 for all estimated recdevs) ###THINK ABOUT THIS AND WHAT WE WANT TO INPUT
 0 	# Period of cycles in recruitment (N parms read below)
 -6	# Lower bound rec devs
