@@ -1,6 +1,6 @@
 # Empirical
 
-## Allan Hicks, Ian Taylor, Peter Kuriyama
+## Peter Kuriyama, Allan Hicks, Ian Taylor, Kelli Johnson, Melissa Muradian
 with help creating the hake OM from
 ###Cole Monnahan, Merrill Rudd, Christine Stawitz
 

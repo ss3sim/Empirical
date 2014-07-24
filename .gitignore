@@ -1,14 +1,16 @@
+# stuff created by SS that we don't want to sync (for now at least)
 *.exe
 *.sso
 *.ss_new
-hake-om/eigv.rpt
-hake-om/fmin.log
-hake-om/runnumber.ss
 *.bar
-hake-om/ss3.log
-hake-om/ss3.rep
-hake-om/variance
+*.rep
+*.cov
+*.dep
+*.hes
 *.rpt
 *.log
-hake-om-test/runnumber.ss
-hake-om-test/variance
+*.cor
+*.eva
+*.std
+runnumber.ss
+variance
