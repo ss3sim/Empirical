@@ -1,4 +1,6 @@
-#Hake OM data file for ss3sim
+# 2014 Hake data file
+#Change names of files. Increment final model year by 1. Input 2013 catch. Input updated 2013 wt-at-age.
+#Everything updated on 1/6/2014
 ########################################
 
 ### Global model specifications ###
