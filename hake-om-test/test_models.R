@@ -6,7 +6,7 @@ devtools::install_github("ss3sim/ss3sim")
 library(ss3sim)
 library(r4ss)
 
-setwd("C:/Users/hicksal/Documents/GitHub/Empirical/hake-om-test")
+setwd("C:/Users/Allan.Hicks/Documents/GitHub/Empirical/hake-om-test")
 ## I made a copy of the hake-om folder on 7/2/14 so we could test stuff and
 ## not break the original. Run it to get the initial output files.
 file.copy("hakeOM.dat", "hakeOM_original.dat")
