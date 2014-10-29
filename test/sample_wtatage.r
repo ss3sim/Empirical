@@ -68,6 +68,7 @@ sample_wtatage <- function(infile, outfile, datfile, ctlfile,
     wtatage <-  as.data.frame(matrix(as.numeric(unlist(strsplit(wtatage, split=" "))),
                                      nrow=length(wtatage), byrow=TRUE))
     names(wtatage) <- gsub("#", replace="", x=header)
+    wtatage$yr <- abs(wtatage$yr)
     age0 <- wtatage[!duplicated(wtatage$fleet),c("fleet","age0")]
 
     ## Drop fleets that arent used
@@ -99,9 +100,14 @@ sample_wtatage <- function(infile, outfile, datfile, ctlfile,
     ## defines the distribution from which we sample. It is also based on
     ## the # of age samples taken, to mimic reality better.
     wtatage.new.list <- vector(length=length(fleets),mode="list") # temp storage for the new rows
-    k <- 1                 # each k is a new row of data, to be rbind'ed later
     ## Loop through each fleet, if fleets=NULL then skip sampling and
     ## return nothing (subtract out this type from the data file)
+ 
+ #####################################################################################
+    ##ToDo: what if a fleet hasno age data, like fleet 3 in cod model?
+    ##maybe if a single value is entered in year list, that is fleet to copy wtatage from
+####################################################################################
+
     for(fl in fleets) { #fleets must be 1:Nfleets
         #set up wtatage matrix of sampled years
         wtatage.new.list[[fl]] <- as.data.frame(matrix(NA,nrow=length(years[[fl]]),ncol=ncol(wtatage)))
@@ -110,7 +116,7 @@ sample_wtatage <- function(infile, outfile, datfile, ctlfile,
 
         #===============Loop over Years Sampled
         for(yr in years[[fl]]) {
-            cat('fl=',fl,'yr=', yr, 'k=',k, '\n')
+            cat('fl=',fl,'yr=', yr, '\n')
 
             mla.means <- as.numeric(mlacomp[mlacomp$Yr==yr & mlacomp$Fleet==fl, 
                                             paste0("a", agebin_vector)])
@@ -168,7 +174,7 @@ sample_wtatage <- function(infile, outfile, datfile, ctlfile,
             #ACH: This is the wtatage for that year. Build up this matrix and pass to fill in function
             prefix <- wtatage[wtatage$yr==yr & wtatage$fleet==1,1:5]  #I used fleet=1 because wtatage_new only outputs fleet 1
             tmp <- fl#; names(tmp) <- "fleet"
-            wtatage.new.means <- c(unlist(prefix),fl,age0[age0$fleet==fl,"age0"],unlist(wtatage.new.means))
+            wtatage.new.means <- c(unlist(prefix),fl,age0[age0$fleet==1,"age0"],unlist(wtatage.new.means))  #using fleet 1 cuz wtatage.ss only has this
 
 
             wtatage.new.list[[fl]][as.character(yr),] <- wtatage.new.means
@@ -176,7 +182,7 @@ sample_wtatage <- function(infile, outfile, datfile, ctlfile,
     }
 
     #call function to fill in missing values
-    wtatage.complete <- lapply(wtatage.new.list,fill.fnc)
+    wtatage.complete <- lapply(wtatage.new.list,fill_across,minYear=datfile$styr,maxYear=datfile$endyr)
 
     fltNeg1 <- fltZero <- wtatage.complete[[datfile$Nfleet+1]]  #first survey
     fltNeg1$fleet <- -1

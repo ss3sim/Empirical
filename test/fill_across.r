@@ -6,7 +6,7 @@ fill_across <- function(mat, minYear, maxYear)
   ##Initial Checks
   mat$yr <- abs(mat$yr)
   #input matrix must have value for year 1
-  if(unique(mat$fleet) != 1) stop('Too Many Fleets')
+  if(length(unique(mat$fleet)) != 1) stop('Too Many Fleets')
   
   #Interpolate Values across Rows
   for(ii in 1:nrow(mat))
