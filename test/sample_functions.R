@@ -53,6 +53,15 @@ sample_wtatage <- function(infile, outfile, datfile, ctlfile, fleets = 1,
     if(is.null(fleets)) return(NULL)
 ### ***TODO PETER**** Why are the years negative? Here I'm turning them
 ### negative but might want to change this??
+
+### ACH: Best to keep them at negative to alow for missing years
+### Why not just read in the wtatage matrix as a matrix?
+### Then work on each data type (-2, -1, 0, 1, etc) separately
+
+
+### ACH: Because you always have to have year 100, you may want to check for duplicates
+    years <- years[!duplicated(years)]    
+        
     years <- lapply(years, function(xx) -xx)
     ## Read in datfile, need this for true age distributions and Nsamp
     datfile <- r4ss::SS_readdat(file=datfile, verbose=FALSE)
@@ -71,6 +80,15 @@ sample_wtatage <- function(infile, outfile, datfile, ctlfile, fleets = 1,
     header <- unlist(strsplit(infile[xx], " "))
     ## It appears the first three lines need to be there for some
     ## reason. ****TODO Peter****: fix this if need be??
+    
+    wtatage <- read.table(infile,skip=xx)
+    colnames(wtatage) <- c("yr", "seas", "gender", "growpattern", "birthseas", "fleet", 
+                           paste("a",0:(ncol(wtatage)-6-1),sep=""))
+
+
+
+
+
     wtatage <- infile[(xx+4):length(infile)]
     wtatage <-  as.data.frame(matrix(as.numeric(unlist(strsplit(wtatage, split=" "))),
                                      nrow=length(wtatage), byrow=TRUE))
