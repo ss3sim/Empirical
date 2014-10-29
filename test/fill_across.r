@@ -1,10 +1,12 @@
 
 ##Function that fills in matrix using across rows of wtatage data
 ##Missing Rows are backfilled
+
 fill_across <- function(mat, minYear, maxYear)
 {
   ##Initial Checks
   mat$yr <- abs(mat$yr)
+  
   #input matrix must have value for year 1
   if(length(unique(mat$fleet)) != 1) stop('Too Many Fleets')
   
@@ -59,13 +61,17 @@ fill_across <- function(mat, minYear, maxYear)
   temp.df$yr <- seq(minYear, maxYear)
 
   #Back Fill Rows
-  fill.index <- c(1, which(is.na(temp.df$age0) == FALSE))
+  fill.index <- c(minYear, which(is.na(temp.df$age0) == FALSE), maxYear)
+  if(length(which(fill.index == 1)) != 1) stop('Did you really have wtatage data in the first year?')
+  #Remove Duplicates, occurs when input matrix has values in mat[maxYear, ]
+  fill.index <- fill.index[-which(duplicated(fill.index))]
 
-  for(ii in 1:length(fill.index)){
+  for(ii in 1:length(fill.index))
+  {
     curr <- fill.index[ii]
 
     if(curr == 1) next
-
+    
     prev <- fill.index[ii - 1]
 
     if(ii == 2)
@@ -74,13 +80,46 @@ fill_across <- function(mat, minYear, maxYear)
     } else {
       temp.df[(prev + 1):(curr -1), -1] <- temp.df[curr, -1]
     }
+
+    #If Last Row is Missing, fill Forwards
+    if(ii == length(fill.index) & is.na(temp.df[fill.index[ii], 'age0']))
+    {
+     temp.df[(prev + 1):curr, -1] <- temp.df[prev, -1]
+    }
+
   }
   return(temp.df)
 }
 
-#Used For Testing
+# #Used For Testing
 # setwd('/Users/peterkuriyama/School/Research/capam_growth/Empirical/test')
 # test.dat <- read.csv('preFillMat.csv')
+# load('test_list.Rdata')
+# test.list <- temp.list
+
+# mat <- test.list[[1]]
+# minYear <- 1
+# maxYear <- 100
+# fill_across(test.list[[2]], 1, 100)
+
+# #Test values in last row
+# mat <- test.list[[1]]
+# mat <- rbind(mat, mat[3, ])
+# mat[4, 'yr'] <- 100
+# mat[4, 'age0'] <- .555555
+
+# fill_across(mat, 1, 100)
+
+# #Test values in first row
+# mat <- test.list[[1]]
+# mat <- rbind(mat, mat[3, ])
+# mat[4, 'yr'] <- 1
+# mat[4, 'age0'] <- .555555
+
+# mat <- mat[order(mat$yr), ]
+
+# order(mat['yr', ])
+
 
 # mat <- test.dat
 # mat$X <- NULL
