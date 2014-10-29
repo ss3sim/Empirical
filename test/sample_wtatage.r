@@ -43,7 +43,7 @@ sample_wtatage <- function(infile, outfile, datfile, ctlfile, fleets = 1,
     years <- years[!duplicated(years)]
 
 
-    years <- lapply(years, function(xx) -xx)
+    #years <- lapply(years, function(xx) -xx)
     ## Read in datfile, need this for true age distributions and Nsamp
     datfile <- r4ss::SS_readdat(file=datfile, verbose=FALSE)
     agecomp <- datfile$agecomp
@@ -68,6 +68,8 @@ sample_wtatage <- function(infile, outfile, datfile, ctlfile, fleets = 1,
     wtatage <-  as.data.frame(matrix(as.numeric(unlist(strsplit(wtatage, split=" "))),
                                      nrow=length(wtatage), byrow=TRUE))
     names(wtatage) <- gsub("#", replace="", x=header)
+    age0 <- wtatage[!duplicated(wtatage$fleet),c("fleet","age0")]
+
     ## Drop fleets that arent used
     ##ACH: no need to do this, since you loop over fleets
     ##ACH:  by keepign everything, you can make sure to include everything
@@ -81,6 +83,8 @@ sample_wtatage <- function(infile, outfile, datfile, ctlfile, fleets = 1,
     if(substr_r(outfile,4) != ".dat" & write_file)
         stop(paste0("outfile ", outfile, " needs to end in .dat"))
     Nfleets <- length(fleets)
+    if(min(fleets) != 1) stop("Fleets must from 1 to the total number of fleets \n")
+    if(Nfleets != length(datfile$fleetnames)) stop("You must specify all fleets when smapling wtatage data\n")
     #Not sure why years has to be same length as nfleets
     #ACH: We should determine if we want the option of a single input year vector
     if(class(years) != "list" | length(years) != Nfleets)
@@ -94,25 +98,26 @@ sample_wtatage <- function(infile, outfile, datfile, ctlfile, fleets = 1,
     ## is uncertainty in the age->length relationship. This uncertainty
     ## defines the distribution from which we sample. It is also based on
     ## the # of age samples taken, to mimic reality better.
-    wtatage.new.list <- list() # temp storage for the new rows
+    wtatage.new.list <- vector(length=length(fleets),mode="list") # temp storage for the new rows
     k <- 1                 # each k is a new row of data, to be rbind'ed later
     ## Loop through each fleet, if fleets=NULL then skip sampling and
     ## return nothing (subtract out this type from the data file)
-    for(fl in 1:length(fleets))
-    {
-        fl.temp <- fleets[fl]
-        wtatage.fl <- wtatage[wtatage$fleet == fleets[fl],]
-        if(NROW(wtatage)==0) stop(paste("Fleet,",fleets[fl],"not found in file\n")
+    for(fl in fleets) { #fleets must be 1:Nfleets
+        #set up wtatage matrix of sampled years
+        wtatage.new.list[[fl]] <- as.data.frame(matrix(NA,nrow=length(years[[fl]]),ncol=ncol(wtatage)))
+        names(wtatage.new.list[[fl]]) <- names(wtatage)
+        row.names(wtatage.new.list[[fl]]) <- as.character(years[[fl]])
+        #fl.temp <- fleets[fl]
+        #wtatage.fl <- wtatage[wtatage$fleet == fleets[fl],]
+        #if(NROW(wtatage)==0) stop(paste("Fleet,",fleets[fl],"not found in file\n")
 
-        #===============Loop over Years
-        for(j in 1:NROW(wtatage.fl))
-        {
-            cat('j=', j, 'k=',k, '\n')
-            yr.temp <- -wtatage.fl$yr[j]
-            wtatage.new <- wtatage.fl[j,]
-            mla.means <- as.numeric(mlacomp[mlacomp$Yr==yr.temp &
-                                            mlacomp$Fleet==fl.temp, paste0("a",
-                                            agebin_vector)])
+        #===============Loop over Years Sampled
+        for(yr in years[[fl]]) {
+            cat('fl=',fl,'yr=', yr, 'k=',k, '\n')
+            #yr.temp <- -wtatage.fl$yr[j]
+            #wtatage.new <- wtatage.fl[j,]
+            mla.means <- as.numeric(mlacomp[mlacomp$Yr==yr & mlacomp$Fleet==fl, 
+                                            paste0("a", agebin_vector)])
             ## For each age, given year and fleet, get the expected length
             ## and CV around that length, then sample from it using
             ## lognormal (below)
@@ -135,58 +140,67 @@ sample_wtatage <- function(infile, outfile, datfile, ctlfile, fleets = 1,
             # I typicall use the cv to caluclate sd.log, then caluclate mu.log as log(mla.means)-1/2(sd.log^2)
             ##****************************************************************
 
-            means.log <- log(mla.means^2/sqrt(sds^2+mla.means^2))
+            #means.log <- log(mla.means^2/sqrt(sds^2+mla.means^2))
             sds.log <- sqrt(log(1 + sds^2/mla.means^2))
-            ## Each row is a year, so check that this row was specified by
-            ## user, if it is then sample from it, if not use the previous
-            ## row of sampled data.
-            if(-yr.temp %in% years[[fl]])
-            {
-                cat('fleet=', fl, 'year=', j, 'We sampling', '\n')
-                ## First step, draw from the true age distributions
-                agecomp.temp <- agecomp[agecomp$Yr==yr.temp & agecomp$FltSvy==fl.temp,]
-                ## If this row is not output in the .dat file (nrow==0),
-                ## skip the sampling and fill later
-                if(nrow(agecomp.temp)==1)
-                {
-                    ## Get the true age distributions
-                    age.means <- as.numeric(agecomp.temp[-(1:9)])
-                    age.Nsamp <- as.numeric(agecomp.temp$Nsamp)
-                    ## Draw samples to get # of fish in each age bin
-                    age.samples <- rmultinom(n=1, size=age.Nsamp, prob=age.means)
-                    ## apply sampling across the columns (ages) to get
-                    ## sample of lengths
+            means.log <- log(mla.means)-0.5*sds.log^2
+            
+            ## Each row is a sampled year
 
-                    ##********************************
-                    ##Here is where we would apply the assumed modeled distribution
-                    ##**********************************
+            #if(-yr.temp %in% years[[fl]])
+            #{
+            cat('fleet=', fl, 'year=', yr, 'We sampling', '\n')
+            ## First step, draw from the true age distributions
+            agecomp.temp <- agecomp[agecomp$Yr==yr & agecomp$FltSvy==fl,]
+            ## If this row is not output in the .dat file (nrow==0),
+            ## skip the sampling and fill later
+            if(nrow(agecomp.temp)==0) {stop("No age comp observations for year",yr,"and fleet",fl,"\n")}
+            #if(nrow(agecomp.temp)==1) {
+            #ACH: I'm going with the motto of think about it. Why enter a year for wtatage when you do not have data?
+                ## Get the true age distributions
+            age.means <- as.numeric(agecomp.temp[-(1:9)])
+            age.Nsamp <- as.numeric(agecomp.temp$Nsamp)
+            ## Draw samples to get # of fish in each age bin
+            age.samples <- rmultinom(n=1, size=age.Nsamp, prob=age.means)
+            ## apply sampling across the columns (ages) to get
+            ## sample of lengths
 
-                    lengths.list <-
-                        lapply(1:length(means.log), function(kk)
-                               exp(rnorm(n=age.samples[kk], mean=means.log[kk], sd=sds.log[kk])))
-                    ## Convert lengths into weights
-                    weights.list <- lapply(lengths.list, function(kk) Wtlen1*kk^Wtlen2)
-                    ## Take means and combine into vector to put back
-                    ## into the data frame.
-                    wtatage.new.means <- do.call(c, lapply(weights.list, mean))
-                    ## Sometimes you draw 0 fish from an age class,
-                    ## resulting in NaN for the mean wtatage. For now,
-                    ## replace with filler values
+            ##********************************
+            ##Here is where we would apply the assumed modeled distribution
+            ##**********************************
+
+                lengths.list <-
+                    lapply(1:length(means.log), function(kk)
+                           exp(rnorm(n=age.samples[kk], mean=means.log[kk], sd=sds.log[kk])))
+                ## Convert lengths into weights
+                weights.list <- lapply(lengths.list, function(kk) Wtlen1*kk^Wtlen2)
+                ## Take means and combine into vector to put back
+                ## into the data frame.
+                wtatage.new.means <- do.call(c, lapply(weights.list, mean))
+                ## Sometimes you draw 0 fish from an age class,
+                ## resulting in NaN for the mean wtatage. For now,
+                ## replace with filler values
 ### DONE--TODO PETER: Fix this so it uses the same age bin from the last
 ### year. But need to be careful to check that that one also exists
                     # wtatage.new.means[is.nan(wtatage.new.means)] <- -1
 
+#ACH: This is the wtatage for that year. Build up this matrix and pass to fill in function
+#ACH: Take on year and fleet
+#                    names(wtatage.new.means) <- paste("age",1:length(wtatage.new.means),sep="")
+                    prefix <- wtatage[wtatage$yr==yr & wtatage$fleet==1,1:5]  #I used fleet=1 because wtatage_new only outputs fleet 1
+                    tmp <- fl#; names(tmp) <- "fleet"
+                    wtatage.new.means <- c(unlist(prefix),fl,age0[age0$fleet==fl,"age0"],unlist(wtatage.new.means))
+
 ###Fixed so that it uses values from the first row of data
-                    if(fill_type == "First")
-                    {
-                        # wtatage.fl[1, ]
-                        nan.index <- which(is.nan(wtatage.new.means) == TRUE)
+#                    if(fill_type == "First")
+#                    {
+#                        # wtatage.fl[1, ]
+#                        nan.index <- which(is.nan(wtatage.new.means) == TRUE)
                         # wtatage.new.means
                         # wtatage.new.means[nan.index]
-                        first <- wtatage.fl[1, -(1:6)]
-                        wtatage.new.means[nan.index] <- as.numeric(first[nan.index])
-                        wtatage.new.means <- as.numeric(wtatage.new.means)
-                    }
+#                        first <- wtatage.fl[1, -(1:6)]
+#                        wtatage.new.means[nan.index] <- as.numeric(first[nan.index])
+#                        wtatage.new.means <- as.numeric(wtatage.new.means)
+#                    }
 
 
 ### ***TODO PETER***: for some reason we're missing age 0 in the .dat file, but
@@ -194,9 +208,10 @@ sample_wtatage <- function(infile, outfile, datfile, ctlfile, fleets = 1,
 ### using the true expected value (cheating!!) (should be -(1:6))
 ### This is OK
 
-                    wtatage.new[-(1:7)] <- wtatage.new.means
-                    wtatage.new.list[[k]] <- wtatage.new
-                }
+                    wtatage.new.list[[fl]][as.character(yr),] <- wtatage.new.means
+                    #wtatage.new[-(1:7)] <- wtatage.new.means
+                    #wtatage.new.list[[k]] <- wtatage.new
+                #}
                 # else {## no data to sample from, so fill with NA now and come
                 #     ## back to this later
                 #     # wtatage.new[-(1:6)] <- NA
@@ -205,13 +220,13 @@ sample_wtatage <- function(infile, outfile, datfile, ctlfile, fleets = 1,
                 # ###Amended so that if no sampling, just copy from wtatage object
                 #     wtatage.new.list[[k]] <- wtatage.new
                 # }
-            } else
-             {
+            #} else
+             #{
                 # wtatage.new.list[[k]] <- wtatage.new.list[[k-1]]
                 # wtatage.new.list[[k]]$yr <- wtatage.new$yr
-                wtatage.new.list[[k]] <- wtatage[k, ]
-             }
-            k <- k+1
+              #  wtatage.new.list[[k]] <- wtatage[k, ]
+             #}
+            #k <- k+1
         }
     }
     ## Combine new rows together into one data.frame
@@ -234,6 +249,8 @@ sample_wtatage <- function(infile, outfile, datfile, ctlfile, fleets = 1,
 ####*************************************
 ####ACH: We should fix this to make it more generalized and expandable in the future
     #*************
+
+    first survey will determine fecundity and -1 and 0 fleets
 
 ### *** TODO PETER *** is it always 3 lines? safe to hard code this??
     wtatage.final[1] <- paste(length(wtatage.matrix)+3, "#number_of_rows_determined_by_function:sample_wtatage")

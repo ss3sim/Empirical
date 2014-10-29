@@ -51,6 +51,10 @@ sample_wtatage <- function(infile, outfile, datfile, ctlfile, fleets = 1,
     ## the maturity function.
     ##
     if(is.null(fleets)) return(NULL)
+
+### ACH: Because you always have to have year 100, you may want to check for duplicates
+    years <- years[!duplicated(years)]
+
 ### ***TODO PETER**** Why are the years negative? Here I'm turning them
 ### negative but might want to change this??
 
@@ -78,25 +82,24 @@ sample_wtatage <- function(infile, outfile, datfile, ctlfile, fleets = 1,
     xx <- grep(x=infile, "#yr seas gender growpattern birthseas fleet")
     if(length(xx)!=1) stop("Failed to read in wtatage file")
     header <- unlist(strsplit(infile[xx], " "))
+    header[-(1:6)] <- paste("age",header[-(1:6)],sep="")
     ## It appears the first three lines need to be there for some
     ## reason. ****TODO Peter****: fix this if need be??
-    
-    wtatage <- read.table(infile,skip=xx)
-    colnames(wtatage) <- c("yr", "seas", "gender", "growpattern", "birthseas", "fleet", 
-                           paste("a",0:(ncol(wtatage)-6-1),sep=""))
+    wtatage <- infile[(xx+1):length(infile)]
 
-
-
-
-
-    wtatage <- infile[(xx+4):length(infile)]
     wtatage <-  as.data.frame(matrix(as.numeric(unlist(strsplit(wtatage, split=" "))),
                                      nrow=length(wtatage), byrow=TRUE))
     names(wtatage) <- gsub("#", replace="", x=header)
     ## Drop fleets that arent used
-    wtatage <- wtatage[wtatage$fleet %in% fleets,]
+    ##ACH: no need to do this, since you loop over fleets
+    ##ACH:  by keepign everything, you can make sure to include everything
+    #wtatage <- wtatage[wtatage$fleet %in% fleets,]
+
     ## Check inputs for errors
-    if(NROW(wtatage)==0) stop("Specified fleets not found in file")
+    ## ACH: This next line isn't very robust. If you are working with two fleets and one is in the matrix, it won't warn you
+    ## ACH: I put a check in the loops below
+    #if(NROW(wtatage)==0) stop("Specified fleets not found in file")
+
     if(substr_r(outfile,4) != ".dat" & write_file)
         stop(paste0("outfile ", outfile, " needs to end in .dat"))
     Nfleets <- length(fleets)
@@ -115,9 +118,11 @@ sample_wtatage <- function(infile, outfile, datfile, ctlfile, fleets = 1,
     k <- 1                 # each k is a new row of data, to be rbind'ed later
     ## Loop through each fleet, if fleets=NULL then skip sampling and
     ## return nothing (subtract out this type from the data file)
-    for(fl in 1:length(fleets)){
+    for(fl in 1:Nfleets) {
         fl.temp <- fleets[fl]
         wtatage.fl <- wtatage[wtatage$fleet == fleets[fl],]
+        if(NROW(wtatage)==0) stop(paste("Fleet,",fleets[fl],"not found in file\n")
+
         for(j in 1:NROW(wtatage.fl)){
             yr.temp <- -wtatage.fl$yr[j]
             wtatage.new <- wtatage.fl[j,]
@@ -127,6 +132,11 @@ sample_wtatage <- function(infile, outfile, datfile, ctlfile, fleets = 1,
             ## For each age, given year and fleet, get the expected length
             ## and CV around that length, then sample from it using
             ## lognormal (below)
+
+            #######******************************************************************
+            ## WE MAY WANT TO SAMPLE USING THE DISTRIBUTION ASSUMED IN THE MODEL
+            ######*******************************************************************
+
             CV.growth <- ctl[ctl$Label=="CV_young_Fem_GP_1", "INIT"]
             ## These two params convert length to weight
             Wtlen1 <- ctl[ctl$Label=="Wtlen_1_Fem", "INIT"]
@@ -134,6 +144,12 @@ sample_wtatage <- function(infile, outfile, datfile, ctlfile, fleets = 1,
             sds <- mla.means*CV.growth
             ## These are the moments on the natural scale, so
             ## convert to log scale and generate data
+
+            ##***************************************************************
+            #ACH CHECK THIS
+            # I typicall use the cv to caluclate sd.log, then caluclate mu.log as log(mla.means)-1/2(sd.log^2)
+            ##****************************************************************
+
             means.log <- log(mla.means^2/sqrt(sds^2+mla.means^2))
             sds.log <- sqrt(log(1 + sds^2/mla.means^2))
             ## Each row is a year, so check that this row was specified by
@@ -152,6 +168,10 @@ sample_wtatage <- function(infile, outfile, datfile, ctlfile, fleets = 1,
                     age.samples <- rmultinom(n=1, size=age.Nsamp, prob=age.means)
                     ## apply sampling across the columns (ages) to get
                     ## sample of lengths
+
+                    ##********************************
+                    ##Here is where we would apply the assumed distribution
+                    ##**********************************
                     lengths.list <-
                         lapply(1:length(means.log), function(kk)
                                exp(rnorm(n=age.samples[kk], mean=means.log[kk], sd=sds.log[kk])))
