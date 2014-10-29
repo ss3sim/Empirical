@@ -26,15 +26,15 @@
 #' @seealso \code{\link{sample_lcomp}, \link{sample_agecomp}}
 #' @export
 
-sample_wtatage <- function(infile, outfile, datfile, ctlfile, fleets = 1,
-                           years, write_file=TRUE, fill_type = 'First'){
+sample_wtatage <- function(infile, outfile, datfile, ctlfile,
+                           years, fill_fnc, write_file=TRUE){
     ##fill_type: specify type of fill, fill zeroes with first row? annual interpolation?
         ## Age Interpolation?
     ## A value of NULL for fleets signifies to turn this data off in the
     ## EM. So quit early and in ss3sim_base do NOT turn wtatage on using
     ## the maturity function.
     ##
-    if(is.null(fleets)) return(NULL)
+    #if(is.null(fleets)) return(NULL)
 ### ***TODO PETER**** Why are the years negative? Here I'm turning them
 ### negative but might want to change this??
 ### I think this one's OK
@@ -82,9 +82,9 @@ sample_wtatage <- function(infile, outfile, datfile, ctlfile, fleets = 1,
 
     if(substr_r(outfile,4) != ".dat" & write_file)
         stop(paste0("outfile ", outfile, " needs to end in .dat"))
-    Nfleets <- length(fleets)
-    if(min(fleets) != 1) stop("Fleets must from 1 to the total number of fleets \n")
-    if(Nfleets != length(datfile$fleetnames)) stop("You must specify all fleets when smapling wtatage data\n")
+    fleets <- 1:length(datfile$fleetnames)
+    #if(min(fleets) != 1) stop("Fleets must from 1 to the total number of fleets \n")
+    #if(Nfleets != length(datfile$fleetnames)) stop("You must specify all fleets when smapling wtatage data\n")
     #Not sure why years has to be same length as nfleets
     #ACH: We should determine if we want the option of a single input year vector
     if(class(years) != "list" | length(years) != Nfleets)
@@ -107,15 +107,11 @@ sample_wtatage <- function(infile, outfile, datfile, ctlfile, fleets = 1,
         wtatage.new.list[[fl]] <- as.data.frame(matrix(NA,nrow=length(years[[fl]]),ncol=ncol(wtatage)))
         names(wtatage.new.list[[fl]]) <- names(wtatage)
         row.names(wtatage.new.list[[fl]]) <- as.character(years[[fl]])
-        #fl.temp <- fleets[fl]
-        #wtatage.fl <- wtatage[wtatage$fleet == fleets[fl],]
-        #if(NROW(wtatage)==0) stop(paste("Fleet,",fleets[fl],"not found in file\n")
 
         #===============Loop over Years Sampled
         for(yr in years[[fl]]) {
             cat('fl=',fl,'yr=', yr, 'k=',k, '\n')
-            #yr.temp <- -wtatage.fl$yr[j]
-            #wtatage.new <- wtatage.fl[j,]
+
             mla.means <- as.numeric(mlacomp[mlacomp$Yr==yr & mlacomp$Fleet==fl, 
                                             paste0("a", agebin_vector)])
             ## For each age, given year and fleet, get the expected length
@@ -134,7 +130,6 @@ sample_wtatage <- function(infile, outfile, datfile, ctlfile, fleets = 1,
 
             ## These are the moments on the natural scale, so
             ## convert to log scale and generate data
-
             ##***************************************************************
             #ACH CHECK THIS
             # I typicall use the cv to caluclate sd.log, then caluclate mu.log as log(mla.means)-1/2(sd.log^2)
@@ -146,115 +141,88 @@ sample_wtatage <- function(infile, outfile, datfile, ctlfile, fleets = 1,
             
             ## Each row is a sampled year
 
-            #if(-yr.temp %in% years[[fl]])
-            #{
             cat('fleet=', fl, 'year=', yr, 'We sampling', '\n')
             ## First step, draw from the true age distributions
             agecomp.temp <- agecomp[agecomp$Yr==yr & agecomp$FltSvy==fl,]
-            ## If this row is not output in the .dat file (nrow==0),
-            ## skip the sampling and fill later
-            if(nrow(agecomp.temp)==0) {stop("No age comp observations for year",yr,"and fleet",fl,"\n")}
-            #if(nrow(agecomp.temp)==1) {
+            ## If this row is not output in the .dat file (nrow==0), then no sampling
             #ACH: I'm going with the motto of think about it. Why enter a year for wtatage when you do not have data?
-                ## Get the true age distributions
+            if(nrow(agecomp.temp)==0) {stop("No age comp observations for year",yr,"and fleet",fl,"\n")}
+            ## Get the true age distributions
             age.means <- as.numeric(agecomp.temp[-(1:9)])
             age.Nsamp <- as.numeric(agecomp.temp$Nsamp)
             ## Draw samples to get # of fish in each age bin
             age.samples <- rmultinom(n=1, size=age.Nsamp, prob=age.means)
-            ## apply sampling across the columns (ages) to get
-            ## sample of lengths
+            ## apply sampling across the columns (ages) to get sample of lengths
 
-            ##********************************
-            ##Here is where we would apply the assumed modeled distribution
-            ##**********************************
+            lengths.list <- lapply(1:length(means.log), function(kk)
+                                   exp(rnorm(n=age.samples[kk], mean=means.log[kk], sd=sds.log[kk])))
+            ## Convert lengths into weights
+            weights.list <- lapply(lengths.list, function(kk) Wtlen1*kk^Wtlen2)
+            ## Take means and combine into vector to put back
+            ## into the data frame.
+            wtatage.new.means <- do.call(c, lapply(weights.list, mean))
+            ## Sometimes you draw 0 fish from an age class,
+            ## resulting in NaN for the mean wtatage. For now,
+            ## replace with filler values
 
-                lengths.list <-
-                    lapply(1:length(means.log), function(kk)
-                           exp(rnorm(n=age.samples[kk], mean=means.log[kk], sd=sds.log[kk])))
-                ## Convert lengths into weights
-                weights.list <- lapply(lengths.list, function(kk) Wtlen1*kk^Wtlen2)
-                ## Take means and combine into vector to put back
-                ## into the data frame.
-                wtatage.new.means <- do.call(c, lapply(weights.list, mean))
-                ## Sometimes you draw 0 fish from an age class,
-                ## resulting in NaN for the mean wtatage. For now,
-                ## replace with filler values
-### DONE--TODO PETER: Fix this so it uses the same age bin from the last
-### year. But need to be careful to check that that one also exists
-                    # wtatage.new.means[is.nan(wtatage.new.means)] <- -1
-
-#ACH: This is the wtatage for that year. Build up this matrix and pass to fill in function
-#ACH: Take on year and fleet
-#                    names(wtatage.new.means) <- paste("age",1:length(wtatage.new.means),sep="")
-                    prefix <- wtatage[wtatage$yr==yr & wtatage$fleet==1,1:5]  #I used fleet=1 because wtatage_new only outputs fleet 1
-                    tmp <- fl#; names(tmp) <- "fleet"
-                    wtatage.new.means <- c(unlist(prefix),fl,age0[age0$fleet==fl,"age0"],unlist(wtatage.new.means))
-
-###Fixed so that it uses values from the first row of data
-#                    if(fill_type == "First")
-#                    {
-#                        # wtatage.fl[1, ]
-#                        nan.index <- which(is.nan(wtatage.new.means) == TRUE)
-                        # wtatage.new.means
-                        # wtatage.new.means[nan.index]
-#                        first <- wtatage.fl[1, -(1:6)]
-#                        wtatage.new.means[nan.index] <- as.numeric(first[nan.index])
-#                        wtatage.new.means <- as.numeric(wtatage.new.means)
-#                    }
+            #ACH: This is the wtatage for that year. Build up this matrix and pass to fill in function
+            prefix <- wtatage[wtatage$yr==yr & wtatage$fleet==1,1:5]  #I used fleet=1 because wtatage_new only outputs fleet 1
+            tmp <- fl#; names(tmp) <- "fleet"
+            wtatage.new.means <- c(unlist(prefix),fl,age0[age0$fleet==fl,"age0"],unlist(wtatage.new.means))
 
 
-### ***TODO PETER***: for some reason we're missing age 0 in the .dat file, but
-### the wtatage file needs it. So I can't sample from it, so for now just
-### using the true expected value (cheating!!) (should be -(1:6))
-### This is OK
-
-                    wtatage.new.list[[fl]][as.character(yr),] <- wtatage.new.means
-                    #wtatage.new[-(1:7)] <- wtatage.new.means
-                    #wtatage.new.list[[k]] <- wtatage.new
-                #}
-                # else {## no data to sample from, so fill with NA now and come
-                #     ## back to this later
-                #     # wtatage.new[-(1:6)] <- NA
-                #     # wtatage.new[1] <- -yr.temp
-                #     # wtatage.new.list[[k]] <- wtatage.new
-                # ###Amended so that if no sampling, just copy from wtatage object
-                #     wtatage.new.list[[k]] <- wtatage.new
-                # }
-            #} else
-             #{
-                # wtatage.new.list[[k]] <- wtatage.new.list[[k-1]]
-                # wtatage.new.list[[k]]$yr <- wtatage.new$yr
-              #  wtatage.new.list[[k]] <- wtatage[k, ]
-             #}
-            #k <- k+1
+            wtatage.new.list[[fl]][as.character(yr),] <- wtatage.new.means
         }
     }
-    ## Combine new rows together into one data.frame
-    wtatage.matrix <- do.call(rbind, wtatage.new.list)
-    ## Need to fix the first chunk of missing years. For now, loop through
-    ## in reverse and paste them backward if full of NA, which we used
-    ## above if that year was missing
-### *** TODO PETER *** what happens if the last year is missing? This will
-### break
-    # for(ii in rev(1:nrow(wtatage.matrix))){
-    #     if(sum(is.na(wtatage.matrix[ii,]))>1){
-    #         if(ii==nrow(wtatage.matrix)) stop("Last year in wtatage missing")
-    #         wtatage.matrix[ii,-1] <- wtatage.matrix[ii+1,-1]
-    #     }
-    # }
 
-    ## prepare new data to be written back to file
-    wtatage.rows <- apply(wtatage.matrix, MARGIN=1, FUN=function(x) paste(x, collapse=" "))
-    wtatage.final <- c(infile[1:(xx+3)], wtatage.rows)
-####*************************************
-####ACH: We should fix this to make it more generalized and expandable in the future
-    #*************
+    #call function to fill in missing values
+    wtatage.complete <- lapply(wtatage.new.list,fill.fnc)
 
-    first survey will determine fecundity and -1 and 0 fleets
+    fltNeg1 <- fltZero <- wtatage.complete[[datfile$Nfleet+1]]  #first survey
+    fltNeg1$fleet <- -1
+    fltZero$fleet <- 0
 
-### *** TODO PETER *** is it always 3 lines? safe to hard code this??
-    wtatage.final[1] <- paste(length(wtatage.matrix)+3, "#number_of_rows_determined_by_function:sample_wtatage")
-    ## Write the modified file
-    if(write_file) writeLines(wtatage.final, con=outfile)
+    mat.fn <- function(x,age) {
+        omega3 <- x[1]
+        omega4 <- x[2]
+        den <- 1+exp(omega3*(age-omega4))
+        return(1/den)
+    }
+    matAtAge <- mat.fn(c(ctl[ctl$Label=="Mat_slope_Fem","INIT"],ctl[ctl$Label=="Mat50%_Fem","INIT"]),agebin_vector)
+    fecund <- matAtAge * wtatage.complete[[datfile$Nfleet+1]]
+
+    Nlines <- nrow(fecund)+nrow(fltNeg1)+nrow(fltZero)
+    Nlines <- Nlines + unlist(lapply(wtatage.complete,nrow))
+
+    ##write wtatage.ss file
+    cat(Nlines,"# Number of lines of weight-at-age input to be read\n",file=outfile)
+    cat(datfile$Nages,"# Maximum Age\n",file=outfile,append=TRUE)
+
+    #loop through the various matrices and build up wtatage.final while doing it
+    wtatage.final <- list()
+    
+    cat("Fleet -2, fecundity\n",file=outfile,append=TRUE)
+    wtatage.final[1] <- fecund
+    wtatage.final[1]$yr <- -1 * wtatage.final[1]$yr
+    if(write_file)    write.table(fecund, file=outfile, append=TRUE, row.names=F, col.names=F)
+
+    cat("\nFleet -1\n",file=outfile,append=TRUE)
+    wtatage.final[2] <- fltNeg1
+    wtatage.final[2]$yr <- -1 * wtatage.final[2]$yr
+    if(write_file)        write.table(fltNeg1, file=outfile, append=TRUE, row.names=F, col.names=F)
+
+    cat("\nFleet 0\n",file=outfile,append=TRUE)
+    wtatage.final[3] <- fltZero
+    wtatage.final[3]$yr <- -1 * wtatage.final[3]$yr
+    if(write_file)    write.table(fltZero, file=outfile, append=TRUE, row.names=F, col.names=F)
+
+    #loop through fleets
+    for(i in fleet) {
+        cat("\nFleet",i,file=outfile,append=TRUE)
+        wtatage.final[i+3] <- wtatage.complete[[i]
+        wtatage.final[i+3]$yr <- -1 * wtatage.final[i+3]$yr
+        if(write_file)    write.table(wtatage.final[i+3], file=outfile, append=TRUE, row.names=F, col.names=F)
+    }
+
     return(invisible(wtatage.final))
 }
