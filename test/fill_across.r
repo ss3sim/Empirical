@@ -1,6 +1,18 @@
+#' Function that fills in matrix across rows of wtatage data by interpolation
+#' Missing Rows are then backfilled
 
-##Function that fills in matrix using across rows of wtatage data
-##Missing Rows are backfilled
+#' @details 
+#'
+#' @author Peter Kuriyama
+#' @author Allan Hicks
+#'
+#' @param mat 
+#' @param minYear
+#' @param maxYear
+
+#' @seealso \code{\link{sample_lcomp}, \link{sample_agecomp}}, \code{\link{fill_across}}
+#' @export
+
 
 fill_across <- function(mat, minYear, maxYear)
 {

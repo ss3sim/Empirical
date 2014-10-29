@@ -4,26 +4,40 @@
 #' from true ages to get realistic proportions for the number of fish in
 #' each age bin, then use the mean size-at-age and CV for growth to
 #' generate random samples of size, which are then converted to weight and
-#' averaged to get mean weight-at-age values. These values are then written
+#' averaged to get mean weight-at-age values. Missing ages and years are filled
+#' according to a specified function. These matrices are then written
 #' to file for the EM. By calling this function, \code{ss3sim} will turn on
 #' the empirical weight-at-age function (set maturity option to 5)
 #' automatically. See \link{\code{ss3sim_base}} for more details on how
 #' that is implemented.
 #'
 #' @author Cole Monnahan
+#' @author Allan Hicks
+#' @author Peter Kuriyama
 #'
 #' @template lcomp-agecomp-index
 #' @template lcomp-agecomp
+
+#' @param infile The file to read weight-at-age from. Specifically to get the age-0 weight-at-age. This is typically \code{wtatage.ss_new}.
+#' @param outfile The file to write the created weight-at-age matrices to be read in by the estimation model. Commonly \code{wtatage.ss}.
 #' @param datfile A path to the data file, outputed from an OM, containing
 #' the true age distributions (population bins). This file is read in and
 #' then used to determine how many fish of each age bin are to be sampled.
+#' Commonly \code{data.ss_new}
 #' @param ctlfile A path to the control file, outputed from an OM, containing
 #' the OM parameters for growth and weight/length relationship. These
 #' values are used to determine the uncertainty about weight for fish
 #' sampled in each age bin.
+#' Commonly \code{control.ss_new}
+#' @param years A list of vectors for each fleet indicating the years that are sampled for weight-at-age.
+#' There must be a corresponding age composition for that year in \code{datfile}.
+#' @param fill_fnc A function to fill in missing values (ages and years).  The resulting weight-at-age file
+#'        will have values for all years and ages.  One function is \code{fill_across}.
+#' @param write_file Logical to determine if \code{outfile} will be written.
+
 #' @template sampling-return
 #' @template casefile-footnote
-#' @seealso \code{\link{sample_lcomp}, \link{sample_agecomp}}
+#' @seealso \code{\link{sample_lcomp}, \link{sample_agecomp}}, \code{\link{fill_across}}
 #' @export
 
 sample_wtatage <- function(infile, outfile, datfile, ctlfile,
