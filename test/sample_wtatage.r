@@ -195,30 +195,30 @@ sample_wtatage <- function(infile, outfile, datfile, ctlfile,
     Nlines <- Nlines + unlist(lapply(wtatage.complete,nrow))
 
     ##write wtatage.ss file
-    cat(Nlines,"# Number of lines of weight-at-age input to be read\n",file=outfile)
-    cat(datfile$Nages,"# Maximum Age\n",file=outfile,append=TRUE)
+    if(write_file)    cat(Nlines,"# Number of lines of weight-at-age input to be read\n",file=outfile)
+    if(write_file)    cat(datfile$Nages,"# Maximum Age\n",file=outfile,append=TRUE)
 
     #loop through the various matrices and build up wtatage.final while doing it
     wtatage.final <- list()
     
-    cat("Fleet -2, fecundity\n",file=outfile,append=TRUE)
+    if(write_file)     cat("Fleet -2, fecundity\n",file=outfile,append=TRUE)
     wtatage.final[1] <- fecund
     wtatage.final[1]$yr <- -1 * wtatage.final[1]$yr
     if(write_file)    write.table(fecund, file=outfile, append=TRUE, row.names=F, col.names=F)
 
-    cat("\nFleet -1\n",file=outfile,append=TRUE)
+    if(write_file)    cat("\nFleet -1\n",file=outfile,append=TRUE)
     wtatage.final[2] <- fltNeg1
     wtatage.final[2]$yr <- -1 * wtatage.final[2]$yr
     if(write_file)        write.table(fltNeg1, file=outfile, append=TRUE, row.names=F, col.names=F)
 
-    cat("\nFleet 0\n",file=outfile,append=TRUE)
+    if(write_file)    cat("\nFleet 0\n",file=outfile,append=TRUE)
     wtatage.final[3] <- fltZero
     wtatage.final[3]$yr <- -1 * wtatage.final[3]$yr
     if(write_file)    write.table(fltZero, file=outfile, append=TRUE, row.names=F, col.names=F)
 
     #loop through fleets
     for(i in fleet) {
-        cat("\nFleet",i,file=outfile,append=TRUE)
+        if(write_file)     cat("\nFleet",i,file=outfile,append=TRUE)
         wtatage.final[i+3] <- wtatage.complete[[i]
         wtatage.final[i+3]$yr <- -1 * wtatage.final[i+3]$yr
         if(write_file)    write.table(wtatage.final[i+3], file=outfile, append=TRUE, row.names=F, col.names=F)
