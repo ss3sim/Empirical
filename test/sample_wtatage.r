@@ -49,13 +49,9 @@ sample_wtatage <- function(infile, outfile, datfile, ctlfile,
     ## the maturity function.
     ##
     #if(is.null(fleets)) return(NULL)
-### ***TODO PETER**** Why are the years negative? Here I'm turning them
-### negative but might want to change this??
-### I think this one's OK
 
-### ACH: Because you always have to have year 100, you may want to check for duplicates
-    years <- years[!duplicated(years)]
-
+    ### ACH: Because you always have to have year 100, you may want to check for duplicates
+    years <- lapply(years,function(x){x[!duplicated(x)]})
 
     #years <- lapply(years, function(xx) -xx)
     ## Read in datfile, need this for true age distributions and Nsamp
@@ -95,13 +91,9 @@ sample_wtatage <- function(infile, outfile, datfile, ctlfile,
     ## ACH: I put a check in the loops below
     #if(NROW(wtatage)==0) stop("Specified fleets not found in file")
 
-    if(substr_r(outfile,4) != ".dat" & write_file)
-        stop(paste0("outfile ", outfile, " needs to end in .dat"))
     fleets <- 1:length(datfile$fleetnames)
-    #if(min(fleets) != 1) stop("Fleets must from 1 to the total number of fleets \n")
-    #if(Nfleets != length(datfile$fleetnames)) stop("You must specify all fleets when smapling wtatage data\n")
-    #Not sure why years has to be same length as nfleets
-    #ACH: We should determine if we want the option of a single input year vector
+    Nfleets <- length(fleets)
+
     if(class(years) != "list" | length(years) != Nfleets)
         stop("years needs to be a list of same length as fleets")
     ## End input checks
@@ -116,11 +108,6 @@ sample_wtatage <- function(infile, outfile, datfile, ctlfile,
     wtatage.new.list <- vector(length=length(fleets),mode="list") # temp storage for the new rows
     ## Loop through each fleet, if fleets=NULL then skip sampling and
     ## return nothing (subtract out this type from the data file)
- 
- #####################################################################################
-    ##ToDo: what if a fleet hasno age data, like fleet 3 in cod model?
-    ##maybe if a single value is entered in year list, that is fleet to copy wtatage from
-####################################################################################
 
     for(fl in fleets) { #fleets must be 1:Nfleets
         #set up wtatage matrix of sampled years
@@ -137,7 +124,7 @@ sample_wtatage <- function(infile, outfile, datfile, ctlfile,
             for(yr in years[[fl]]) {
                 cat('fl=',fl,'yr=', yr, '\n')
 
-                mla.means <- as.numeric(mlacomp[mlacomp$Yr==yr & mlacomp$Fleet==fl, 
+                mla.means <- as.numeric(mlacomp[mlacomp$Yr==yr & mlacomp$Fleet==fl,
                                                 paste0("a", agebin_vector)])
                 ## For each age, given year and fleet, get the expected length
                 ## and CV around that length, then sample from it using
@@ -163,7 +150,7 @@ sample_wtatage <- function(infile, outfile, datfile, ctlfile,
                 #means.log <- log(mla.means^2/sqrt(sds^2+mla.means^2))
                 sds.log <- sqrt(log(1 + sds^2/mla.means^2))
                 means.log <- log(mla.means)-0.5*sds.log^2
-                
+
                 ## Each row is a sampled year
 
                 cat('fleet=', fl, 'year=', yr, 'We sampling', '\n')
@@ -228,7 +215,7 @@ sample_wtatage <- function(infile, outfile, datfile, ctlfile,
 
     #loop through the various matrices and build up wtatage.final while doing it
     wtatage.final <- list()
-    
+
     if(write_file)     cat("#Fleet -2, fecundity\n",file=outfile,append=TRUE)
     wtatage.final[[1]] <- fecund
     wtatage.final[[1]]$yr <- -1 * wtatage.final[[1]]$yr
