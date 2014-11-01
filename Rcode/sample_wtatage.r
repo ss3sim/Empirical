@@ -55,7 +55,7 @@ sample_wtatage <- function(infile, outfile, datfile, ctlfile,
 
     #years <- lapply(years, function(xx) -xx)
     ## Read in datfile, need this for true age distributions and Nsamp
-    datfile <- r4ss::SS_readdat(file=datfile, verbose=FALSE)
+    datfile <- r4ss::SS_readdat(file=datfile, verbose=FALSE,section=2)
     agecomp <- datfile$agecomp
     agebin_vector <- datfile$agebin_vector
     mlacomp <- datfile$MeanSize_at_Age_obs

@@ -2,7 +2,12 @@
 
 #cod OM has three fleets (1=fishery, 2=survey, 3=CPUE)
 #mirror fleet 3 wt-at-age from fleet 1
+
+source("C:\\Users\\Allan.Hicks\\Documents\\GitHub\\Empirical\\Rcode\\sample_wtatage.r")
+source("C:\\Users\\Allan.Hicks\\Documents\\GitHub\\Empirical\\Rcode\\fill_across.r")
+
 setwd("C:/NOAA2015/ss3Sim_Empirical/test")
+
 
 years <- list(
 			c(seq(26,100, by=1),100),  #fishery
