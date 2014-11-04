@@ -1,8 +1,8 @@
 #V3.24O
 #C starter comment here
-codOM.dat
-codOM.ctl
-1 # 0=use init values in control file; 1=use ss3.par
+ss3.dat
+em.ctl
+0 # 0=use init values in control file; 1=use ss3.par
 1 # run display detail (0,1,2)
 1 # detailed age-structured reports in REPORT.SSO (0,1) 
 0 # write detailed info from first call to echoinput.sso (0,1) 
@@ -11,7 +11,7 @@ codOM.ctl
 0 # Include prior_like for non-estimated parameters (0,1) 
 1 # Use Soft Boundaries to aid convergence (0,1) (recommended)
 3 # Number of datafiles to produce: 1st is input, 2nd is estimates, 3rd and higher are bootstrap
-0 # Turn off estimation for parameters entering after this phase
+10 # Turn off estimation for parameters entering after this phase
 0 # MCeval burn interval
 1 # MCeval thin interval
 0 # jitter initial parm value by this fraction

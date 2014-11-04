@@ -1,0 +1,4 @@
+fleets; list(1, 2)
+years; list(seq(30, 100, 10), seq(30, 100, 10))
+Nsamp; list(rep(50, 8), rep(50, 8))
+write_file; TRUE
