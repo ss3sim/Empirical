@@ -1,6 +1,6 @@
-fleets; NULL
-Nsamp; NULL
-years; NULL
-cpar; 1
+fleets; c(1,2)
+Nsamp; list(rep(50, 17),rep(50, 17))
+years; list(c(c(50, 60, 70, 75), seq(76, 88, 3), seq(89, 97, 2), c(98, 99, 100)), c(c(50, 60, 70, 75), seq(76, 88, 3), seq(89, 97, 2), c(98, 99, 100)))
+cpar; c(1, NA)
 agebin_vector; NULL
 write_file; TRUE

@@ -1,0 +1,288 @@
+ll_ratio(b1, b3)
+ll_ratio(b2, b1)
+ll_ratio(b2, b3)
+Calculate Likelihood Ratios#
+ll_ratio(a, b1)#
+ll_ratio(a, b2)#
+ll_ratio(a, b3)#
+ll_ratio(b1, b2)#
+ll_ratio(b1, b3)#
+ll_ratio(b2, b3)
+140^2 / (140-58)
+n2 <- 58
+(n1^2*n2^2*(n1+n2))/(n1-n2)^4
+n1 <- 140#
+n2 <- 58#
+#
+(n1^2*n2^2*(n1+n2))/(n1-n2)^4
+(n1^2*n2^2*(n1+n2)) / (n1-n2)^4
+sqrt(158405)
+(140*530)/29
+140/210
+210+140
+140/350
+2558.621/.4
+N <- (140*530)/29
+n1 <- 140
+m <- 29
+(N*(N-n1))/m
+n1 <- 140
+n1 <- 140#
+n2 <- 530#
+m <- 29
+var <- ((n1+1) * (n2+1) * (n1-m) * (n2-m)) / ((m+1)^2 * (m+2))
+var
+sqrt(var)
+m <- 29
+n1 <- 140#
+n2 <- 29
+(140^2)/29
+4*n1^2
+n1-n2
+n2^2
+d <- n1^3
+d
+e <- n2^3
+e
+var <- (a * b )/c + (b*d)/e
+a <- 4*n1^2#
+b <- n1-n2#
+c <- n2^2#
+#
+d <- n1^3#
+e <- n2^3
+var <- (a * b )/c + (b*d)/e
+var
+sqrt(var)
+data <- data.frame(i=1:12)
+data
+str(data)
+data$catch <- c(33541, 47326, 36460, 33157, 29207, 33125, 14191, 9503, 13115, 13663, 10865, 9887)
+head(data)
+str(data)
+data
+data$effort <- c(194, 248, 243, 301, 357, 352, 269, 244, 256, 248, 234, 227)
+data
+data$cpue <- data$catch/data$effort
+data
+data$cpue <- round(data$catch/data$effort, digits=1)
+data
+cum_catch <- cumsum(data$catch)
+cum_catch
+cum_catch[length(cum_catch)]
+cum_catch[-length(cum_catch)]
+cum_catch <- cum_catch[-length(cum_catch)]
+cum_catch <- c(0, cum_catch)
+cum_catch
+data$cum_catch <- cum_catch
+data
+plot(data$cum_catch, data$cpue)
+lm(cpue ~ cum_catch, data)
+xx <- lm(cpue ~ cum_catch, data)
+xx
+coef(xx)
+str(xx)
+print(xx)
+?abline
+xx
+coef(xx)
+abline(a=coef(xx)[1], b=coef(xx)[2])
+summary(xx)
+xx
+alpha <- coef(xx)[1]
+alpha
+c_hat <- coef(xx)[2]
+c_hat
+c_hat <- -coef(xx)[2]
+c_hat
+residuals(xx)
+(residuals(xx))^2
+sum(residuals(xx))
+sum(residuals(xx))^2
+sum((residuals(xx))^2)
+nrow(data)
+mse <- ss/(nrow(data) - 2)
+ss <- sum((residuals(xx))^2)#
+mse <- ss/(nrow(data) - 2)
+mse
+head(data)
+data$cum_catch
+mean(data$cum_catch)
+x_bar <- mean(data$cum_catch)
+x_bar
+n_hat <- alpha / c_hat
+n_hat
+alpha
+c_hat
+data$cum_catch - x_bar
+(data$cum_catch - x_bar)^2
+sum((data$cum_catch - x_bar)^2)
+resid_sq <- sum((data$cum_catch - x_bar)^2)
+resid_sq
+nrow(data)
+var <- (mse/(c_hat^2)) * ( (1/ nrow(data)) + (n_hat - x_bar)^2 / resid_sq )
+var
+se <- sqrt(var)
+se
+(-37*p2 + 3) / (p1-p2)
+p1 <- 3/55#
+p2 <- 13/40#
+#
+ax <- -3#
+(-37*p2 + 3) / (p1-p2)
+(-43*p2 + 3) / (p1-p2)
+(-49*p2 + 3) / (p1-p2)
+(-30*p2 + 3) / (p1-p2)
+(37*p2 + 3) / (p1-p2)
+(-37*p2 + 3) / (p1-p2)
+-37*p2 + 3 / (p1-p2)
+(-49*p2 + 3) / (p1-p2)
+-49*p2
+-42*p2
+(-43*p2 + 3) / (p1-p2)
+(37*p2 + 3) / (p1-p2)
+(-37*p1 + 3) / (p1-p2)
+(-37*p2 + 3) / (p1-p2)
+(-53*p2 + 3) / (p1-p2)
+(-53*p2 + 3) / p1 - p2)
+(-53*p2 + 3) / p1 - p2
+(-37*p2 + 3) / p1 - p2
+(-43*p2 + 3) / p1 - p2
+p1 - p2
+(-43*p2 + 3) / (p1 - p2)
+(-37*p2 + 3) / (p1 - p2)
+(-37*p1 + 3) / (p1 - p2)
+(-37*p2 + 3) / (p1 - p2)
+-37 / (p1-p2)
+(3 - p2*(-43)) / (p1-p2)
+(3 - p2*(-37)) / (p1-p2)
+p1 - p
+p1 - p2
+(3 - p2*(37)) / (p1-p2)
+(3 - p2*(43)) / (p1-p2)
+(3 - p2*(37)) / (p1-p2)
+(3 - p2*(-37)) / (p1-p2)
+(-43*p2 + 3) / (p1 - p2)
+p2 * (1 - p2)
+(p2 * (1 - p2))/40
+(p1 * (1 - p1)) / 55
+var_p1 <- (p1 * (1 - p1)) / 55#
+var_p2 <- (p2 * (1 - p2)) / 40
+remov <- -43
+var_n1 <- var_p1*( (-43* (13/40) + 3) / (3/55 - 13/40)^2 )^2 + #
+		  var_p2*( (-43* (3/55) + 3) / (3/55 - 13/40)^2 )^2
+var_n1
+sqrt(var_n1)
+p1 <- 140/6397#
+p2 <- 530/6397
+p1 <- 140/6397#
+p2 <- 530/6397#
+#
+(6397 * (1 - p1) * (1 - p2)) / (p1 * p2)
+se <- sqrt(var)
+p1 <- 140/6397#
+p2 <- 530/6397#
+#
+var <- (6397 * (1 - p1) * (1 - p2)) / (p1 * p2)#
+#
+se <- sqrt(var)
+se
+var
+-3 * (13/40) + 55
+(-3 * (13/40) + 55) / (3/55 - 13/40)
+(((-55 + 52) * (13/40)) + 55) / (3/55 - 13/40)
+a <- -3 * 13/40
+b <- 55
+c <- (3/55 - 13/40)
+c
+a + b
+-55 + 52
+a + b / c
+(a + b) / c
+((55 -52) * (13/40) - 52) / (p1 -p2)
+(55 -52) * (13/40) - 52 / (p1 -p2)
+(52 - 55) * (13/40) - 52
+((52 - 55) * (13/40) + 52) / (p1 -p2)
+b <- 52
+a <- -3 * 13/40#
+b <- 52#
+#
+c <- (3/55 - 13/40)#
+#
+(a + b) / c
+52/ (3/55 - 13/40)
+-52/ (3/55 - 13/40)
+(-52/ (3/55 - 13/40) ) + 52
+.009 * (-52 / (3/55 - 13/40)^2 )^2 + .0055 * (-52 / (3/55 - 13/40)^2 )^2
+sqrt(.009 * (-52 / (3/55 - 13/40)^2 )^2 + .0055 * (-52 / (3/55 - 13/40)^2 )^2)
+require(ss3sim)
+edit(ss3sim)
+.0255^2
+(.0255^2)/3
+sqrt((.0255^2)/3)
+?lapply
+?tapply
+edit(sum)
+edit(mean)
+edit(sd)
+edit(var)
+edit(cumsum)
+9 + 12 + 15 + 15
+51 + 60
+111/6
+source("/Users/peterkuriyama/School/Research/Master's Thesis/Chapter 1/R/functions.r")
+1621 - 425 - 482.7
+1621 - 425 - 482.7 - 400
+getwd()
+12.78/20
+5/20
+data <- read.csv("/Users/peterkuriyama/School/Research/Master's Thesis/Chapter 1/data/bc_discards.csv")
+head(data)
+unique(data$SPECIES_DESC)
+getwd()
+write.csv(unique(data$SPECIES_DESC), file='Desktop/bc_species.csv')
+?sum
+source("/Users/peterkuriyama/School/Research/MRAG/R/scraps.r")
+library(r2jags)
+library(rjags)
+library(devtools)
+f
+exp(2)
+exp(3)
+exp(2.5)
+plot(1:10)
+getOption('devOption')
+getOption('devOptions')
+quartz.options()
+X11
+X11()
+dev.off()
+log(19.4087)
+log(.90533)
+log(9.480)
+plot(1:10)
+rm(list=ls())
+Sys.which('pdflatex')
+Sys.getenv("PATH")
+Sys.setenv(PATH=paste(Sys.getenv("PATH"),"/usr/texbin",sep=":"))
+Sys.getenv("PATH")
+Sys.which('pdflatex')
+Sys.setenv(PATH=paste(Sys.getenv("PATH"),"/usr/texbin",sep=":"))
+Sys.which('pdflatex')
+Sys.getenv("PATH")
+Sys.setenv(PATH=paste(Sys.getenv("PATH"),"/usr/texbin/",sep=":"))
+Sys.getenv("PATH")
+Sys.which('pdflatex')
+plot(1:10)
+setwd("/Users/peterkuriyama/School/Research/capam_growth/Empirical/runs")
+output1 <- SS_output(paste0("F0-D0-E0-R0-X1-cow", '/1/em'), covar = FALSE, ncols = 500)
+library(r4ss)
+library(ss3sim)
+output1 <- SS_output(paste0("F0-D0-E0-R0-X1-cow", '/1/em'), covar = FALSE, ncols = 500)
+pdf(file = 'F0-D0-E0-R0-X1-cow.png')
+SS_plots(output1, covar = FALSE, uncertainty = FALSE)
+?pdf
+pdf(file = 'F0-D0-E0-R0-X1-cow.pdf')
+SS_plots(output1, covar = FALSE, uncertainty = FALSE)
+dev.off()
+?SS_plots

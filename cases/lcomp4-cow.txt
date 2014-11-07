@@ -1,0 +1,6 @@
+fleets; c(1, 2)
+Nsamp; list(rep(200, 33), rep(200, 99))
+years; list(seq(2,100,3), seq(2,100,1))
+cpar; 1
+lengthbin_vector; NULL
+write_file; TRUE

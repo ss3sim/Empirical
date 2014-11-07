@@ -1,4 +1,0 @@
-fleets; c(2)
-years; list(76)
-Nsamp; list(50)
-write_file; true
