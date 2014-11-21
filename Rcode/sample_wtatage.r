@@ -41,7 +41,7 @@
 #' @export
 
 sample_wtatage <- function(infile, outfile, datfile, ctlfile,
-                           years, fill_fnc, write_file=TRUE){
+                           years, Nsamp, fill_fnc, write_file=TRUE){
     ##fill_type: specify type of fill, fill zeroes with first row? annual interpolation?
         ## Age Interpolation?
     ## A value of NULL for fleets signifies to turn this data off in the
@@ -115,6 +115,9 @@ sample_wtatage <- function(infile, outfile, datfile, ctlfile,
         names(wtatage.new.list[[fl]]) <- names(wtatage)
         row.names(wtatage.new.list[[fl]]) <- as.character(years[[fl]])
 
+        NsampFl <- Nsamp[[fl]]
+        names(NsampFl) <- years[[fl]]
+
         #===============Loop over Years Sampled
         if(length(years[[fl]]) == 1) { #copy wtatage matrix from designated fleet
             if(fl <= years[[fl]]) stop("You must designate an earlier fleet to copy from.\n")
@@ -122,7 +125,7 @@ sample_wtatage <- function(infile, outfile, datfile, ctlfile,
             wtatage.new.list[[fl]]$fleet <- fl
         } else {
             for(yr in years[[fl]]) {
-                cat('fl=',fl,'yr=', yr, '\n')
+                #cat('fl=',fl,'yr=', yr, '\n')
 
                 mla.means <- as.numeric(mlacomp[mlacomp$Yr==yr & mlacomp$Fleet==fl,
                                                 paste0("a", agebin_vector)])
@@ -153,7 +156,7 @@ sample_wtatage <- function(infile, outfile, datfile, ctlfile,
 
                 ## Each row is a sampled year
 
-                cat('fleet=', fl, 'year=', yr, 'We sampling', '\n')
+                #cat('fleet=', fl, 'year=', yr, 'We sampling', '\n')
                 ## First step, draw from the true age distributions
                 agecomp.temp <- agecomp[agecomp$Yr==yr & agecomp$FltSvy==fl,]
                 ## If this row is not output in the .dat file (nrow==0), then no sampling
@@ -162,6 +165,7 @@ sample_wtatage <- function(infile, outfile, datfile, ctlfile,
                 ## Get the true age distributions
                 age.means <- as.numeric(agecomp.temp[-(1:9)])
                 age.Nsamp <- as.numeric(agecomp.temp$Nsamp)
+                age.Nsamp <- NsampFl[as.character(yr)]
                 ## Draw samples to get # of fish in each age bin
                 age.samples <- rmultinom(n=1, size=age.Nsamp, prob=age.means)
                 ## apply sampling across the columns (ages) to get sample of lengths
@@ -201,10 +205,14 @@ sample_wtatage <- function(infile, outfile, datfile, ctlfile,
         den <- 1+exp(omega3*(age-omega4))
         return(1/den)
     }
-    matAtAge <- mat.fn(c(ctl[ctl$Label=="Mat_slope_Fem","INIT"],ctl[ctl$Label=="Mat50%_Fem","INIT"]),agebin_vector)
+    matAtAge <- c(0,mat.fn(c(ctl[ctl$Label=="Mat_slope_Fem","INIT"],ctl[ctl$Label=="Mat50%_Fem","INIT"]),agebin_vector))
+    matAtAge <- matrix(matAtAge,nrow=nrow(wtatage.complete[[datfile$Nfleet+1]]),ncol=length(matAtAge),byrow=T)
     fecund <- matAtAge * wtatage.complete[[datfile$Nfleet+1]][,-(1:6)]
     fecund <- cbind(wtatage.complete[[datfile$Nfleet+1]][,1:6],fecund)
     fecund$fleet <- -2
+    #in SS, fleet 0 wtatage is used to multiply maturity to give fecundity,
+    #this is unavailable  (population) so we use survey
+    #but we may want to think about half way through season wtatage (or whatever fleet 0 is)
 
     Nlines <- nrow(fecund)+nrow(fltNeg1)+nrow(fltZero)
     Nlines <- Nlines + sum(unlist(lapply(wtatage.complete,nrow)))
