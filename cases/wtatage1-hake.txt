@@ -1,0 +1,4 @@
+fleets; list(1, 2)
+years; list(seq(25, 100, 1), seq(40, 100, 3)) 
+write_file; TRUE
+cv_wtatage; 0.05
