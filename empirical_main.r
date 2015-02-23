@@ -19,6 +19,7 @@ devtools::install_github('r4ss/r4ss')
 
 load_all('../ss3sim')
 load_all('../ss3models')
+# devtools::install_github('ss3sim/ss3models')
 
 library(r4ss)
 library(ss3sim)
@@ -26,22 +27,47 @@ library(ss3models)
 
 case_folder <- 'cases'
 #------------------------------------------------------------------------
-#Create Cases Dynamically for reproducibility
-species <- 'hake'
-source('write_casefiles.R')
+#Create Files Dynamically for reproducibility
+# - Must have species sub-directories in case_folder - #
+species.vec <- c('yellowAge', 'hakeAge', 'mackerelAge')
+
+for(ii in 1:length(species.vec))
+{
+    species <- species.vec[ii]
+    source('write_casefiles.R')
+    source('test_tv.r')
+}
+
 
 #------------------------------------------------------------------------
 ##Run Models
 
 #Define Scenarios
-scenarios.E <- expand_scenarios(cases = list(F = 1, D = 1:2, X = 1), species = species)
-scenarios <- scenarios.E
+scenarios.G <- expand_scenarios(cases = list(F = 0, D = 1:2, X = 1:2,
+    G = 1:3), species = species)
+scenarios <- scenarios.G 
 
-case_files <- list(F = 'F', D = c('index', 'agecomp'), X = 'wtatage')
-scenarios <- 'F0-D1-X1-hake'
+case_files <- list(F = 'F', D = c('index', 'agecomp'), X = 'wtatage', 
+    G = 'G')
+# scenarios <- 'F0-D1-X1-hake'
 
-run_ss3sim(iterations = 1:5, scenarios = scenarios, case_folder = case_folder,
-  om_dir = ss3model(species, 'om'), em_dir = ss3model(species, 'em'), case_files = case_files, parallel = TRUE)
+run_ss3sim(iterations = 6, scenarios = scenarios, case_folder = case_folder,
+  om_dir = ss3model(species, 'om'), em_dir = ss3model(species, 'em'),
+  case_files = case_files, parallel = TRUE)
+
+#------------------------------------------------------------------------
+#Test Specific Scenarios
+
+scenarios.G2 <- expand_scenarios(cases = list(F = 0, D = 2, X = 1:2,
+    G = 1:3), species = species)
+
+# scens <- 'D1-F0-G1-X1-hakeAge'
+
+# run_ss3sim(5, scenarios = scens, case_folder = case_folder,
+#     om_dir = ss3model(species, 'om'), em_dir = ss3model(species, 'em'),
+#     case_files = case_files, parallel = FALSE)
+
+
 
 #------------------------------------------------------------------------
 
