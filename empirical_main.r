@@ -16,24 +16,28 @@ message(paste(getDoParWorkers(), "cores have been registered for",
 #------------------------------------------------------------------------
 library(devtools)
 devtools::install_github('r4ss/r4ss')
+devtools::install_github('ss3sim/ss3sim')
+devtools::install_github('ss3sim/ss3models')
 
-load_all('../ss3sim')
-load_all('../ss3models')
+# load_all('../ss3sim')
+# load_all('../ss3models')
 # devtools::install_github('ss3sim/ss3models')
 
 library(r4ss)
 library(ss3sim)
 library(ss3models)
 
-case_folder <- 'cases'
+# case_folder <- 'cases'
 #------------------------------------------------------------------------
 #Create Files Dynamically for reproducibility
 # - Must have species sub-directories in case_folder - #
-species.vec <- c('yellowAge', 'hakeAge', 'mackerelAge')
+# species.vec <- c('yellowAge', 'hakeAge', 'mackerelAge')
+species.vec <- c('yellowAge')
 
 for(ii in 1:length(species.vec))
 {
     species <- species.vec[ii]
+    case_folder <- paste0('cases', '/', species)
     source('write_casefiles.R')
     source('test_tv.r')
 }
@@ -41,36 +45,43 @@ for(ii in 1:length(species.vec))
 
 #------------------------------------------------------------------------
 ##Run Models
-
 #Define Scenarios
-scenarios.G <- expand_scenarios(cases = list(F = 0, D = 1:2, X = 1:2,
-    G = 1:3), species = species)
-scenarios <- scenarios.G 
+scenarios1 <- expand_scenarios(cases = list(F = 0, D = 1, X = 1,
+    G = 1:6), species = species.vec)
+scenarios2 <- expand_scenarios(cases = list(F = 0, D = 2, X = 2,
+    G = 1:6), species = species.vec)
+
+scenarios <- c(scenarios1, scenarios2)
+# scenarios <- scenarios[-1]
+
+#Check to see which things have run
+# already <- list.files()
+# scenarios <- scenarios[scenarios %in% already == FALSE]
 
 case_files <- list(F = 'F', D = c('index', 'agecomp'), X = 'wtatage', 
     G = 'G')
-# scenarios <- 'F0-D1-X1-hake'
 
-run_ss3sim(iterations = 6, scenarios = scenarios, case_folder = case_folder,
-  om_dir = ss3model(species, 'om'), em_dir = ss3model(species, 'em'),
-  case_files = case_files, parallel = TRUE)
+for(ii in 1:length(scenarios))
+{
+    find.spp <- scenarios[ii]
+    parsed <- strsplit(find.spp, '-')[[1]]
+    spp <- parsed[length(parsed)]
 
-#------------------------------------------------------------------------
-#Test Specific Scenarios
+    case_folder1 <- paste0('cases', '/', spp)
 
-scenarios.G2 <- expand_scenarios(cases = list(F = 0, D = 2, X = 1:2,
-    G = 1:3), species = species)
-
-# scens <- 'D1-F0-G1-X1-hakeAge'
-
-# run_ss3sim(5, scenarios = scens, case_folder = case_folder,
-#     om_dir = ss3model(species, 'om'), em_dir = ss3model(species, 'em'),
-#     case_files = case_files, parallel = FALSE)
-
-
+    run_ss3sim(iterations = 1:4, scenarios = scenarios[ii], case_folder = case_folder1,
+        om_dir = ss3model(spp, 'om'), em_dir = ss3model(spp, 'em'),
+        case_files = case_files, parallel = TRUE,
+        parallel_iterations = TRUE)
+}
 
 #------------------------------------------------------------------------
+#plot time-varying growth scenarios
+source('plotting_functions.r')
+apply(as.data.frame(scenarios), MAR = 1, FUN =  function(x) make_wtatage_png(x))
 
+#------------------------------------------------------------------------
+#Haven't done this yet
 ##Read in Results
 get_results_all(dir = getwd(), user_scenarios = scenarios)
 
@@ -90,6 +101,12 @@ results <- within(results,{
 results_re <- calculate_re(results, FALSE)
 
 calculate_re(read.csv('ss3sim_scalar.csv'), add = T)
+
+
+#------------------------------------------------------------------------
+
+
+
 
 
 

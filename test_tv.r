@@ -2,7 +2,7 @@
 
 #------------------------------------------------------------------------
 #Set Working Directory, load files
-setwd('/Users/peterkuriyama/School/Research/capam_growth/Empirical/')
+# setwd('/Users/peterkuriyama/School/Research/capam_growth/Empirical/')
 #Paths are structured as they are in the ss3sim repo
 
 #------------------------------------------------------------------------
@@ -40,11 +40,11 @@ write_tv <- function(species, value, perc.change,
   writeLines(GG, con = paste0(case_folder, '/', file.name, '-', species, '.txt'))
 }  
 
-case_folder_orig <- 'cases'
+# case_folder_orig <- 'cases'
 
 #------------------------------------------------------------------------
 # species <- 'hakeAge'
-case_folder <- paste0(case_folder_orig, '/', species)
+# case_folder <- paste0(case_folder_orig, '/', species)
 
 #------------------------------------------------------------------------
 #Modify Linfinity
@@ -86,9 +86,6 @@ write_tv(species = species, value = value, file.name = 'G5',
 G6 <- c(rep(0, 40), rnorm(60) / 10)
 write_tv(species = species, value = value, file.name = 'G6',
   perc.change = G6, case_folder = case_folder)
-
-
-
 
 
 #------------------------------------------------------------------------
