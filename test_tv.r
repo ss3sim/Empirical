@@ -50,6 +50,11 @@ write_tv <- function(species, value, perc.change,
 #Modify Linfinity
 value <- 'L_at_Amax_Fem_GP_1'
 
+#Constant Growth
+G0 <- rep(0, 100)
+write_tv(species = species, value = value, file.name = 'G0',
+  perc.change = G0, case_folder = case_folder)
+
 #Period of positive and negative growth
 G1 <- c(rep(0, 40), seq(0, .3, length.out = 10), rev(seq(0, .3, length.out = 10)),
   seq(0, -.3, length.out = 20), rev(seq(0, -.3, length.out = 20)))
@@ -86,6 +91,11 @@ write_tv(species = species, value = value, file.name = 'G5',
 G6 <- c(rep(0, 40), rnorm(60) / 10)
 write_tv(species = species, value = value, file.name = 'G6',
   perc.change = G6, case_folder = case_folder)
+
+#Constant 
+G7 <- rep(0, 100)
+write_tv(species = species, value = value, file.name = 'G7',
+  perc.change = G7, case_folder = case_folder)
 
 
 #------------------------------------------------------------------------
