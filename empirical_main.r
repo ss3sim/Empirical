@@ -3,16 +3,21 @@
 
 #------------------------------------------------------------------------
 #Set Working Directory, load files
-setwd('/Users/peterkuriyama/School/Research/capam_growth/Empirical')
-#Paths are structured as they are in the ss3sim repo
+# setwd('/Users/peterkuriyama/School/Research/capam_growth/Empirical')
 
+#Save Shit to google drive
+setwd("C://Users//Peter//Google Drive//Empirical")
+
+
+#Paths are structured as they are in the ss3sim repo
 library(ggplot2)
 library(dplyr)
 library(reshape2)
+library(plyr)
 #------------------------------------------------------------------------
 #Set Up Parallels
 library('doParallel')
-registerDoParallel(cores = 2)
+registerDoParallel(cores = 4)
 library('foreach')
 message(paste(getDoParWorkers(), "cores have been registered for",
     "parallel processing."))
@@ -51,6 +56,9 @@ for(ii in 1:length(species.vec))
 
 #------------------------------------------------------------------------
 ##Run Models
+#Globally set iterations
+iters <- 5:10
+
 #-----------------------------------
 #Run age-based models
 species.vec <- c('hake-age', 'yellow-age')
@@ -59,8 +67,9 @@ scenarios1 <- expand_scenarios(cases = list(F = 0, D = 1, X = 1,
     G = 0:7), species = species.vec)
 scenarios2 <- expand_scenarios(cases = list(F = 0, D = 2, X = 2,
     G = 0:7), species = species.vec)
-
-scenarios <- c(scenarios1, scenarios2)
+scenarios3 <- expand_scenarios(cases = list(F = 0, D = 3, X = 3,
+                                            G = 0:7), species = species.vec)
+scenarios <- c(scenarios1, scenarios2, scenarios3)
 
 # scenarios <- scenarios[grep('G0', scenarios)]
 case_files <- list(F = 'F', D = c('index', 'agecomp'), X = 'wtatage', 
@@ -83,7 +92,7 @@ for(ii in 1:length(scenarios))
     }
     case_folder1 <- paste0('cases', '/', spp)
 
-    run_ss3sim(iterations = 1:4, scenarios = scenarios[ii], case_folder = case_folder1,
+    run_ss3sim(iterations = iters, scenarios = scenarios[ii], case_folder = case_folder1,
         om_dir = ss3model(spp, 'om'), em_dir = ss3model(spp, 'em'),
         case_files = case_files, parallel = TRUE,
         parallel_iterations = TRUE)
@@ -92,7 +101,7 @@ for(ii in 1:length(scenarios))
 #-----------------------------------
 #RUn Length Based Cases
 speciesLength <- c('hake', 'yellow')
-scenariosLength <- expand_scenarios(cases = list(F = 0, D = 1:2,
+scenariosLength <- expand_scenarios(cases = list(F = 0, D = 1:3,
     G = 0:7), species = speciesLength)
 # scenariosLength <- scenariosLength[c(27:28)]
 
@@ -107,7 +116,7 @@ for(ii in 1:length(scenariosLength))
 
     case_folder1 <- paste0('cases', '/', spp)
 
-    run_ss3sim(iterations = 1:4, scenarios = scenariosLength[ii], case_folder = case_folder1,
+    run_ss3sim(iterations = iters, scenarios = scenariosLength[ii], case_folder = case_folder1,
         om_dir = ss3model(spp, 'om'), em_dir = ss3model(spp, 'em'),
         case_files = case_filesLength, parallel = TRUE,
         parallel_iterations = TRUE)
@@ -124,6 +133,11 @@ apply(as.data.frame(scenarios), MAR = 1, FUN =  function(x) make_wtatage_png(x))
 #Haven't done this yet
 ##Read in Results
 get_results_all(dir=getwd(), user_scenarios=scenarios, parallel=TRUE, over=TRUE)
+
+#Move Results to empirical_results folder
+
+
+
 
 results.ts <- read.csv('ss3sim_ts.csv')
 results.sc <- read.csv('ss3sim_scalar.csv')
@@ -177,10 +191,10 @@ results.sc.long.management <- droplevels(subset(results.sc.long, variable %in% m
 results.sc.long.management <- subset(results.sc.long.management, value != 0)
 #---------------------------------------
 #Check to see if estimation is turned on for scenarios
-check.est <- results.sc.long %>% group_by(scenario, variable) %>% 
-    summarise(length.val = length(unique(value)))
-write.csv(subset(check.est, length.val == 4), file = '/Users/peterkuriyama/Desktop/check_est.csv', 
-    row.names = FALSE)
+# check.est <- results.sc.long %>% group_by(scenario, variable) %>% 
+#     summarise(length.val = length(unique(value)))
+# write.csv(subset(check.est, length.val == 4), file = '/Users/peterkuriyama/Desktop/check_est.csv', 
+#     row.names = FALSE)
 
 #---------------------------------------
 #Check relative errors
