@@ -15,7 +15,7 @@ if(FALSE){
 } 
 
 #windows(width=7, height=9)
-tiff("Experimental design.tiff", width=7,height=9, res=500, units='in', compression='lzw')
+tiff("Experimental_design.tiff", width=7,height=9, res=500, units='in', compression='lzw')
 par(mar=c(4,1.5,0,1), oma=c(0,3,0,0))
 
 matlay <- c(1,1,
@@ -32,8 +32,8 @@ layout(mat=matlay, heights=c(0.25,0.25,0.25,0.25), widths=c(0.5,0.5))
 F0 <- c(rep(0,25), rep(0.95,75))
 F1 <- c(rep(0,26), ((1/37)*(1:37))*0.95,(-(1/38)*(1:38))*0.5+0.95)
 
-plot(F0, type='l', axes=F, ylim=c(0,1.5), xlab=NA, ylab=NA, lwd=2)
-mtext(side=2, text=expression(F[MSY]), line=2.5, cex=0.7)
+plot(F0, type='l', axes=F, ylim=c(0,1.5), xlab="Year", ylab=NA, lwd=2)
+mtext(side=2, text=expression(F/F[MSY]), line=2.5, cex=0.7)
 lines(F1+0.01, col="gray", lwd=2)
 legend("topleft", legend=c("Constant","Two-way trip"), lwd=2, col=c("black","gray"), bty='n')
 axis(2)
@@ -68,8 +68,8 @@ points(survey1, rep(1.5,length(survey1)), cex=log(sampsurvs[1]/7, base=base)/sca
 points(survey2, rep(1.0,length(survey2)), cex=log(sampsurvs[2]/7, base=base)/scaler, pch=19, col=ScenPal[2])
 points(survey2, rep(0.5,length(survey2)), cex=log(sampsurvs[3]/7, base=base)/scaler, pch=19, col=ScenPal[3])
 
-text(40, 4.5, labels="Fishery")
-text(40, 2, labels="Survey")
+text(40, 4.2, labels="Fishery")
+text(40, 1.8, labels="Survey")
 
 axis(1)
 legend("topleft", legend=c("Data-moderate","Data-rich", "Data-unrealistic"), pch=19, col=ScenPal, bty='n', 
