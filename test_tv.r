@@ -93,9 +93,9 @@ write_tv(species = species, value = value, file.name = 'G6',
   perc.change = G6, case_folder = case_folder)
 
 #Constant 
-G7 <- rep(0, 100)
-write_tv(species = species, value = value, file.name = 'G7',
-  perc.change = G7, case_folder = case_folder)
+# G7 <- rep(0, 100)
+# write_tv(species = species, value = value, file.name = 'G7',
+#   perc.change = G7, case_folder = case_folder)
 
 
 #------------------------------------------------------------------------
