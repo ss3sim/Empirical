@@ -4,7 +4,7 @@ old.dir <- getwd()
 ### ------------------------------------------------------------
 #Make sure that case files are copied appropriately from ss3models package
 
-setwd(paste0('/Users/peterkuriyama/School/Research/capam_growth/ss3models/inst/cases'))
+setwd(system.file('cases',package="ss3models")
 ffiles <- list.files()
 to.move <- ffiles[grep(species, ffiles)]
 file.copy(to.move, to = paste0(old.dir, '/', case_folder))
@@ -33,26 +33,26 @@ wtatage1 <- c('fleets;c(1,2)', 'years;list(seq(25,100, by=1),seq(40,100, by=1))'
 writeLines(wtatage1, con = paste0(case_folder, '/', 'wtatage1-',
   species, '.txt'))
 
-#2---------High Data Scenario
-index2 <- c('fleets; c(2, 3)',
-  'years; list(seq(25, 100, 1), seq(40, 100, 3))',
-  'sds_obs; list(.05, .05)')
-writeLines(index2, con = paste0(case_folder, '/', 'index2-',
-  species, '.txt'))
+# #2---------High Data Scenario
+# index2 <- c('fleets; c(2, 3)',
+#   'years; list(seq(25, 100, 1), seq(40, 100, 3))',
+#   'sds_obs; list(.05, .05)')
+# writeLines(index2, con = paste0(case_folder, '/', 'index2-',
+#   species, '.txt'))
 
-agecomp2 <- c('fleets;c(1,2)', 'years;list(seq(25,100, by=1),seq(40, 100, by = 3))',
-              'Nsamp; list(c(rep(35, 25), rep(75, 25), rep(100, 26)), rep(100, 21))', 
-              'cpar;NA')
-writeLines(agecomp2, con = paste0(case_folder, '/', 'agecomp2-',
-  species, '.txt'))
-writeLines(agecomp2, con = paste0(case_folder, '/', 'lcomp2-',
-  species, '.txt'))
+# agecomp2 <- c('fleets;c(1,2)', 'years;list(seq(25,100, by=1),seq(40, 100, by = 3))',
+#               'Nsamp; list(c(rep(35, 25), rep(75, 25), rep(100, 26)), rep(100, 21))', 
+#               'cpar;NA')
+# writeLines(agecomp2, con = paste0(case_folder, '/', 'agecomp2-',
+#   species, '.txt'))
+# writeLines(agecomp2, con = paste0(case_folder, '/', 'lcomp2-',
+#   species, '.txt'))
 
 
-wtatage2 <- c('fleets;c(1,2)', 'years;list(seq(25,100, by=1),seq(40,100, by=3))',
-              'write_file; TRUE', 'cv_wtatage; .05')
-writeLines(wtatage2, con = paste0(case_folder, '/', 'wtatage2-',
-  species, '.txt'))
+# wtatage2 <- c('fleets;c(1,2)', 'years;list(seq(25,100, by=1),seq(40,100, by=3))',
+#               'write_file; TRUE', 'cv_wtatage; .05')
+# writeLines(wtatage2, con = paste0(case_folder, '/', 'wtatage2-',
+#   species, '.txt'))
 
 
 
