@@ -4,7 +4,7 @@ old.dir <- getwd()
 ### ------------------------------------------------------------
 #Make sure that case files are copied appropriately from ss3models package
 
-setwd(system.file('cases',package="ss3models")
+setwd(system.file('cases',package="ss3models"))
 ffiles <- list.files()
 to.move <- ffiles[grep(species, ffiles)]
 file.copy(to.move, to = paste0(old.dir, '/', case_folder))
