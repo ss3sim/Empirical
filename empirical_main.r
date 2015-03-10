@@ -1,13 +1,14 @@
 #This file is the central plae to develop and run analyses for the paper
 #Sources files that do particular tasks
 
+
 #------------------------------------------------------------------------
 #Set Working Directory, load files
 # setwd('/Users/peterkuriyama/School/Research/capam_growth/Empirical')
 
 #Save Shit to google drive
 # setwd("C://Users//Peter//Google Drive//Empirical")
-# setwd('/Users/peterkuriyama/Google Drive/Empirical/')
+setwd('/Users/peterkuriyama/Google Drive/Empirical/')
 
 #Save everything locally to empirical_runs
 # setwd("C://Users//Peter//Desktop//empirical_runs")
@@ -21,10 +22,87 @@ library(reshape2)
 #Set Up Parallels
 library('doParallel')
 # registerDoParallel(cores = 4)
-registerDoParallel(cores = 2)
+registerDoParallel(cores = 1)
 library('foreach')
 message(paste(getDoParWorkers(), "cores have been registered for",
     "parallel processing."))
+
+#------------------------------------------------------------------------
+#Debug sample_wtatage.r 
+setwd('/Users/peterkuriyama/School/Research/capam_growth')
+library(devtools)
+
+load_all('ss3sim')
+load_all('ss3models')
+# devtools::install_github('r4ss/r4ss')
+
+library(ss3sim)
+library(ss3models)
+
+#-----------
+results.dir <- "/Users/peterkuriyama/School/Research/empirical_runs"
+setwd(results.dir)
+
+case_folder <- 'cases/hake-age'
+
+iters <- 1
+scen <- 'D4-F0-G1-X4-hake-age'
+
+case_files <- list(F = 'F', D = c('index', 'agecomp'), X = 'wtatage', 
+    G = 'G')
+
+find.spp <- scen
+parsed <- strsplit(find.spp, '-')[[1]]
+spp <- parsed[length(parsed)]
+
+if(length(grep('age', parsed)) == 1){
+    spp <- paste0(parsed[5], '-', parsed[6])
+}
+# case_folder1 <- paste0('cases', '/', spp)
+
+run_ss3sim(iterations = iters, scenarios = scen, case_folder = case_folder,
+    om_dir = ss3model(spp, 'om'), em_dir = ss3model(spp, 'em'),
+    case_files = case_files)
+
+
+
+# unlink(scen, recursive = TRUE)
+
+#Plot these Tests
+
+scenario <- scen
+# scenario <- 'D4-F0-G0-X4-hake-age'
+
+#OM
+wtatage.om <- read.table(paste0(scenario, '/1/om/wtatage.ss_new'), header = F,
+  skip = 2)
+names(wtatage.om)[1:6] <- c('yr', 'seas', 'gender', 'growpattern', 'birthseas', 'fleet')
+ages <- 7:ncol(wtatage.om)
+names(wtatage.om)[7:ncol(wtatage.om)] <- paste0('a', ages- 7)
+
+#EM
+wtatage.em <- read.table(paste0(scenario, '/1/em/wtatage.ss'), header = F,
+  skip = 2)
+names(wtatage.em)[1:6] <- c('yr', 'seas', 'gender', 'growpattern', 'birthseas', 'fleet')
+ages <- 7:ncol(wtatage.em)
+names(wtatage.em)[7:ncol(wtatage.em)] <- paste0('a', ages- 7)
+
+#Fleet 1 only
+wtom <- wtatage.om[wtatage.om$fleet == 1, 7:ncol(wtatage.om)]
+wtem <- wtatage.em[wtatage.em$fleet == 1, 7:ncol(wtatage.em)]
+
+#Calculate relative error
+# wtre <- (wtem - wtom) / wtom
+# write.csv(wtre, file = '/Users/peterkuriyama/Desktop/wtatage.csv')
+
+#Mean should converge
+meanvec <- t(apply(wtem, 2, mean))  
+
+
+#Check overall
+(meanvec - wtom[99, ]) / wtom[99, ]
+matplot(t(wtem), pch = 19)
+matplot(t(wtre), pch = 19)
 
 #------------------------------------------------------------------------
 library(devtools)
@@ -32,9 +110,15 @@ devtools::install_github('r4ss/r4ss')
 devtools::install_github('ss3sim/ss3sim')
 devtools::install_github('ss3sim/ss3models')
 
+# load_all('../ss3sim')
+# load_all('ss3models')
+# devtools::install_github('ss3sim/ss3models')
+
 library(r4ss)
 library(ss3sim)
 library(ss3models)
+
+# case_folder <- 'cases'
 
 #------------------------------------------------------------------------
 #SET DIRECTORIES
@@ -399,80 +483,3 @@ scenarios
 
 
 
-
-#------------------------------------------------------------------------
-#Debug sample_wtatage.r 
-# setwd('/Users/peterkuriyama/School/Research/capam_growth')
-# library(devtools)
-
-# load_all('ss3sim')
-# load_all('ss3models')
-# # devtools::install_github('r4ss/r4ss')
-
-# library(ss3sim)
-# library(ss3models)
-
-#------------------------------------------------------------------------
-# results.dir <- "/Users/peterkuriyama/School/Research/empirical_runs"
-# setwd(results.dir)
-
-# case_folder <- 'cases/hake-age'
-
-# iters <- 1
-# scen <- 'D4-F0-G1-X4-hake-age'
-
-# case_files <- list(F = 'F', D = c('index', 'agecomp'), X = 'wtatage', 
-#     G = 'G')
-
-# find.spp <- scen
-# parsed <- strsplit(find.spp, '-')[[1]]
-# spp <- parsed[length(parsed)]
-
-# if(length(grep('age', parsed)) == 1){
-#     spp <- paste0(parsed[5], '-', parsed[6])
-# }
-# # case_folder1 <- paste0('cases', '/', spp)
-
-# run_ss3sim(iterations = iters, scenarios = scen, case_folder = case_folder,
-#     om_dir = ss3model(spp, 'om'), em_dir = ss3model(spp, 'em'),
-#     case_files = case_files)
-
-
-
-# # unlink(scen, recursive = TRUE)
-
-# #Plot these Tests
-
-# scenario <- scen
-# # scenario <- 'D4-F0-G0-X4-hake-age'
-
-# #OM
-# wtatage.om <- read.table(paste0(scenario, '/1/om/wtatage.ss_new'), header = F,
-#   skip = 2)
-# names(wtatage.om)[1:6] <- c('yr', 'seas', 'gender', 'growpattern', 'birthseas', 'fleet')
-# ages <- 7:ncol(wtatage.om)
-# names(wtatage.om)[7:ncol(wtatage.om)] <- paste0('a', ages- 7)
-
-# #EM
-# wtatage.em <- read.table(paste0(scenario, '/1/em/wtatage.ss'), header = F,
-#   skip = 2)
-# names(wtatage.em)[1:6] <- c('yr', 'seas', 'gender', 'growpattern', 'birthseas', 'fleet')
-# ages <- 7:ncol(wtatage.em)
-# names(wtatage.em)[7:ncol(wtatage.em)] <- paste0('a', ages- 7)
-
-# #Fleet 1 only
-# wtom <- wtatage.om[wtatage.om$fleet == 1, 7:ncol(wtatage.om)]
-# wtem <- wtatage.em[wtatage.em$fleet == 1, 7:ncol(wtatage.em)]
-
-# #Calculate relative error
-# # wtre <- (wtem - wtom) / wtom
-# # write.csv(wtre, file = '/Users/peterkuriyama/Desktop/wtatage.csv')
-
-# #Mean should converge
-# meanvec <- t(apply(wtem, 2, mean))  
-
-
-# #Check overall
-# (meanvec - wtom[99, ]) / wtom[99, ]
-# matplot(t(wtem), pch = 19)
-# matplot(t(wtre), pch = 19)
