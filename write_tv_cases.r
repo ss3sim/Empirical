@@ -19,8 +19,8 @@ write_tv <- function(species, value, perc.change,
   val <- as.numeric(strsplit(line, split = ' ')[[1]][4])
 
   #Visually check when modifying
-  cat('line is ', line, '\n',
-    'value is ', val, '\n')
+  # cat('line is ', line, '\n',
+  #   'value is ', val, '\n')
 
   #Create vector of deviates
   dev <- val + val * perc.change  - val
