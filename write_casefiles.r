@@ -14,7 +14,7 @@ setwd(old.dir)
 
 ### ------------------------------------------------------------
 #Source to write casefiles
-#1---------Deterministic Scenario
+#1---------"Deterministic" Scenario
 index1 <- c('fleets; c(2, 3)',
   'years; list(seq(25, 100, 1), seq(40, 100, 1))',
   'sds_obs; list(.05, .05)')
@@ -22,7 +22,7 @@ writeLines(index1, con = paste0(case_folder, '/', 'index1-',
   species, '.txt'))
 
 agecomp1 <- c('fleets;c(1,2)', 'years;list(seq(25,100, by=1),seq(40,100, by=1))',
-              'Nsamp;list(10000, 10000)', 'cpar;NA')
+              'Nsamp;list(1000, 1000)', 'cpar;NA')
 writeLines(agecomp1, con = paste0(case_folder, '/', 'agecomp1-',
   species, '.txt'))
 writeLines(agecomp1, con = paste0(case_folder, '/', 'lcomp1-',
@@ -33,114 +33,64 @@ wtatage1 <- c('fleets;c(1,2)', 'years;list(seq(25,100, by=1),seq(40,100, by=1))'
 writeLines(wtatage1, con = paste0(case_folder, '/', 'wtatage1-',
   species, '.txt'))
 
-# #2---------High Data Scenario
-# index2 <- c('fleets; c(2, 3)',
-#   'years; list(seq(25, 100, 1), seq(40, 100, 3))',
-#   'sds_obs; list(.05, .05)')
-# writeLines(index2, con = paste0(case_folder, '/', 'index2-',
-#   species, '.txt'))
+#2---------Data Unrealistic Scenario, mid range age comp sample size
+index2 <- c('fleets; c(2, 3)',
+  'years; list(seq(25, 100, 1), seq(40, 100, 1))',
+  'sds_obs; list(.05, .05)')
+writeLines(index2, con = paste0(case_folder, '/', 'index2-',
+  species, '.txt'))
 
-# agecomp2 <- c('fleets;c(1,2)', 'years;list(seq(25,100, by=1),seq(40, 100, by = 3))',
-#               'Nsamp; list(c(rep(35, 25), rep(75, 25), rep(100, 26)), rep(100, 21))', 
-#               'cpar;NA')
-# writeLines(agecomp2, con = paste0(case_folder, '/', 'agecomp2-',
-#   species, '.txt'))
-# writeLines(agecomp2, con = paste0(case_folder, '/', 'lcomp2-',
-#   species, '.txt'))
+agecomp2 <- c('fleets;c(1,2)', 'years;list(seq(25,100, by=1),seq(40,100, by=1))',
+              'Nsamp;list(500, 500)', 'cpar;NA')
+writeLines(agecomp2, con = paste0(case_folder, '/', 'agecomp2-',
+  species, '.txt'))
+writeLines(agecomp2, con = paste0(case_folder, '/', 'lcomp2-',
+  species, '.txt'))
+
+wtatage2 <- c('fleets;c(1,2)', 'years;list(seq(25,100, by=1),seq(40,100, by=1))',
+              'write_file; TRUE', 'cv_wtatage; .05')
+writeLines(wtatage2, con = paste0(case_folder, '/', 'wtatage2-',
+  species, '.txt'))
+
+#3---------Realistic Data Scenario, Triennial Survey, SD of .2
+index3 <- c('fleets; c(2, 3)',
+  'years; list(seq(25, 100, 1), seq(40, 100, 3))',
+  'sds_obs; list(.2, .2)')
+writeLines(index3, con = paste0(case_folder, '/', 'index3-',
+  species, '.txt'))
+
+agecomp3 <- c('fleets;c(1,2)', 'years;list(seq(25,100, by=1),seq(40, 100, by = 3))',
+              'Nsamp; list(c(rep(35, 25), rep(75, 25), rep(100, 26)), rep(100, 21))', 
+              'cpar;NA')
+writeLines(agecomp3, con = paste0(case_folder, '/', 'agecomp3-',
+  species, '.txt'))
+writeLines(agecomp3, con = paste0(case_folder, '/', 'lcomp3-',
+  species, '.txt'))
+
+wtatage3 <- c('fleets;c(1,2)', 'years;list(seq(25,100, by=1),seq(40,100, by=3))',
+              'write_file; TRUE', 'cv_wtatage; .2')
+writeLines(wtatage3, con = paste0(case_folder, '/', 'wtatage3-',
+  species, '.txt'))
+
+#4---------Realistic Data, Late Triennial Survey
+index4 <- c('fleets; c(2, 3)',
+  'years; list(seq(25, 100, 1), seq(67, 100, 3))',
+  'sds_obs; list(.2, .2)')
+writeLines(index4, con = paste0(case_folder, '/', 'index4-',
+  species, '.txt'))
+
+agecomp4 <- c('fleets;c(1,2)', 'years;list(seq(25,100, by=1), seq(67, 100, by = 3))',
+              'Nsamp; list(c(rep(35, 25), rep(75, 25), rep(100, 26)), rep(100, 12))', 
+              'cpar;NA')
+writeLines(agecomp4, con = paste0(case_folder, '/', 'agecomp4-',
+  species, '.txt'))
+writeLines(agecomp4, con = paste0(case_folder, '/', 'lcomp4-',
+  species, '.txt'))
+
+wtatage4 <- c('fleets;c(1,2)', 'years;list(seq(25,100, by=1), seq(67,100, by=3))',
+              'write_file; TRUE', 'cv_wtatage; .2')
+writeLines(wtatage4, con = paste0(case_folder, '/', 'wtatage4-',
+  species, '.txt'))
 
 
-# wtatage2 <- c('fleets;c(1,2)', 'years;list(seq(25,100, by=1),seq(40,100, by=3))',
-#               'write_file; TRUE', 'cv_wtatage; .05')
-# writeLines(wtatage2, con = paste0(case_folder, '/', 'wtatage2-',
-#   species, '.txt'))
 
-
-
-
-
-## Source this file to recreate case files used in the analysis
-### ------------------------------------------------------------
-## The deterministic cases (not species specific)
-# index100 <- c('fleets;2', 'years;list(seq(50,100, by=2))', 'sds_obs;list(.01)')
-# lcomp100 <- c('fleets;c(1,2)', 'years;list(seq(50,100, by=2), seq(50,100, by=2))',
-#               'Nsamp;list(500, 500)', 'cpar;NA')
-# agecomp100 <- c('fleets;c(1,2)', 'years;list(seq(50,100, by=2),seq(50,100, by=2))',
-#               'Nsamp;list(500, 500)', 'cpar;NA')
-# calcomp100 <- c('fleets;NULL', 'years;list(seq(50,100, by=2))',
-#                 'Nsamp;list(500)')
-# writeLines(index100, con=paste0(case_folder,"/", "index100-", species, ".txt"))
-# writeLines(lcomp100, con=paste0(case_folder,"/", "lcomp100-", species, ".txt"))
-# writeLines(agecomp100, con=paste0(case_folder,"/", "agecomp100-", species, ".txt"))
-# writeLines(calcomp100, con=paste0(case_folder,"/", "calcomp100-", species, ".txt"))
-# index101 <- c('fleets;2', 'years;list(seq(50,100, by=2))',
-#               'sds_obs;list(.01)')
-# lcomp101 <- c('fleets;c(1,2)', 'years;list(seq(50,100, by=2), seq(50,100, by=2))',
-#               'Nsamp;list(500, 500)', 'cpar;NA')
-# agecomp101 <- c('fleets;NULL', 'years;list(seq(50,100, by=2),seq(50,100, by=2))',
-#               'Nsamp;list(500, 500)', 'cpar;NA')
-# calcomp101 <- c('fleets;NULL', 'years;list(seq(50,100, by=2))',
-#                 'Nsamp;list(500)')
-# writeLines(index101, con=paste0(case_folder,"/", "index101-", species, ".txt"))
-# writeLines(lcomp101, con=paste0(case_folder,"/", "lcomp101-", species, ".txt"))
-# writeLines(agecomp101, con=paste0(case_folder,"/", "agecomp101-", species, ".txt"))
-# writeLines(calcomp101, con=paste0(case_folder,"/", "calcomp101-", species, ".txt"))
-# index102 <- c('fleets;2', 'years;list(seq(50,100, by=2))',
-#               'sds_obs;list(.01)')
-# lcomp102 <- c('fleets;c(1,2)', 'years;list(seq(50,100, by=2), seq(50,100, by=2))',
-#               'Nsamp;list(500, 500)', 'cpar;NA')
-# agecomp102 <- c('fleets;NULL', 'years;list(seq(50,100, by=2),seq(50,100, by=2))',
-#               'Nsamp;list(500, 500)', 'cpar;NA')
-# calcomp102 <- c('fleets;c(2)', 'years;list(seq(50,100, by=2))',
-#                 'Nsamp;list(500)')
-# writeLines(index102, con=paste0(case_folder,"/", "index102-", species, ".txt"))
-# writeLines(lcomp102, con=paste0(case_folder,"/", "lcomp102-", species, ".txt"))
-# writeLines(agecomp102, con=paste0(case_folder,"/", "agecomp102-", species, ".txt"))
-# writeLines(calcomp102, con=paste0(case_folder,"/", "calcomp102-", species, ".txt"))
-# ## End of data cases
-# ### ------------------------------------------------------------
-
-# ### ------------------------------------------------------------
-# ## Binning files for cod (species specific)
-# ## I is for "internal" which uses the change_bin function. The base case
-# ## for I is to do no binning internally, so set these data bins to be 1cm
-# ## since binning is done afterward (externally)
-# data0 <- c('age_bins; NULL', 'len_bins; seq(20, 160, by=1)',
-#            'pop_binwidth; 1', 'pop_minimum_size; 8',
-#            'pop_maximum_size; 202', 'lcomp_constant; 0.0001',
-#            'tail_compression; -1')
-# writeLines(data0, con=paste0(case_folder,"/", "data0-", species, ".txt"))
-# data1 <- c('age_bins; NULL', 'len_bins; seq(20, 160, by=2)',
-#            'pop_binwidth; 1', 'pop_minimum_size; 8',
-#            'pop_maximum_size; 202', 'lcomp_constant; 0.0001',
-#            'tail_compression; -1')
-# writeLines(data1, con=paste0(case_folder,"/", "data1-", species, ".txt"))
-# data2 <- c('age_bins; NULL', 'len_bins; seq(20, 160, by=5)',
-#            'pop_binwidth; 1', 'pop_minimum_size; 8',
-#            'pop_maximum_size; 202', 'lcomp_constant; 0.0001',
-#            'tail_compression; -1')
-# writeLines(data2, con=paste0(case_folder,"/", "data2-", species, ".txt"))
-# data3 <- c('age_bins; NULL', 'len_bins; seq(20, 160, by=10)',
-#            'pop_binwidth; 1', 'pop_minimum_size; 8',
-#            'pop_maximum_size; 202', 'lcomp_constant; 0.0001',
-#            'tail_compression; -1')
-# writeLines(data3, con=paste0(case_folder,"/", "data3-", species, ".txt"))
-# data4 <- c('age_bins; NULL', 'len_bins; seq(20, 160, by=20)',
-#            'pop_binwidth; 1', 'pop_minimum_size; 8',
-#            'pop_maximum_size; 202', 'lcomp_constant; 0.0001',
-#            'tail_compression; -1')
-# writeLines(data4, con=paste0(case_folder,"/", "data4-", species, ".txt"))
-# ## External binning cases. For this the change_data function shouldn't be
-# ## called at all, and instead the generated data should be in 1cm bins
-# ## using data0. em_binning0 is to ignore it and leave unchanged for use in internal cases.
-# em_binning0 <- c('lbin_method;NULL', 'bin_vector;seq(20,160, by=2)')
-# writeLines(em_binning0, con=paste0(case_folder,"/", "em_binning0-", species, ".txt"))
-# em_binning1 <- c('lbin_method;1', 'bin_vector;seq(20,160, by=2)')
-# writeLines(em_binning1, con=paste0(case_folder,"/", "em_binning1-", species, ".txt"))
-# em_binning2 <- c('lbin_method;1', 'bin_vector;seq(20,160, by=5)')
-# writeLines(em_binning2, con=paste0(case_folder,"/", "em_binning2-", species, ".txt"))
-# em_binning3 <- c('lbin_method;1', 'bin_vector;seq(20,160, by=10)')
-# writeLines(em_binning3, con=paste0(case_folder,"/", "em_binning3-", species, ".txt"))
-# em_binning4 <- c('lbin_method;1', 'bin_vector;seq(20,160, by=20)')
-# writeLines(em_binning4, con=paste0(case_folder,"/", "em_binning4-", species, ".txt"))
-# ## End of binning files
-# ### ------------------------------------------------------------
