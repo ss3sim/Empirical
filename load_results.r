@@ -3,9 +3,24 @@ results.sc <- read.csv('ss3sim_scalar.csv')
 results.ts <- read.csv('ss3sim_ts.csv')
 
 
-# emp.cases.df <- data.frame(species = species.vec,
-#                            samp.size = c('1000', '500',  
-#                                          '35, 75, 100', '35, 75, 100'))
+# #---------------------------------------
+# #Change so results.ts and results.sc handle hyphens 
+# #Time series results
+age.ind <- grep('age', results.ts$scenario)
+results.ts$scenario <- as.character(results.ts$scenario)
+results.ts$species <- as.character(results.ts$species)
+
+spsp <- ldply(strsplit(results.ts[age.ind, 'scenario'], '-'))
+results.ts[age.ind, 'species'] <- paste(spsp$V5, spsp$V6, sep = '-')
+
+#scalar results
+age.ind <- grep('age', results.sc$scenario)
+results.sc$scenario <- as.character(results.sc$scenario)
+results.sc$species <- as.character(results.sc$species)
+
+spsp <- ldply(strsplit(results.sc[age.ind, 'scenario'], '-'))
+results.sc[age.ind, 'species'] <- paste(spsp$V5, spsp$V6, sep = '-')
+
 
 #Do calcluations on data frames
 results.sc$log_max_grad <- log(results.sc$max_grad)
@@ -32,3 +47,17 @@ results.sc.long.selex$variable <- gsub("_", ".", results.sc.long.selex$variable)
 management.names <- c("SSB_MSY_re", "depletion_re", "SSB_Unfished_re", "Catch_endyear_re")
 results.sc.long.management <- droplevels(subset(results.sc.long, variable %in% management.names))
 results.sc.long.management$variable <- gsub("_re", "", results.sc.long.management$variable)
+
+#Time series calculations
+results.ts <- calculate_re(results.ts)
+results.ts <- merge(results.ts, results.sc[, c('log_max_grad', 'ID')],
+  by = 'ID', all = TRUE)
+
+#Biomass results only
+ssb.ts.long <- melt(results.ts, measure.vars = 'SpawnBio_re',
+  id.vars= c("ID","species", "replicate",
+         "log_max_grad", "year", 'D', 'X', 'G', 'E'))
+
+
+
+
