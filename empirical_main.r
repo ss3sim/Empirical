@@ -42,7 +42,9 @@ library(ss3sim)
 library(ss3models)
 
 #------------------------------------------------------------------------
-#Copy r scripts that write case files
+#Copy r scripts to results directory
+
+#That write case files
 #write_casefiles writes the agecomp case files, 
 #write_tv_cases writes time varying growth case files, "G"
 
@@ -58,6 +60,12 @@ file.copy(paste0(getwd(), '/write_tv_cases.r'),
             paste0(results.dir, '/write_tv_cases.r'),
             overwrite = TRUE)
 
+#scripts to format results and plot
+file.copy(paste0(getwd(), '/load_results.r'),
+            paste0(results.dir, '/load_results.r'),
+            overwrite = TRUE)
+
+
 #------------------------------------------------------------------------
 #Set results directory as working directory
 setwd(results.dir)
@@ -66,7 +74,7 @@ setwd(results.dir)
 #Create Files Dynamically for reproducibility
 
 ###Define species models that you want to run.
-species.vec <- c('yellow-age', 'hake-age')
+species.vec <- c('yellow-age')
 
 #Remove Existing cases folder
 unlink('cases', recursive = TRUE)
@@ -146,34 +154,26 @@ for(ii in 1:length(scenariosL))
     parsed <- strsplit(find.spp, '-')[[1]]
     spp <- parsed[length(parsed)]
 
+    if(length(grep('age',  parsed)) == 1){
+        spp <- paste0(parsed[length(parsed) - 1], '-', parsed[length(parsed)])
+    }
+    
     case_folder1 <- paste0('cases', '/', spp)
 
     run_ss3sim(iterations = iters, scenarios = scenariosL[ii], case_folder = case_folder1,
         om_dir = ss3model(spp, 'om'), em_dir = ss3model(spp, 'em'),
-        case_files = case_files, parallel = FALSE,
-        parallel_iterations = FALSE)
+        case_files = case_files, parallel = TRUE,
+        parallel_iterations = TRUE)
 }
 
-#------------------------------------------------------------------------
-#Read and save Results
-scenarios <- c(scenarios, scenariosLength)
+scenarios <- c(scenariosW, scenariosL)
 
+#------------------------------------------------------------------------
+#Read in  Results
 get_results_all(dir = getwd(), user_scenarios = scenarios, 
                 parallel = TRUE, over = TRUE)
 
-ts.name <- paste0("ss3sim_ts", "_",Sys.Date(), ".csv")
-copy.name <- paste0("/Users/peterkuriyama/Google Drive/Empirical_results/", ts.name)
-
-# copy.name <- paste0("C://Users//Peter//Google Drive//Empirical_results//", ts.name)
-
-file.copy("ss3sim_ts.csv", copy.name)
-
-sc.name <- paste0("ss3sim_sc", "_",Sys.Date(), ".csv")
-copy.name <- paste0("/Users/peterkuriyama/Google Drive/Empirical_results/", sc.name)
-file.copy("ss3sim_scalar.csv", copy.name)
-
-save.image()
-rm(list=ls())
+source('load_results.r')
 
 
 
@@ -182,15 +182,67 @@ rm(list=ls())
 
 
 
+g <- plot_scalar_boxplot(results.sc.long.growth, x="variable", y='value',
+                         vert2='species', vert="D", rel=TRUE,
+                         horiz2="dat.bin", horiz="pop.bin", print=FALSE) +
+    theme(axis.text.x=element_text(angle=90))
+
+
+
+
+## Source this data to load in the results and do any processing before
+## making figures and tables.
+
+## make a table with better names for merging into the main results; used
+## really only for plotting and needs to be specific for each species
+
+
+## Drop fixed params (columns of zeroes)
+results.sc$RecrDist_GP_1_re <- NULL
+# results.sc <- results.sc[,-which(apply(results.sc, 2, function(x) all(x==0)))]
+# re.names <- names(results.sc)[grep("_re", names(results.sc))]
+# results.sc.long <-
+#     melt(results.sc, measure.vars=re.names, id.vars=
+#          c("species","replicate", "D", "B", "dat.bin",
+#            "pop.bin", "log_max_grad", "params_on_bound_em",
+#            "runtime"))
+growth.names <- re.names[grep("GP_", re.names)]
+results.sc.long.growth <- droplevels(subset(results.sc.long, variable %in% growth.names))
+results.sc.long.growth$variable <- gsub("_Fem_GP_1_re|_re", "", results.sc.long.growth$variable)
+selex.names <- re.names[grep("Sel_", re.names)]
+results.sc.long.selex <- droplevels(subset(results.sc.long, variable %in% selex.names))
+results.sc.long.selex$variable <- gsub("ery|ey|Size|_re", "", results.sc.long.selex$variable)
+results.sc.long.selex$variable <- gsub("_", ".", results.sc.long.selex$variable)
+management.names <- c("SSB_MSY_re", "depletion_re", "SSB_Unfished_re", "Catch_endyear_re")
+results.sc.long.management <- droplevels(subset(results.sc.long, variable %in% management.names))
+results.sc.long.management$variable <- gsub("_re", "", results.sc.long.management$variable)
 
 
 
 
 
-#------------------------------------------------------------------------
-#------------------------------------------------------------------------
 
-#Ignore this, scrap code
+
+
+
+
+
+# ts.name <- paste0("ss3sim_ts", "_",Sys.Date(), ".csv")
+# # copy.name <- paste0("/Users/peterkuriyama/Google Drive/Empirical_results/", ts.name)
+
+# # copy.name <- paste0("C://Users//Peter//Google Drive//Empirical_results//", ts.name)
+
+# file.copy("ss3sim_ts.csv", copy.name)
+
+# sc.name <- paste0("ss3sim_sc", "_",Sys.Date(), ".csv")
+# copy.name <- paste0("/Users/peterkuriyama/Google Drive/Empirical_results/", sc.name)
+# file.copy("ss3sim_scalar.csv", copy.name)
+
+# save.image()
+# rm(list=ls())
+
+
+
 #------------------------------------------------------------------------
 # #plot time-varying growth scenarios
 #scenarios <- c(scenarios, scenariosLength)
