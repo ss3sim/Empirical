@@ -4,9 +4,11 @@
 #------------------------------------------------------------------------
 #Set Working Directory
 setwd('/Volumes/home/Empirical/')
+# setwd("Y:\\Empirical\\")
 
 #Set working directory for results
-results.dir <- '/Volumes/home/empirical_runs'
+results.dir <- "/Users/peterkuriyama/Desktop/test_runs"
+# results.dir <- "c:\\Users\\ptrkrym\\Desktop\\test_runs"
 
 #Paths are structured as they are in the ss3sim repo
 library(ggplot2)
@@ -28,14 +30,14 @@ message(paste(getDoParWorkers(), "cores have been registered for",
 
 #------------------------------------------------------------------------
 library(devtools)
-devtools::install_github('r4ss/r4ss')
-# devtools::install_github('ss3sim/ss3sim')
-# devtools::install_github('ss3sim/ss3models')
+devtools::install('../r4ss')
+devtools::install('../ss3sim')
+devtools::install('../ss3models')
 
 #clone ss3sim and ss3models locally and load_all
 #**Make sure both repos are up to date**#
-load_all('../ss3sim')
-load_all('../ss3models')
+# load_all('../ss3sim')
+# load_all('../ss3models')
 
 library(r4ss)
 library(ss3sim)
@@ -71,10 +73,10 @@ file.copy(paste0(getwd(), '/load_results.r'),
 setwd(results.dir)
 
 #------------------------------------------------------------------------
-#Create Files Dynamically for reproducibility
+#Createn Case Files Dynamically for reproducibility
 
 ###Define species models that you want to run.
-species.vec <- c('yellow-age')
+species.vec <- c('yellow-age', 'hake-age', 'mackerel-age')
 
 #Remove Existing cases folder
 unlink('cases', recursive = TRUE)
@@ -97,7 +99,7 @@ for(ii in 1:length(species.vec))
 #Run ss3sim 
 
 #Globally set iterations to run
-iters <- 1:4
+iters <- 1:6
 
 ####################################
 #Age-Based Scenarios, "X = 1"
@@ -134,18 +136,17 @@ for(ii in 1:length(scenariosW))
 
     run_ss3sim(iterations = iters, scenarios = scenariosW[ii], case_folder = case_folder1,
         om_dir = ss3model(spp, 'om'), em_dir = ss3model(spp, 'em'),
-        case_files = case_files, parallel = TRUE,
-        parallel_iterations = TRUE)
+        case_files = case_files, parallel = TRUE, parallel_iterations = TRUE)
 }
 
 ####################################
 #Length-Based Scenarios
 scenariosL <- expand_scenarios(cases = list(F = 0, D = 1:4,
-    G = 0:2), species = species.vec)
+    G = 0:2, E = 2), species = species.vec)
 
 #Define length_based case files, No X cases
-case_files <- list(F = 'F', D = c('index', 'agecomp'),
-    G = 'G')
+case_files <- list(F = 'F', D = c('index', 'agecomp', 'lcomp'),
+    G = 'G', E = 'E')
 
 #Run scenarios in Loop
 for(ii in 1:length(scenariosL))
@@ -162,8 +163,7 @@ for(ii in 1:length(scenariosL))
 
     run_ss3sim(iterations = iters, scenarios = scenariosL[ii], case_folder = case_folder1,
         om_dir = ss3model(spp, 'om'), em_dir = ss3model(spp, 'em'),
-        case_files = case_files, parallel = TRUE,
-        parallel_iterations = TRUE)
+        case_files = case_files, parallel = TRUE, parallel_iterations = TRUE)
 }
 
 scenarios <- c(scenariosW, scenariosL)
@@ -173,8 +173,73 @@ scenarios <- c(scenariosW, scenariosL)
 get_results_all(dir = getwd(), user_scenarios = scenarios, 
                 parallel = TRUE, over = TRUE)
 
-source('load_results.r')
+#------------------------------------------------------------------------
+#Send email cause runs are done.
+# library(sendmailR)
+# from <- "<pkuriyama@gmail.com>"
+# to <- "<pkuriyama@gmail.com>"
+# subject <- "ss3sim runs..."
+# body <- list("are done")
+# sendmail(from, to, subject, body,
+#          control=list(smtpServer="ASPMX.L.GOOGLE.COM"))
 
+source('load_results.r')
+source('plotting_functions.r')
+
+width <- 12
+height <- 8
+source('make_plots.r')
+
+##---------------------------------------
+#Plot Time Series
+
+
+# results.ts <- merge(results.ts, results.sc[, c('log_max_grad', 'ID')],
+#   by = 'ID', all = TRUE)
+
+# #Biomass results only
+# ssb.ts.long <- melt(results.ts, measure.vars = 'spawnbio_re',
+#   id.vars= c("ID","species", "replicate",
+#          "log_max_grad", "year", 'D', 'X', 'G', 'E'))
+
+
+ssb.ts.e <- subset(ssb.ts.long, E == "E2")
+
+
+ssb.ts.w <- subset(ssb.ts.long, X == '')
+#By Data amount/Type
+g <- plot_ts_lines(ssb.ts.long, y = 'value', vert = 'D',
+  horiz = 'G', rel = TRUE, color = 'log_max_grad') 
+  # ggtitle('SSB')
+ggsave('figs/D_ssb.png', g, width = 9, height = 7)
+
+#Growth Pattern
+g <- plot_ts_lines(ssb.ts.long, y = 'value', vert = 'G',
+  horiz = 'species', rel = TRUE, color = 'log_max_grad') 
+ggsave('figs/G_ssb.png', g, width = 19, height = 9)
+
+#-----Look at last year relative error in ssb estimates
+end.ssb <- subset(ssb.ts.long, year == 100)
+
+#By Data amount and type
+g <- plot_scalar_points(end.ssb, x = 'variable', y = 'value',
+  horiz = 'species', rel = TRUE, color = 'log_max_grad', 
+  vert = 'D')
+ggsave('figs/D_end_ssb_pt.png', g, width = 7, height = 9)
+
+g <- plot_scalar_boxplot(end.ssb, x = 'variable', y = 'value',
+  horiz = 'species', rel = TRUE, vert = 'D')
+ggsave('figs/D_end_ssb_box.png', g, width = 7, height = 9)
+
+#By growth pattern
+g <- plot_scalar_points(end.ssb, x = 'variable', y = 'value',
+  horiz = 'species', rel = TRUE, color = 'log_max_grad', 
+  vert = 'G')
+ggsave('figs/G_end_ssb_pt.png', g, width = 7, height = 9)
+
+g <- plot_scalar_boxplot(end.ssb, x = 'variable', y = 'value',
+  horiz = 'species', rel = TRUE, vert = 'G')
+ggsave('figs/G_end_ssb_box.png', g, width = 7, height = 9)
 
 
 
@@ -190,32 +255,32 @@ g <- plot_scalar_boxplot(results.sc.long.growth, x="variable", y='value',
 
 
 
-## Source this data to load in the results and do any processing before
-## making figures and tables.
+# ## Source this data to load in the results and do any processing before
+# ## making figures and tables.
 
-## make a table with better names for merging into the main results; used
-## really only for plotting and needs to be specific for each species
+# ## make a table with better names for merging into the main results; used
+# ## really only for plotting and needs to be specific for each species
 
 
-## Drop fixed params (columns of zeroes)
-results.sc$RecrDist_GP_1_re <- NULL
-# results.sc <- results.sc[,-which(apply(results.sc, 2, function(x) all(x==0)))]
-# re.names <- names(results.sc)[grep("_re", names(results.sc))]
-# results.sc.long <-
-#     melt(results.sc, measure.vars=re.names, id.vars=
-#          c("species","replicate", "D", "B", "dat.bin",
-#            "pop.bin", "log_max_grad", "params_on_bound_em",
-#            "runtime"))
-growth.names <- re.names[grep("GP_", re.names)]
-results.sc.long.growth <- droplevels(subset(results.sc.long, variable %in% growth.names))
-results.sc.long.growth$variable <- gsub("_Fem_GP_1_re|_re", "", results.sc.long.growth$variable)
-selex.names <- re.names[grep("Sel_", re.names)]
-results.sc.long.selex <- droplevels(subset(results.sc.long, variable %in% selex.names))
-results.sc.long.selex$variable <- gsub("ery|ey|Size|_re", "", results.sc.long.selex$variable)
-results.sc.long.selex$variable <- gsub("_", ".", results.sc.long.selex$variable)
-management.names <- c("SSB_MSY_re", "depletion_re", "SSB_Unfished_re", "Catch_endyear_re")
-results.sc.long.management <- droplevels(subset(results.sc.long, variable %in% management.names))
-results.sc.long.management$variable <- gsub("_re", "", results.sc.long.management$variable)
+# ## Drop fixed params (columns of zeroes)
+# results.sc$RecrDist_GP_1_re <- NULL
+# # results.sc <- results.sc[,-which(apply(results.sc, 2, function(x) all(x==0)))]
+# # re.names <- names(results.sc)[grep("_re", names(results.sc))]
+# # results.sc.long <-
+# #     melt(results.sc, measure.vars=re.names, id.vars=
+# #          c("species","replicate", "D", "B", "dat.bin",
+# #            "pop.bin", "log_max_grad", "params_on_bound_em",
+# #            "runtime"))
+# growth.names <- re.names[grep("GP_", re.names)]
+# results.sc.long.growth <- droplevels(subset(results.sc.long, variable %in% growth.names))
+# results.sc.long.growth$variable <- gsub("_Fem_GP_1_re|_re", "", results.sc.long.growth$variable)
+# selex.names <- re.names[grep("Sel_", re.names)]
+# results.sc.long.selex <- droplevels(subset(results.sc.long, variable %in% selex.names))
+# results.sc.long.selex$variable <- gsub("ery|ey|Size|_re", "", results.sc.long.selex$variable)
+# results.sc.long.selex$variable <- gsub("_", ".", results.sc.long.selex$variable)
+# management.names <- c("SSB_MSY_re", "depletion_re", "SSB_Unfished_re", "Catch_endyear_re")
+# results.sc.long.management <- droplevels(subset(results.sc.long, variable %in% management.names))
+# results.sc.long.management$variable <- gsub("_re", "", results.sc.long.management$variable)
 
 
 
@@ -269,12 +334,12 @@ results.sc.long.management$variable <- gsub("_re", "", results.sc.long.managemen
 
 
 
-# results.ts <- read.csv('ss3sim_ts.csv')
-# results.sc <- read.csv('ss3sim_scalar.csv')
+# # results.ts <- read.csv('ss3sim_ts.csv')
+# # results.sc <- read.csv('ss3sim_scalar.csv')
 
-# #---------------------------------------
-# #Change so results.ts and results.sc handle hyphens 
-# #Time series results
+# # #---------------------------------------
+# # #Change so results.ts and results.sc handle hyphens 
+# # #Time series results
 # age.ind <- grep('age', results.ts$scenario)
 # results.ts$scenario <- as.character(results.ts$scenario)
 # results.ts$species <- as.character(results.ts$species)
@@ -379,15 +444,18 @@ results.sc.long.management$variable <- gsub("_re", "", results.sc.long.managemen
 
 
 
-# #calc relative error in spawnbio 
+# # #calc relative error in spawnbio 
 # results.ts$spawnbio_re <- (results.ts$SpawnBio_em - results.ts$SpawnBio_om) / results.ts$SpawnBio_om
+# ggplot(results.ts, aes(x = year, y = spawnbio_re)) +  + geom_line()
 
-# temp <- subset(results.ts, scenario == 'D1-F0-G0-X1-hake-age')
-# plot(temp$year, temp$spawnbio_re, pch = 19)
+
+# # temp <- subset(results.ts, scenario == 'D1-F0-G0-X1-hake-age')
+# # plot(temp$year, temp$spawnbio_re, pch = 19)
 
 
 # ggplot(results.ts, aes(x = year, y = spawnbio_re)) + geom_boxplot() + 
 #     facet_wrap( ~ scenario)
+# ggplot
 
 
 

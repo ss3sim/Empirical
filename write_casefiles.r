@@ -92,5 +92,45 @@ wtatage4 <- c('fleets;c(1,2)', 'years;list(seq(25,100, by=1), seq(67,100, by=3))
 writeLines(wtatage4, con = paste0(case_folder, '/', 'wtatage4-',
   species, '.txt'))
 
+if(length(grep('yellow', species)) != 0){
+  E2 <- c("natM_type; 1Parm", 
+    "natM_n_breakpoints; NULL",
+    "natM_lorenzen; NULL", 
+    "natM_val; c(NA, NA)",
+    "par_name; c('L_at_Amin', 'L_at_Amax', 'VonBert_K', 'CV_young', 'CV_old')",
+    "par_int; c(18, 62, .047, .13, .13)", 
+    "par_phase; c(6, 6, 6, 7, 7)",
+    "forecast_num; 0", 
+    "run_change_e_full; TRUE")
+  writeLines(E2, con = paste0(case_folder, '/', 'E2-', 
+    species, '.txt'))
+}
 
+if(length(grep('hake', species)) != 0){
+  E2 <- c("natM_type; 1Parm", 
+    "natM_n_breakpoints; NULL",
+    "natM_lorenzen; NULL", 
+    "natM_val; c(NA, NA)",
+    "par_name; c('L_at_Amin_Fem_GP_1', 'L_at_Amax_Fem_GP_1', 'VonBert_K_Fem_GP_1','CV_young_Fem_GP_1', 'CV_old_Fem_GP_1')",
+    "par_int; c(5, 55, .4, .1, .1)", 
+    "par_phase; c(4, 4, 4, 7, 7)",
+    "forecast_num; 0", 
+    "run_change_e_full; TRUE")
+  writeLines(E2, con = paste0(case_folder, '/', 'E2-', 
+    species, '.txt'))
+}
 
+if(length(grep('mackerel', species)) != 0){
+  E2 <- c("natM_type; 1Parm", 
+          "natM_n_breakpoints; NULL",
+          "natM_lorenzen; NULL", 
+          "natM_val; c(NA, NA)",
+          "par_name; c('L_at_Amin_Fem_GP_1', 'L_at_Amax_Fem_GP_1', 'VonBert_K_Fem_GP_1','CV_young_Fem_GP_1', 'CV_old_Fem_GP_1')",
+          "par_int; c(15, 45, .35, .1, .1)", 
+          "par_phase; c(4, 4, 4, 7, 7)",
+          "forecast_num; 0", 
+          "run_change_e_full; TRUE")
+  writeLines(E2, con = paste0(case_folder, '/', 'E2-', 
+                              species, '.txt'))
+}
+#Write E casefile to turn on growth estimation

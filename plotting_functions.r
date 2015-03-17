@@ -71,7 +71,7 @@ parse_scenario <- function(scenario)
   return(data.frame(case.file, case.spp)) 
 }
 
-plot_growth_case <- function(scenario, y.lim)
+plot_growth_case <- function(scenario, y.lim = 5)
 {
   #Split Scenario into file and species
   val <- strsplit(scenario, '-')
@@ -132,3 +132,108 @@ make_wtatage_png <- function(scenario, main.title = 'Weight at Age', yrvec = 41:
             # doPNG = paste0('figs', '/', scenario, '_wtatage', '.png'))
   dev.off()
 }
+
+#Plot Sampled wtatage
+plot_sampled_wtatage <- function(scenario, height = 7,
+  width = 7, res = 300, yrvec = 41:100)
+{
+  wtatage <- read.table(paste0(scenario, "/1/em/wtatage.ss"), header = FALSE, skip = 2)
+
+  names(wtatage)[1:6] <- c('yr', 'seas', 'gender', 'growpattern', 'birthseas', 'fleet')
+  ages <- 7:ncol(wtatage)
+
+  names(wtatage)[7:ncol(wtatage)] <- paste0('a', ages- 7)
+  wtatage <- wtatage[wtatage$fleet == 1, -(1:6)]
+  meanvec <- t(apply(wtatage, 2, mean))  
+
+  file.name <- parse_scenario(scenario)
+
+  dd <- unlist(strsplit(scenario, "-"))[grep("D", unlist(strsplit(scenario, "-")))]
+
+  #Write figure
+  png(file = paste0('figs/', dd, '_', file.name$case.file, '_', "samp_", 
+    file.name$case.spp, '.png'),
+      height = height, width = width, units = 'in', res = res)
+  main.title <- paste0(dd, '-', file.name$case.file, "-", 
+    file.name$case.spp, " sampled wtatage")
+
+  makeimage(agevec = ages - 7, yrvec = yrvec, mat = wtatage[-(1:yrvec[1] - 1), ], maxWt = max(unlist(wtatage)), 
+              meanvec = meanvec, main = main.title,
+              addText = T, byYr = 2, byAge = 2, textRnd = 0, height = height, 
+                width = width)
+    
+  dev.off()  
+  print(main.title)
+}
+
+#Plot relative error in survey and fishery wtatage sampling
+plot_re_sampled_wtatage <- function(scenario, height = 7,
+  width = 7, res = 300, yrvec = 41:100)
+{
+  wtatage.om <- read.table(paste0(scenario, "/1/om/wtatage.ss_new"), header = FALSE, skip = 2)
+  wtatage.em <- read.table(paste0(scenario, "/1/em/wtatage.ss"), header = FALSE, skip = 2)
+
+  #Name shit
+  names(wtatage.om)[1:6] <- c('yr', 'seas', 'gender', 'growpattern', 'birthseas', 'fleet')
+  names(wtatage.em)[1:6] <- c('yr', 'seas', 'gender', 'growpattern', 'birthseas', 'fleet')
+
+  ages <- 7:ncol(wtatage.om)
+  names(wtatage.om)[7:ncol(wtatage.om)] <- paste0('a', ages - 7)
+  names(wtatage.em)[7:ncol(wtatage.em)] <- paste0('a', ages - 7)
+
+  #Fishery 
+  wtatage.em.1 <- subset(wtatage.em, fleet == 1)
+
+  #Survey
+  wtatage.em.2 <- subset(wtatage.em, fleet == 2)
+
+  wtatage.om <- subset(wtatage.om, fleet == 1)
+
+  #Calculate relative errors for fishery and survey
+  re.fish <- (wtatage.em.1[, 7:ncol(wtatage.em.1)] - wtatage.om[, 7:ncol(wtatage.om)]) / 
+      wtatage.om[, 7:ncol(wtatage.om)]
+
+  re.surv <- (wtatage.em.2[, 7:ncol(wtatage.em.2)] - wtatage.om[, 7:ncol(wtatage.om)]) / 
+      wtatage.om[, 7:ncol(wtatage.om)]
+
+  meanvec.fish <- t(apply(re.fish, 2, mean))  
+  mean.vec.surv <- t(apply(re.surv, 2, mean))  
+
+  file.name <- parse_scenario(scenario)
+
+  dd <- unlist(strsplit(scenario, "-"))[grep("D", unlist(strsplit(scenario, "-")))]
+
+
+  #Write fishery 
+  png(file = paste0('figs/', dd, '-', file.name$case.file, '-', "fish_samp_re_", 
+    file.name$case.spp, '.png'),
+      height = height, width = width, units = 'in', res = res)
+
+  main.title <- paste0(dd, '-', file.name$case.file, "-", 
+    file.name$case.spp, " fishery sampled wtatage")
+
+  makeimage(agevec = ages - 7, yrvec = yrvec, mat = re.fish[-(1:yrvec[1] - 1), ], 
+    maxWt = max(unlist(re.fish)), 
+              meanvec = meanvec.fish, main = main.title,
+              addText = T, byYr = 2, byAge = 2, textRnd = 0, height = height, 
+                width = width)
+    
+  dev.off()  
+
+  #Write Survey
+  png(file = paste0('figs/', dd, '-', file.name$case.file, '-', "survey_samp_re_", 
+    file.name$case.spp, '.png'),
+      height = height, width = width, units = 'in', res = res)
+
+  main.title <- paste0(dd, '-', file.name$case.file, "-", 
+    file.name$case.spp, " survey sampled wtatage")
+
+  makeimage(agevec = ages - 7, yrvec = yrvec, mat = re.surv[-(1:yrvec[1] - 1), ], 
+    maxWt = max(unlist(re.surv)), 
+              meanvec = mean.vec.surv, main = main.title,
+              addText = T, byYr = 2, byAge = 2, textRnd = 0, height = height, 
+                width = width)
+    
+  dev.off()  
+}
+
