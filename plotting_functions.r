@@ -1,18 +1,18 @@
 #------------------------------------------------------------------------
 #Make colored wtatage function
-makeimage <- function(agevec=0:15,yrvec=1975:2013,mat,interpmat=NULL,maxWt=max(mat,na.rm=T),
-                      meanvec=NULL,yrvec2=NULL,main="",dofont=TRUE,dorect=FALSE, 
-                      addText=FALSE,byYr=1,byAge=1, textRnd=1,
-                      height=7,width=7,doPNG=NULL) {
+makeimage <- function(agevec=0:15, yrvec=1975:2013, mat, interpmat=NULL, maxWt=max(mat,na.rm=T),
+                      meanvec=NULL, yrvec2=NULL, main="", dofont=TRUE, dorect=FALSE, 
+                      addText=FALSE, byYr=1, byAge=1, textRnd=1, yaxisvals=TRUE,
+                      height=7, width=7, doPNG=NULL) {
   if(is.null(meanvec)){
     meanvec <- mat[,1]
     mat <- mat[,-1]
   }
-#   if(is.null(doPNG)) {
-#     windows(height=height,width=width)
-#   } else {
-#     png(file=doPNG,height=height,width=width,units="in",res=300)
-#   }
+  #   if(is.null(doPNG)) {
+  #     windows(height=height,width=width)
+  #   } else {
+  #     png(file=doPNG,height=height,width=width,units="in",res=500)
+  #   }
   par(mar=c(4.2,4.2,4,1)+.1)
   # print(dim(mat))
   yrvec2 <- c(min(yrvec)-c(2,1),yrvec)  #c(1973,1974,yrvec)
@@ -47,13 +47,17 @@ makeimage <- function(agevec=0:15,yrvec=1975:2013,mat,interpmat=NULL,maxWt=max(m
   }
   
   # finish plot
-  axis(1,at=agevec,cex.axis=.7);
-  axis(2,at=c(min(yrvec)-2,yrvec2[-(1:2)]),
-       lab=c("mean",yrvec),las=1,cex.axis=.7)
+  #   axis(1,at=agevec,cex.axis=.7);
+  #   axis(2,at=c(min(yrvec)-2,yrvec2[-(1:2)]),
+  #        lab=c("mean",yrvec),las=1,cex.axis=.7)
+  axis(1)
+  if(yaxisvals) 
+    axis(2, at=c(min(yrvec)-2, pretty(yrvec)),
+         lab=c("mean", pretty(yrvec)))
   
-#   if(!is.null(doPNG)) {
-#     dev.off()
-#   }
+  #   if(!is.null(doPNG)) {
+  #     dev.off()
+  #   }
 }
 
 #------------------------------------------------------------------------
@@ -62,16 +66,16 @@ parse_scenario <- function(scenario)
   val <- strsplit(scenario, '-')
   case.file <- val[[1]][grep('G', val[[1]])  ]
   case.spp <- val[[1]][length(val[[1]])]
- 
+  
   if(grep('age', scenario) == 1) {
     case.spp <- paste(val[[1]][length(val[[1]]) - 1], val[[1]][length(val[[1]])],
-      sep = '-')  
+                      sep = '-')  
   }
 
   return(data.frame(case.file, case.spp)) 
 }
 
-plot_growth_case <- function(scenario, y.lim = 5)
+plot_growth_case <- function(scenario, y.lim = 5, x.lim=NULL)
 {
   #Split Scenario into file and species
   val <- strsplit(scenario, '-')
@@ -80,7 +84,7 @@ plot_growth_case <- function(scenario, y.lim = 5)
   
   if(grep('age', scenario) == 1) {
    case.spp <-  paste(val[[1]][length(val[[1]]) - 1], val[[1]][length(val[[1]])],
-    sep = '-')  
+                      sep = '-')  
   }
   #Find file in case folder
   folder <- paste0('cases/', case.spp)
@@ -99,16 +103,21 @@ plot_growth_case <- function(scenario, y.lim = 5)
   
   devs <- (eval(parse(text = parse.devs[[1]][2])))
   to.plot <- data.frame(years = 1:100, devs = devs)
+
+  if(is.null(x.lim)) {
+    x.lim <- max(abs(min(devs),max(devs)))
+    x.lim <- c(-x.lim, x.lim)
+  }
   
   plot(to.plot$devs, to.plot$years, pch = 19, xlab = 'Deviations',
-       ylab = 'Year', main = paste(case.spp, '\n', par), ylim = y.lim)
+       ylab = 'Year', main = paste(case.spp, '\n', par), ylim = y.lim, xlim = x.lim)
   # return(data.frame(case.file, case.spp))
 }
 
 
 #------------------------------------------------------------------------
 make_wtatage_png <- function(scenario, main.title = 'Weight at Age', yrvec = 41:100,
-  height = 7.18, width = 12.25, res = 300)
+                             height = 7, width = 9, res = 500) #original h=7.18, w=12.25
 {
   wtatage <- read.table(paste0(scenario, '/1/om/wtatage.ss_new'), header = F, skip = 2)
   names(wtatage)[1:6] <- c('yr', 'seas', 'gender', 'growpattern', 'birthseas', 'fleet')
@@ -121,13 +130,16 @@ make_wtatage_png <- function(scenario, main.title = 'Weight at Age', yrvec = 41:
   file.name <- parse_scenario(scenario)
   
   png(file = paste0('figs/', file.name$case.file, '_', file.name$case.spp, '.png'),
-    height = height, width = width, units = 'in', res = res)
+      height = height, width = width, units = 'in', res = res)
 
-  par(mfcol = c(1, 2))
+  #par(mfcol = c(1, 2))
+  matlay = matrix(c(1,2), ncol=2)
+  layout(matlay, widths=c(0.5,1))
+
   plot_growth_case(scenario, y.lim = range(yrvec))
   
   makeimage(agevec = ages - 7, yrvec = yrvec, mat = wtatage[-(1:yrvec[1] - 1), ], maxWt = max(unlist(wtatage)), 
-            meanvec = meanvec, main = main.title,
+            meanvec = meanvec, main = main.title, yaxisvals = FALSE,
             addText = T, byYr = 2, byAge = 2, textRnd = 0, height = 7, width = 7)
             # doPNG = paste0('figs', '/', scenario, '_wtatage', '.png'))
   dev.off()
@@ -135,7 +147,7 @@ make_wtatage_png <- function(scenario, main.title = 'Weight at Age', yrvec = 41:
 
 #Plot Sampled wtatage
 plot_sampled_wtatage <- function(scenario, height = 7,
-  width = 7, res = 300, yrvec = 41:100)
+  width = 7, res = 500, yrvec = 41:100)
 {
   wtatage <- read.table(paste0(scenario, "/1/em/wtatage.ss"), header = FALSE, skip = 2)
 
@@ -152,15 +164,15 @@ plot_sampled_wtatage <- function(scenario, height = 7,
 
   #Write figure
   png(file = paste0('figs/', dd, '_', file.name$case.file, '_', "samp_", 
-    file.name$case.spp, '.png'),
+                    file.name$case.spp, '.png'),
       height = height, width = width, units = 'in', res = res)
   main.title <- paste0(dd, '-', file.name$case.file, "-", 
-    file.name$case.spp, " sampled wtatage")
+                       file.name$case.spp, " sampled wtatage")
 
   makeimage(agevec = ages - 7, yrvec = yrvec, mat = wtatage[-(1:yrvec[1] - 1), ], maxWt = max(unlist(wtatage)), 
-              meanvec = meanvec, main = main.title,
-              addText = T, byYr = 2, byAge = 2, textRnd = 0, height = height, 
-                width = width)
+            meanvec = meanvec, main = main.title,
+            addText = T, byYr = 2, byAge = 2, textRnd = 0, height = height, 
+            width = width)
     
   dev.off()  
   print(main.title)
@@ -168,7 +180,7 @@ plot_sampled_wtatage <- function(scenario, height = 7,
 
 #Plot relative error in survey and fishery wtatage sampling
 plot_re_sampled_wtatage <- function(scenario, height = 7,
-  width = 7, res = 300, yrvec = 41:100)
+  width = 7, res = 500, yrvec = 41:100)
 {
   wtatage.om <- read.table(paste0(scenario, "/1/om/wtatage.ss_new"), header = FALSE, skip = 2)
   wtatage.em <- read.table(paste0(scenario, "/1/em/wtatage.ss"), header = FALSE, skip = 2)
