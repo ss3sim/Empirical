@@ -16,7 +16,7 @@ if(FALSE){
 
 #windows(width=7, height=9)
 tiff("Experimental_design.tiff", width=7,height=9, res=500, units='in', compression='lzw')
-par(mar=c(4,1.5,0,1), oma=c(0,3,0,0))
+par(mar=c(4,4.5,0,1), oma=c(0,0,0,0))
 
 matlay <- c(1,1,
             2,2,
@@ -59,20 +59,20 @@ sampsurvs <- c(50, 100, 500)
 base <- exp(1)
 scaler <- 1.5
 
-plot(fishery, rep(4,75), xlim=c(0,100), ylim=c(0,4.5), cex=log(sampfish1/7, base=base)/scaler, pch=19, axes=F, 
+plot(fishery, rep(4,75), xlim=c(0,100), ylim=c(0,4.5), cex=log(sampfish2/7, base=base)/scaler, pch=19, axes=F, 
      ylab=NA, xlab="Year", col=ScenPal[1])
 points(fishery, rep(3.5,75), cex=log(sampfish2/7, base=base)/scaler, pch=19, col=ScenPal[2])
 points(fishery, rep(3,75), cex=log(sampfish3/7, base=base)/scaler, pch=19, col=ScenPal[3])
 
-points(survey1, rep(1.5,length(survey1)), cex=log(sampsurvs[1]/7, base=base)/scaler, pch=19, col=ScenPal[1])
+points(survey1, rep(1.5,length(survey1)), cex=log(sampsurvs[2]/7, base=base)/scaler, pch=19, col=ScenPal[1])
 points(survey2, rep(1.0,length(survey2)), cex=log(sampsurvs[2]/7, base=base)/scaler, pch=19, col=ScenPal[2])
 points(survey2, rep(0.5,length(survey2)), cex=log(sampsurvs[3]/7, base=base)/scaler, pch=19, col=ScenPal[3])
 
-text(40, 4.2, labels="Fishery")
-text(40, 1.8, labels="Survey")
+text(40, 4.3, labels="Fishery")
+text(40, 1.9, labels="Survey")
 
 axis(1)
-legend("topleft", legend=c("Data-moderate","Data-rich", "Data-unrealistic"), pch=19, col=ScenPal, bty='n', 
+legend("topleft", legend=c("Data-rich late-survey","Data-rich", "Data-unrealistic"), pch=19, col=ScenPal, bty='n', 
        pt.cex=1.5)
 
 legend("bottomleft", legend=c(35,100,500), pch=21, pt.cex=log(c(35,100,500)/7, base=base)/scaler, bty='n')
@@ -131,13 +131,15 @@ axis(1)
 axis(2, at=c(-1,0,1))
 mtext(side=2, text="Deviation", line=2.5, cex=0.7)
 
-points(dev1, col=ScenPal2[2], pch=19)
-points(dev2+0.02, col=ScenPal2[3], pch=19)
+#points(dev1, col=ScenPal2[2], pch=19)
+#points(dev2+0.02, col=ScenPal2[3], pch=19)
 points(dev3-0.02, col=ScenPal2[4], pch=19)
-points(rep(0,100), pch=19, col=ScenPal2[1])
+points(rep(0,100), pch=19, col=ScenPal2[2])
 
-legend("topleft", legend=c("Time invariant", "Random noise", "Time variance 1", "Time variance 2"), pch=19,
-       col=ScenPal2, bty='n')
+#legend("topleft", legend=c("Time invariant", "Random noise", "Time variance 1", "Time variance 2"), pch=19,
+#       col=ScenPal2, bty='n')
+legend("topleft", legend=c("Time invariant", "Time-varying"), pch=19,
+       col=ScenPal2[c(2,4)], bty='n')
 text(100, 1.5, labels="c.")
 
 ###############################################################################################
@@ -151,24 +153,35 @@ VonBert <- function(age,K,Linf){
   return(leng)
 }
 
+ages <- seq(0,10,0.25)
+
 # The first panel - Changing Linf
-plot(0:10, VonBert(0:10, 0.4, 25), type='l', lwd=2, axes=F, xlab="Age", ylab=NA, ylim=c(0,30))
-lines(0:10, VonBert(0:10, 0.4, 28), lwd=2, col=ScenPal3[2])
-lines(0:10, VonBert(0:10, 0.4, 22), lwd=2, col=ScenPal3[3])
+plot(ages, VonBert(ages, 0.4, 25), type='l', lwd=2, axes=F, xlab="Age", ylab=NA, ylim=c(0,32))
+lines(ages, VonBert(ages, 0.4, 28), lwd=2, col=ScenPal3[2], lty=2)
+lines(ages, VonBert(ages, 0.4, 22), lwd=2, col=ScenPal3[3], lty=2)
+
+lines(ages, VonBert(ages, 0.75, 25), lwd=2, col=ScenPal3[2], lty=3)
+lines(ages, VonBert(ages, 0.25, 25), lwd=2, col=ScenPal3[3], lty=3)
+
+
 mtext(side=2, text=expression("Length"/L[infinity]), line=2.5, cex=0.7)
 axis(1)
 axis(2, at=c(0,12.5,25), labels=c(0,0.5,1))
-legend("bottomright", lwd=2, col=ScenPal3, bty='n',
-       legend=c(expression("Base "*L[infinity]),expression("High "*L[infinity]),expression("Low "*L[infinity])))
+legend("bottomright", lwd=2, col=ScenPal3[c(1,1,1,2,3)], lty=c(1,2,3,1,1), bty='n',
+       legend=c("Base", expression(L[infinity]), "K", "High", "Low"))
 text(0, 28, labels="d.")
 
 # The second panel - Changing K
-plot(0:10, VonBert(0:10, 0.4, 25), type='l', lwd=2, axes=F, xlab="Age", ylab=NA, ylim=c(0,30))
-lines(0:10, VonBert(0:10, 0.25, 25), lwd=2, col=ScenPal3[2])
-lines(0:10, VonBert(0:10, 0.55, 25), lwd=2, col=ScenPal3[3])
-#mtext(side=2, text=expression("Length"/L[infinity]), line=2.5, cex=0.7)
+plot(ages, 0.064*VonBert(ages, 0.4, 25)^3, type='l', lwd=2, axes=F, xlab="Age", ylab=NA, ylim=c(0,1280))
+lines(ages, 0.064*VonBert(ages, 0.4, 28)^3, lwd=2, col=ScenPal3[2], lty=2)
+lines(ages, 0.064*VonBert(ages, 0.4, 22)^3, lwd=2, col=ScenPal3[3], lty=2)
+
+lines(ages, 0.064*VonBert(ages, 0.75, 25)^3, lwd=2, col=ScenPal3[2], lty=3)
+lines(ages, 0.064*VonBert(ages, 0.25, 25)^3, lwd=2, col=ScenPal3[3], lty=3)
+
+mtext(side=2, text=expression("Weight"/Weight[infinity]), line=2.5, cex=0.7)
 axis(1)
-axis(2, at=c(0,12.5,25), labels=c(0,0.5,1))
+axis(2, at=c(0,500,1000), labels=c(0,0.5,1))
 legend("bottomright", lwd=2, col=ScenPal3, bty='n', legend=c("Base K", "High K", "Low K"))
-text(0, 28, labels="e.")
+text(0, 1120, labels="e.")
 dev.off()
