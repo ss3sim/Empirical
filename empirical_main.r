@@ -72,7 +72,7 @@ setwd(results.dir)
 #Createn Case Files Dynamically for reproducibility
 
 ###Define species models that you want to run.
-species.vec <- c('yellow-age', 'hake-age', 'mackerel-age')
+species.vec <- c('yellow-age', 'hake-age')
 
 #Remove Existing cases folder
 unlink('cases', recursive = TRUE)
@@ -95,21 +95,22 @@ for(ii in 1:length(species.vec))
 #Run ss3sim 
 
 #Globally set iterations to run
-iters <- 1:6
+iters <- 57:112
 
 ####################################
 #Age-Based Scenarios, "X = 1"
 #D and X numbers have to be identical
 scens1 <- expand_scenarios(cases = list(F = 0, D = 1, X = 1,
-    G = 0:2), species = species.vec)
+    G = 0:1), species = species.vec)
 scens2 <- expand_scenarios(cases = list(F = 0, D = 2, X = 2,
-    G = 0:2), species = species.vec)
+    G = 0:1), species = species.vec)
 scens3 <- expand_scenarios(cases = list(F = 0, D = 3, X = 3,
-    G = 0:2), species = species.vec)
+    G = 0:1), species = species.vec)
 scens4 <- expand_scenarios(cases = list(F = 0, D = 4, X = 4,
-    G = 0:2), species = species.vec)
+    G = 0:1), species = species.vec)
 
-scenariosW <- c(scens1, scens2, scens3, scens4)
+# scenariosW <- c(scens1, scens2, scens3, scens4)
+scenariosW <- c(scens2, scens3, scens4)
 
 #Specify Case Files
 case_files <- list(F = 'F', D = c('index', 'agecomp'), X = 'wtatage', 
@@ -137,8 +138,8 @@ for(ii in 1:length(scenariosW))
 
 ####################################
 #Length-Based Scenarios
-scenariosL <- expand_scenarios(cases = list(F = 0, D = 1:4,
-    G = 0:2, E = 2), species = species.vec)
+scenariosL <- expand_scenarios(cases = list(F = 0, D = 2:4,
+    G = 0:1, E = 2), species = species.vec)
 
 #Define length_based case files, No X cases
 case_files <- list(F = 'F', D = c('index', 'agecomp', 'lcomp'),
@@ -170,15 +171,6 @@ get_results_all(dir = getwd(), user_scenarios = scenarios,
                 parallel = TRUE, over = TRUE)
 
 #------------------------------------------------------------------------
-#Send email cause runs are done.
-# library(sendmailR)
-# from <- "<pkuriyama@gmail.com>"
-# to <- "<pkuriyama@gmail.com>"
-# subject <- "ss3sim runs..."
-# body <- list("are done")
-# sendmail(from, to, subject, body,
-#          control=list(smtpServer="ASPMX.L.GOOGLE.COM"))
-
 source('load_results.r')
 source('plotting_functions.r')
 
