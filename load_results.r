@@ -1,7 +1,10 @@
 #load results into R
-results.sc <- read.csv('ss3sim_scalar.csv')
-results.ts <- read.csv('ss3sim_ts.csv')
+results.sc <- read.csv('ss3sim_scalar_lab.csv')
+results.ts <- read.csv('ss3sim_ts_lab.csv')
 
+#Remove G2 results
+results.sc <- subset(results.sc, G != "G2")
+results.ts <- subset(results.ts, G != "G2")
 
 # #---------------------------------------
 # #Change so results.ts and results.sc handle hyphens 
@@ -58,6 +61,12 @@ ssb.ts.long <- melt(results.ts, measure.vars = 'SpawnBio_re',
   id.vars= c("ID","species", "replicate",
          "log_max_grad", "year", 'D', 'X', 'G', 'E'))
 
+#Length Results only
+ssb.ts.e <- subset(ssb.ts.long, E == "E2")
 
+#wtatage results only
+ssb.ts.x <- ssb.ts.long[is.na(ssb.ts.long$X) == FALSE, ]
+
+ssb.ts.x <- subset(ssb.ts.long, E != "E2")
 
 
