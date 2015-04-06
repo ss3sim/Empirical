@@ -16,14 +16,10 @@ library(plyr)
 library(dplyr)
 library(reshape2)
 
-# Peter-- other directories 
-# setwd("C://Users//Peter//Google Drive//Empirical")
-# setwd('/Users/peterkuriyama/Google Drive/Empirical/')
-# setwd("C://Users//Peter//Desktop//empirical_runs") #Blackfish
 #------------------------------------------------------------------------
 #Set Up Parallels and Register cores
 library('doParallel')
-registerDoParallel(cores = 2)
+registerDoParallel(cores = 4)
 library('foreach')
 message(paste(getDoParWorkers(), "cores have been registered for",
     "parallel processing."))
