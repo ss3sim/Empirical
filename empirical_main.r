@@ -170,6 +170,12 @@ scenarios <- c(scenariosW, scenariosL)
 get_results_all(dir = getwd(), user_scenarios = scenarios, 
                 parallel = TRUE, over = TRUE)
 
+results.sc <- read.csv('ss3sim_scalar_lab.csv')
+results.ts <- read.csv('ss3sim_ts_lab.csv')
+
+save(results.sc, file =  'ss3sim_scalar_1_56.Rdata')
+save(results.ts, file =  'ss3sim_ts_1_56.Rdata')
+
 #------------------------------------------------------------------------
 source('load_results.r')
 source('plotting_functions.r')
@@ -191,54 +197,54 @@ source('make_plots.r')
 #          "log_max_grad", "year", 'D', 'X', 'G', 'E'))
 
 
-ssb.ts.e <- subset(ssb.ts.long, E == "E2")
+# ssb.ts.e <- subset(ssb.ts.long, E == "E2")
 
 
-ssb.ts.w <- subset(ssb.ts.long, X == '')
-#By Data amount/Type
-g <- plot_ts_lines(ssb.ts.long, y = 'value', vert = 'D',
-  horiz = 'G', rel = TRUE, color = 'log_max_grad') 
-  # ggtitle('SSB')
-ggsave('figs/D_ssb.png', g, width = 9, height = 7)
+# ssb.ts.w <- subset(ssb.ts.long, X == '')
+# #By Data amount/Type
+# g <- plot_ts_lines(ssb.ts.long, y = 'value', vert = 'D',
+#   horiz = 'G', rel = TRUE, color = 'log_max_grad') 
+#   # ggtitle('SSB')
+# ggsave('figs/D_ssb.png', g, width = 9, height = 7)
 
-#Growth Pattern
-g <- plot_ts_lines(ssb.ts.long, y = 'value', vert = 'G',
-  horiz = 'species', rel = TRUE, color = 'log_max_grad') 
-ggsave('figs/G_ssb.png', g, width = 19, height = 9)
+# #Growth Pattern
+# g <- plot_ts_lines(ssb.ts.long, y = 'value', vert = 'G',
+#   horiz = 'species', rel = TRUE, color = 'log_max_grad') 
+# ggsave('figs/G_ssb.png', g, width = 19, height = 9)
 
-#-----Look at last year relative error in ssb estimates
-end.ssb <- subset(ssb.ts.long, year == 100)
+# #-----Look at last year relative error in ssb estimates
+# end.ssb <- subset(ssb.ts.long, year == 100)
 
-#By Data amount and type
-g <- plot_scalar_points(end.ssb, x = 'variable', y = 'value',
-  horiz = 'species', rel = TRUE, color = 'log_max_grad', 
-  vert = 'D')
-ggsave('figs/D_end_ssb_pt.png', g, width = 7, height = 9)
+# #By Data amount and type
+# g <- plot_scalar_points(end.ssb, x = 'variable', y = 'value',
+#   horiz = 'species', rel = TRUE, color = 'log_max_grad', 
+#   vert = 'D')
+# ggsave('figs/D_end_ssb_pt.png', g, width = 7, height = 9)
 
-g <- plot_scalar_boxplot(end.ssb, x = 'variable', y = 'value',
-  horiz = 'species', rel = TRUE, vert = 'D')
-ggsave('figs/D_end_ssb_box.png', g, width = 7, height = 9)
+# g <- plot_scalar_boxplot(end.ssb, x = 'variable', y = 'value',
+#   horiz = 'species', rel = TRUE, vert = 'D')
+# ggsave('figs/D_end_ssb_box.png', g, width = 7, height = 9)
 
-#By growth pattern
-g <- plot_scalar_points(end.ssb, x = 'variable', y = 'value',
-  horiz = 'species', rel = TRUE, color = 'log_max_grad', 
-  vert = 'G')
-ggsave('figs/G_end_ssb_pt.png', g, width = 7, height = 9)
+# #By growth pattern
+# g <- plot_scalar_points(end.ssb, x = 'variable', y = 'value',
+#   horiz = 'species', rel = TRUE, color = 'log_max_grad', 
+#   vert = 'G')
+# ggsave('figs/G_end_ssb_pt.png', g, width = 7, height = 9)
 
-g <- plot_scalar_boxplot(end.ssb, x = 'variable', y = 'value',
-  horiz = 'species', rel = TRUE, vert = 'G')
-ggsave('figs/G_end_ssb_box.png', g, width = 7, height = 9)
-
-
-
+# g <- plot_scalar_boxplot(end.ssb, x = 'variable', y = 'value',
+#   horiz = 'species', rel = TRUE, vert = 'G')
+# ggsave('figs/G_end_ssb_box.png', g, width = 7, height = 9)
 
 
 
 
-g <- plot_scalar_boxplot(results.sc.long.growth, x="variable", y='value',
-                         vert2='species', vert="D", rel=TRUE,
-                         horiz2="dat.bin", horiz="pop.bin", print=FALSE) +
-    theme(axis.text.x=element_text(angle=90))
+
+
+
+# g <- plot_scalar_boxplot(results.sc.long.growth, x="variable", y='value',
+#                          vert2='species', vert="D", rel=TRUE,
+#                          horiz2="dat.bin", horiz="pop.bin", print=FALSE) +
+#     theme(axis.text.x=element_text(angle=90))
 
 
 
