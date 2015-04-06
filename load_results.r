@@ -56,10 +56,25 @@ results.ts <- calculate_re(results.ts)
 results.ts <- merge(results.ts, results.sc[, c('log_max_grad', 'ID')],
   by = 'ID', all = TRUE)
 
+#Add end year b, last 10 year b, last 25 year b
+results.ts <- results.ts %>% group_by(ID) %>% 
+  mutate(end.b_re = SpawnBio_re[year == 100],
+    last.10.b_re = mean(SpawnBio_re[year >= 91]),
+    last.25.b_re = mean(SpawnBio_re[year >= 76]))
+results.ts <- as.data.frame(results.ts)
+
+results.ts$converged <- ifelse(results.ts$log_max_grad <= log(0.1), 'yes', 'no')
+
 #Biomass results only
 ssb.ts.long <- melt(results.ts, measure.vars = 'SpawnBio_re',
   id.vars= c("ID","species", "replicate",
-         "log_max_grad", "year", 'D', 'X', 'G', 'E'))
+         "log_max_grad", "year", 'D', 'X', 'G', 'E',
+         "end.b_re", 'last.10.b_re', 'last.25.b_re', 'converged'))
+
+#Add informative label for growth
+gg <- data.frame(G = as.factor(c("G0", 'G1')), 
+  g.desc = c('invariant', 'varying'))
+ssb.ts.long <- merge(ssb.ts.long, gg, by = 'G', all = TRUE)
 
 #Length Results only
 ssb.ts.e <- subset(ssb.ts.long, E == "E2")
@@ -67,6 +82,14 @@ ssb.ts.e <- subset(ssb.ts.long, E == "E2")
 #wtatage results only
 ssb.ts.x <- ssb.ts.long[is.na(ssb.ts.long$X) == FALSE, ]
 
-ssb.ts.x <- subset(ssb.ts.long, E != "E2")
+
+#add and merge more informative labels
+dd <- data.frame(D = as.factor(c("D2", 'D3', 'D4')), 
+  d.desc = c('unrealistic', 'rich', 'rich - late survey'))
+ssb.ts.e <- merge(ssb.ts.e, dd, by = 'D', all = TRUE)
+
+xx <- data.frame(X = as.factor(c("X2", 'X3', 'X4')), 
+  x.desc = c('unrealistic', 'rich', 'rich - late survey'))
+ssb.ts.x <- merge(ssb.ts.x, xx, by = 'X', all = TRUE)
 
 
