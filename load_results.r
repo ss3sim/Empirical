@@ -76,20 +76,38 @@ gg <- data.frame(G = as.factor(c("G0", 'G1')),
   g.desc = c('invariant', 'varying'))
 ssb.ts.long <- merge(ssb.ts.long, gg, by = 'G', all = TRUE)
 
-#Length Results only
-ssb.ts.e <- subset(ssb.ts.long, E == "E2")
+ssb.ts.long$data.desc <- 1
+ssb.ts.long[grep("E" , ssb.ts.long$ID), 'data.desc'] <- 'A + L'
+ssb.ts.long[grep("X" , ssb.ts.long$ID), 'data.desc'] <- 'WtAtAge'
 
-#wtatage results only
-ssb.ts.x <- ssb.ts.long[is.na(ssb.ts.long$X) == FALSE, ]
+ssb.ts.long$data.amount <- 1
+ssb.ts.long$D <- as.character(ssb.ts.long$D)
+ssb.ts.long[which(ssb.ts.long$D == 'D2' | ssb.ts.long$X == 'X2'), 
+  'data.amount'] <- 'unrealistic'
+ssb.ts.long[which(ssb.ts.long$D == 'D3' | ssb.ts.long$X == 'X3'), 
+  'data.amount'] <- 'rich'
+ssb.ts.long[which(ssb.ts.long$D == 'D4' | ssb.ts.long$X == 'X4'), 
+  'data.amount'] <- 'rich - late survey'
+
+# #Length Results only
+# ssb.ts.e <- subset(ssb.ts.long, E == "E2")
+
+# #wtatage results only
+# ssb.ts.x <- ssb.ts.long[is.na(ssb.ts.long$X) == FALSE, ]
 
 
-#add and merge more informative labels
-dd <- data.frame(D = as.factor(c("D2", 'D3', 'D4')), 
-  d.desc = c('unrealistic', 'rich', 'rich - late survey'))
-ssb.ts.e <- merge(ssb.ts.e, dd, by = 'D', all = TRUE)
+# #add and merge more informative labels
+# dd <- data.frame(D = as.factor(c("D2", 'D3', 'D4')), 
+#   d.desc = c('unrealistic', 'rich', 'rich - late survey'))
+# ssb.ts.e <- merge(ssb.ts.e, dd, by = 'D', all = TRUE)
 
-xx <- data.frame(X = as.factor(c("X2", 'X3', 'X4')), 
-  x.desc = c('unrealistic', 'rich', 'rich - late survey'))
-ssb.ts.x <- merge(ssb.ts.x, xx, by = 'X', all = TRUE)
+# xx <- data.frame(X = as.factor(c("X2", 'X3', 'X4')), 
+#   x.desc = c('unrealistic', 'rich', 'rich - late survey'))
+# ssb.ts.x <- merge(ssb.ts.x, xx, by = 'X', all = TRUE)
+
+
+
+
+
 
 
