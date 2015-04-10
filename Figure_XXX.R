@@ -36,8 +36,30 @@ par(mar=c(2,1,1,1), oma=c(2,4,2,0))
 yrvec <- 41:100
 
 ### Custom colors?
+BandW <- FALSE
 require(RColorBrewer)
 ColPal <- colorRampPalette(brewer.pal(11, "Spectral")[-6])
+if(BandW) ColPal <- colorRampPalette(brewer.pal(9, "Greys")[-1])
+
+######################################
+### Read weight-at-age data
+TheData <- list()
+for(it in 1:length(scenarios)){
+  scenario <- scenarios[it]
+  TheData[[it]] <- read.table(paste0(scenario, '/1/om/wtatage.ss_new'), header = F, skip = 2)
+}
+
+### Find the max by spp.
+maxWaA <- numeric(length(scenarios))
+for(it in 1:length(scenarios)){
+  wtatage <- TheData[[it]]
+  names(wtatage)[1:6] <- c('yr', 'seas', 'gender', 'growpattern', 'birthseas', 'fleet')
+  ages <- 7:ncol(wtatage)
+  
+  names(wtatage)[7:ncol(wtatage)] <- paste0('a', ages- 7)
+  wtatage <- wtatage[wtatage$fleet == 1, -(1:6)]
+  maxWaA[it] <- max(unlist(wtatage))
+}
 
 ######################################
 ### Now the plots
@@ -47,13 +69,16 @@ for(it in 1:length(scenarios)){
   ### Read in the data
   scenario <- scenarios[it]
   
-  wtatage <- read.table(paste0(scenario, '/1/om/wtatage.ss_new'), header = F, skip = 2)
+  wtatage <- TheData[[it]]
   names(wtatage)[1:6] <- c('yr', 'seas', 'gender', 'growpattern', 'birthseas', 'fleet')
   ages <- 7:ncol(wtatage)
   
   names(wtatage)[7:ncol(wtatage)] <- paste0('a', ages- 7)
   wtatage <- wtatage[wtatage$fleet == 1, -(1:6)]
   meanvec <- t(apply(wtatage, 2, mean))  
+  
+  maxspWtaA <- max(maxWaA[1:(length(scenarios)/2)])
+  if(it>length(scenarios)/2) maxspWtaA <- max(maxWaA[(length(scenarios)/2+1):length(scenarios)])
   
   ### Plot the time series
     if(it<5){
@@ -73,7 +98,7 @@ for(it in 1:length(scenarios)){
   }
   
   ### Plot the weights-at-age
-  makeimage(agevec = ages - 7, yrvec = yrvec, mat = wtatage[-(1:yrvec[1] - 1), ], maxWt = max(unlist(wtatage)), 
+  makeimage(agevec = ages - 7, yrvec = yrvec, mat = wtatage[-(1:yrvec[1] - 1), ], maxWt = maxspWtaA, 
             meanvec = meanvec, main = NULL, axisvals = FALSE, Colors = ColPal(50),
             addText = F, byYr = 2, byAge = 2, textRnd = 0)
     # Spp. name
