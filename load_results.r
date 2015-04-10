@@ -60,8 +60,12 @@ results.ts <- merge(results.ts, results.sc[, c('log_max_grad', 'ID')],
 results.ts <- results.ts %>% group_by(ID) %>% 
   mutate(end.b_re = SpawnBio_re[year == 100],
     last.10.b_re = mean(SpawnBio_re[year >= 91]),
-    last.25.b_re = mean(SpawnBio_re[year >= 76]))
+    last.25.b_re = mean(SpawnBio_re[year >= 76]),
+    last.60.b_re = mean(SpawnBio_re[year >= 40]),
+    mare = median(abs(SpawnBio_re)),
+    mre = median(SpawnBio_re))
 results.ts <- as.data.frame(results.ts)
+
 
 results.ts$converged <- ifelse(results.ts$log_max_grad <= log(0.1), 'yes', 'no')
 
@@ -69,7 +73,8 @@ results.ts$converged <- ifelse(results.ts$log_max_grad <= log(0.1), 'yes', 'no')
 ssb.ts.long <- melt(results.ts, measure.vars = 'SpawnBio_re',
   id.vars= c("ID","species", "replicate",
          "log_max_grad", "year", 'D', 'X', 'G', 'E',
-         "end.b_re", 'last.10.b_re', 'last.25.b_re', 'converged'))
+         "end.b_re", 'last.10.b_re', 'last.25.b_re', 'converged',
+         'last.60.b_re', 'mare', 'mre'))
 
 #Add informative label for growth
 gg <- data.frame(G = as.factor(c("G0", 'G1')), 
@@ -87,7 +92,16 @@ ssb.ts.long[which(ssb.ts.long$D == 'D2' | ssb.ts.long$X == 'X2'),
 ssb.ts.long[which(ssb.ts.long$D == 'D3' | ssb.ts.long$X == 'X3'), 
   'data.amount'] <- 'rich'
 ssb.ts.long[which(ssb.ts.long$D == 'D4' | ssb.ts.long$X == 'X4'), 
-  'data.amount'] <- 'rich - late survey'
+  'data.amount'] <- 'aa rich - late survey'
+
+#only converged runs
+hake <- subset(ssb.ts.long, converged == 'yes' & species == 'hake-age')
+hake.w <- hake[is.na(hake$X) == FALSE, ]
+hake.l <- hake[is.na(hake$X), ]
+
+yellow <- subset(ssb.ts.long, converged == 'yes' & species == 'yellow-age')
+yellow.w <- yellow[is.na(yellow$X) == FALSE, ]
+yellow.l <- yellow[is.na(yellow$X), ]
 
 # #Length Results only
 # ssb.ts.e <- subset(ssb.ts.long, E == "E2")

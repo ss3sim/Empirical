@@ -69,7 +69,7 @@ file.copy(paste0(getwd(), '/load_results.r'),
 setwd(results.dir)
 
 #------------------------------------------------------------------------
-#Createn Case Files Dynamically for reproducibility
+#Create Case Files Dynamically for reproducibility
 
 ###Define species models that you want to run.
 species.vec <- c('yellow-age', 'hake-age')
