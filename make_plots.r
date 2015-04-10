@@ -1,3 +1,16 @@
+
+#----------------------------------------
+#Check growth variation in models
+g <- plot_ts_lines(checks.e, y = 'value', vert = 'data.amount', 
+  horiz = 'G', horiz2 = 'species', print = TRUE, rel = TRUE) + labs(x = 'year',
+  y = 'relativer error in SSB', title = 'Hake -- WtAtAge')
+
+g <- plot_ts_lines(checks.x, y = 'value', vert = 'data.amount', 
+  horiz = 'G', horiz2 = 'species', print = TRUE, rel = TRUE) + labs(x = 'year',
+  y = 'relativer error in SSB', title = 'Hake -- WtAtAge')
+# ggsave('results_figures/hake_wtatage_ssb.png', g)
+
+#----------------------------------------
 #Hake
 
 #Mare plots
@@ -6,7 +19,6 @@ g <- plot_scalar_boxplot(data = hake, x = 'data.desc', y = 'mare',
   rel = TRUE) + theme_bw() + labs(x = 'year', y = 'MARE', 
   title = 'Hake')
 ggsave('results_figures/hake_mare.png', g)
-
 
 #Mare plots
 g <- plot_scalar_boxplot(data = hake, x = 'data.desc', y = 'mre', 
@@ -27,7 +39,6 @@ g <- plot_scalar_boxplot(data = yellow, x = 'data.desc', y = 'mre',
   rel = TRUE) + labs(x = 'data type', y = 'MRE',
   title = 'Yelloweye') + theme_bw() 
 ggsave('results_figures/yellow_mre.png', g)
-
 
 #Biomass Trajectries
 #hake----------------------------

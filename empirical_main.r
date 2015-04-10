@@ -3,7 +3,7 @@
 
 #------------------------------------------------------------------------
 #Set Working Directory
-setwd('/Volumes/home/empirical/')
+setwd('/Volumes/home/Empirical/')
 # setwd("Y:\\Empirical\\")
 
 #Set working directory for results
@@ -186,9 +186,9 @@ save(results.ts, file =  'ss3sim_ts_april10.Rdata')
 
 #Copy Rdata file into results
 file.copy('ss3sim_scalar_april10.Rdata', 
-    '/Volumes/home/empirical/results')
+    '/Volumes/home/Empirical/results')
 file.copy('ss3sim_ts_april10.Rdata', 
-    '/Volumes/home/empirical/results')
+    '/Volumes/home/Empirical/results')
 
 
 #------------------------------------------------------------------------
