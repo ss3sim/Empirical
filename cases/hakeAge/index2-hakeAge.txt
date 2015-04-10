@@ -1,3 +1,0 @@
-fleets; c(2, 3)
-years; list(seq(25, 100, 1), seq(40, 100, 3))
-sds_obs; list(.05, .05)

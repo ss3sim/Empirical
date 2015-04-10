@@ -3,7 +3,7 @@
 
 #------------------------------------------------------------------------
 #Set Working Directory
-setwd('/Volumes/home/Empirical/')
+setwd('/Volumes/home/empirical/')
 # setwd("Y:\\Empirical\\")
 
 #Set working directory for results
@@ -175,11 +175,21 @@ scenarios <- c(scenariosW, scenariosL)
 get_results_all(dir = getwd(), user_scenarios = scenarios, 
                 parallel = TRUE, over = TRUE)
 
-results.sc <- read.csv('ss3sim_scalar_lab.csv')
-results.ts <- read.csv('ss3sim_ts_lab.csv')
+# results.sc <- read.csv('ss3sim_scalar_lab.csv')
+# results.ts <- read.csv('ss3sim_ts_lab.csv')
 
-save(results.sc, file =  'ss3sim_scalar_1_56.Rdata')
-save(results.ts, file =  'ss3sim_ts_1_56.Rdata')
+results.sc <- read.csv('ss3sim_scalar_april10.csv')
+results.ts <- read.csv('ss3sim_ts_april10.csv')
+
+save(results.sc, file =  'ss3sim_scalar_april10.Rdata')
+save(results.ts, file =  'ss3sim_ts_april10.Rdata')
+
+#Copy Rdata file into results
+file.copy('ss3sim_scalar_april10.Rdata', 
+    '/Volumes/home/empirical/results')
+file.copy('ss3sim_ts_april10.Rdata', 
+    '/Volumes/home/empirical/results')
+
 
 #------------------------------------------------------------------------
 source('load_results.r')

@@ -1,4 +1,0 @@
-fleets;c(1,2)
-years;list(seq(25,100, by=1),seq(40, 100, by = 3))
-Nsamp; list(c(rep(35, 25), rep(75, 25), rep(100, 26)), rep(100, 21))
-cpar;NA

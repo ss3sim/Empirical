@@ -1,4 +1,0 @@
-fleets;c(1,2)
-years;list(seq(25,100, by=1),seq(40,100, by=3))
-write_file; TRUE
-cv_wtatage; .05
