@@ -102,13 +102,14 @@ plot_growth_case <- function(scenario, y.lim = 5, x.lim=NULL)
   parse.devs <- strsplit(devs, '; ')
   
   devs <- (eval(parse(text = parse.devs[[1]][2])))
+# browser()
   to.plot <- data.frame(years = 1:100, devs = devs)
 
   if(is.null(x.lim)) {
-    x.lim <- max(abs(min(devs),max(devs)))
+    x.lim <- abs(max(min(devs),max(devs)))
     x.lim <- c(-x.lim, x.lim)
   }
-  
+
   plot(to.plot$devs, to.plot$years, pch = 19, xlab = 'Deviations',
        ylab = 'Year', main = paste(case.spp, '\n', par), ylim = y.lim, xlim = x.lim)
   # return(data.frame(case.file, case.spp))
