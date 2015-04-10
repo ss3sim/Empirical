@@ -18,7 +18,7 @@ makeimage <- function(agevec=0:15, yrvec=1975:2013, mat, interpmat=NULL, maxWt=m
   yrvec2 <- c(min(yrvec)-c(2,1),yrvec)  #c(1973,1974,yrvec)
   mat2 <- t(as.matrix(rbind(meanvec,rep(NA,length(meanvec)),mat)))
   # print(dim(mat2))
-  image(x=agevec,y=yrvec2,z=mat2,axes=FALSE,xlab='Age',ylab='Year',
+  image(x=agevec, y=yrvec2, z=mat2, axes=FALSE, xlab='Age', ylab='Year',
         col=rainbow(60)[1:50], main=main,breaks=seq(0,ceiling(maxWt),length=51))
   # add text
   if(addText) {
@@ -106,7 +106,11 @@ plot_growth_case <- function(scenario, y.lim = 5, x.lim=NULL)
   to.plot <- data.frame(years = 1:100, devs = devs)
 
   if(is.null(x.lim)) {
-    x.lim <- abs(max(min(devs),max(devs)))
+# <<<<<<< HEAD
+    # x.lim <- abs(max(min(devs),max(devs)))
+# =======
+    x.lim <- max(abs(min(devs)),abs(max(devs)))
+# >>>>>>> ac41990f1c63499e21fe78c82a7ce61dc23822c5
     x.lim <- c(-x.lim, x.lim)
   }
 
