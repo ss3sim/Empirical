@@ -87,8 +87,9 @@ for(it in 1:length(scenarios)){
     plot_growth_case(scenario, y.lim = range(yrvec), x.lim=x.lim)
     box()
     axis(2)
-    if(it==3|it==4) axis(1)
-    if(it==4) mtext(side=1, line=2.5, text="Deviation")
+    if(it==3) axis(1, at=c(-20,-10,0,10,20), labels=c(-30,-15,0,15,30))
+    if(it==4) axis(1, at=c(-0.02,-0.01,0,0.01,0.02), labels=c(-75,-38,0,38,75))
+    if(it==4) mtext(side=1, line=2.5, text="Deviation (%)")
     cases <- list(expression("Random noise in "*L[infinity]), 
                   expression("Time varying "*L[infinity]),
                   expression("Time varying "*L[infinity]),
