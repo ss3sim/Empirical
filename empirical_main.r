@@ -8,8 +8,9 @@ setwd('/Volumes/home/Empirical/')
 
 #Set working directory for results
 # results.dir <- "/Users/peterkuriyama/Desktop/test_runs"
-results.dir <- "/Users/peterkuriyama/Desktop/april_10_check"
+#results.dir <- "/Users/peterkuriyama/Desktop/april_10_check"
 # results.dir <- "c:\\Users\\ptrkrym\\Desktop\\test_runs"
+# results.dir <- "F:\\Peter\\results_blackfish"
 
 #Paths are structured as they are in the ss3sim repo
 library(ggplot2)
@@ -20,7 +21,7 @@ library(reshape2)
 #------------------------------------------------------------------------
 #Set Up Parallels and Register cores
 library('doParallel')
-registerDoParallel(cores = 2)
+registerDoParallel(cores = 4)
 library('foreach')
 message(paste(getDoParWorkers(), "cores have been registered for",
     "parallel processing."))
@@ -178,17 +179,17 @@ get_results_all(dir = getwd(), user_scenarios = scenarios,
 # results.sc <- read.csv('ss3sim_scalar_lab.csv')
 # results.ts <- read.csv('ss3sim_ts_lab.csv')
 
-results.sc <- read.csv('ss3sim_scalar_april10.csv')
-results.ts <- read.csv('ss3sim_ts_april10.csv')
+# results.sc <- read.csv('ss3sim_scalar_april10.csv')
+# results.ts <- read.csv('ss3sim_ts_april10.csv')
 
-save(results.sc, file =  'ss3sim_scalar_april10.Rdata')
-save(results.ts, file =  'ss3sim_ts_april10.Rdata')
+# save(results.sc, file =  'ss3sim_scalar_april10.Rdata')
+# save(results.ts, file =  'ss3sim_ts_april10.Rdata')
 
 #Copy Rdata file into results
-file.copy('ss3sim_scalar_april10.Rdata', 
-    '/Volumes/home/Empirical/results')
-file.copy('ss3sim_ts_april10.Rdata', 
-    '/Volumes/home/Empirical/results')
+# file.copy('ss3sim_scalar_april10.Rdata', 
+#     '/Volumes/home/Empirical/results')
+# file.copy('ss3sim_ts_april10.Rdata', 
+#     '/Volumes/home/Empirical/results')
 
 
 #------------------------------------------------------------------------

@@ -10,7 +10,6 @@ load('ss3sim_ts_april10.Rdata')
 results.sc.410 <- results.sc
 results.sc.410$run_date <- 'april 10'
 
-
 results.ts.410 <- results.ts
 results.ts.410$run_date <- 'april 10'
 
@@ -28,7 +27,6 @@ results.sc.410$VonBert_K_Fem_GP_1_ENV_add_om <- NULL
 # names(results.ts.410)[names(results.ts.410) %in%  names(results.ts) == FALSE]
 
 #Combine data
-
 results.ts <- rbind(results.ts, results.ts.410)
 results.sc <- rbind(results.sc, results.sc.410)
 
@@ -53,7 +51,6 @@ results.sc$species <- as.character(results.sc$species)
 
 spsp <- ldply(strsplit(results.sc[age.ind, 'scenario'], '-'))
 results.sc[age.ind, 'species'] <- paste(spsp$V5, spsp$V6, sep = '-')
-
 
 #Do calcluations on data frames
 results.sc$log_max_grad <- log(results.sc$max_grad)
@@ -92,6 +89,7 @@ results.ts <- results.ts %>% group_by(ID) %>%
     last.10.b_re = mean(SpawnBio_re[year >= 91]),
     last.25.b_re = mean(SpawnBio_re[year >= 76]),
     last.60.b_re = mean(SpawnBio_re[year >= 40]),
+    last.50.b_re = mean(SpawnBio_re[year >= 50]),
     mare = median(abs(SpawnBio_re)),
     mre = median(SpawnBio_re))
 results.ts <- as.data.frame(results.ts)
@@ -103,7 +101,8 @@ ssb.ts.long <- melt(results.ts, measure.vars = 'SpawnBio_re',
   id.vars= c("ID","species", "replicate",
          "log_max_grad", "year", 'D', 'X', 'G', 'E',
          "end.b_re", 'last.10.b_re', 'last.25.b_re', 'converged',
-         'last.60.b_re', 'mare', 'mre', 'run_date', 'scenario'))
+         'last.60.b_re', 'mare', 'mre', 'run_date', 'scenario',
+         "last.50.b_re"))
 
 #Add informative label for growth
 gg <- data.frame(G = as.factor(c("G0", 'G1')), 
@@ -122,6 +121,25 @@ ssb.ts.long[which(ssb.ts.long$D == 'D3' | ssb.ts.long$X == 'X3'),
   'data.amount'] <- 'rich'
 ssb.ts.long[which(ssb.ts.long$D == 'D4' | ssb.ts.long$X == 'X4'), 
   'data.amount'] <- 'aa rich - late survey'
+
+#Add informative labels for management data
+gg <- data.frame(G = as.factor(c("G0", 'G1')), 
+  g.desc = c('invariant', 'varying'))
+results.sc.long.management <- merge(results.sc.long.management, gg, by = 'G', all = TRUE)
+
+results.sc.long.management$data.desc <- 1
+results.sc.long.management[grep("E" , results.sc.long.management$scenario), 'data.desc'] <- 'A + L'
+results.sc.long.management[grep("X" , results.sc.long.management$scenario), 'data.desc'] <- 'WtAtAge'
+
+results.sc.long.management$data.amount <- 1
+results.sc.long.management$D <- as.character(results.sc.long.management$D)
+results.sc.long.management[which(results.sc.long.management$D == 'D2' | results.sc.long.management$X == 'X2'), 
+  'data.amount'] <- 'unrealistic'
+results.sc.long.management[which(results.sc.long.management$D == 'D3' | results.sc.long.management$X == 'X3'), 
+  'data.amount'] <- 'rich'
+results.sc.long.management[which(results.sc.long.management$D == 'D4' | results.sc.long.management$X == 'X4'), 
+  'data.amount'] <- 'aa rich - late survey'
+
 
 #only converged runs
 hake <- subset(ssb.ts.long, converged == 'yes' & species == 'hake-age' & 
@@ -144,10 +162,7 @@ checks.x <- subset(ssb.ts.long, converged == 'yes' & run_date != 'lab' &
   data.desc == 'WtAtAge')
 
 
-
-
-
-checks.e 
+# checks.e 
 
 
 # #Length Results only
