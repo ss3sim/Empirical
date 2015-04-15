@@ -1,3 +1,14 @@
+#######################################
+### Load required packages
+#devtools::install_github("ss3sim/ss3sim")
+require(ss3sim)
+require(plyr)
+require(dplyr)
+require(reshape2)
+require(ggplot2)
+
+#######################################
+### Set wd
 setwd("/Volumes/home/Empirical/results")
 
 #load results into R
