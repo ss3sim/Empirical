@@ -1,4 +1,5 @@
-head(results.sc.long.selex)
+# head(results.sc.long.selex)
+
 
 species <- c('hake-age', 'yellow-age')
 spp <- c('hake-age', 'yellow-age')
@@ -27,7 +28,8 @@ plot.order <- c("unrealistic G0 A + L", "rich G0 A + L",  "rich - late survey G0
                 "unrealistic G1 WtAtAge", "rich G1 WtAtAge",  "rich - late survey G1 WtAtAge")
 
 
-
+png(width = 7.5, height = 5.8, units = 'in', res = 200,
+  "/Volumes/home/Empirical/figs/selectivity_re.png")
   par(mfrow=c(2, 3), mar=c(0,0,0,0), oma=c(4, 6,2,3))
   for(ii in 1:6){
     temp <- subset(d, d$unq == plot.order[ii])
@@ -42,17 +44,19 @@ plot.order <- c("unrealistic G0 A + L", "rich G0 A + L",  "rich - late survey G0
     abline(h = 0, col = 'gray50')
     #plot temp
     with(temp, {
-      points(x = xvalue, y = median_, pch = 16, cex = .85, col = 'black')
-      segments(x0 = xvalue, y0 = l2, y1 = u2, col = 'black', lwd = .7)
-      text(x= xvalue, y = .12, label = mare, col = 'black', cex = 1.2)
-      # text(x = xvalue, y = .75 + ifelse() 
-      #   labels)
+      points(x = xvalue, y = median_, pch = 16, cex = .85, col = 'black');
+      segments(x0 = xvalue, y0 = l2, y1 = u2, col = 'black', lwd = .7);
+      text(x = xvalue, y = .12, label = mare, col = 'black', cex = 1.2)
+      # text(x = xvalue[which(mare != 0)], y = .12, 
+      #   label = mare[which(mare != 0)], col = 'black', cex = 1.2)
     })
     #plot temp1
     with(temp1, {
-      points(x = xvalue, y = median_, pch = 16, cex = .85, col = 'gray')
-      segments(x0 = xvalue, y0 = l2, y1 = u2, col = 'gray', lwd = .7)
-      text(x= xvalue, y = .13, label = mare, col = 'gray', cex = 1.2)
+      points(x = xvalue, y = median_, pch = 16, cex = .85, col = 'gray45')
+      segments(x0 = xvalue, y0 = l2, y1 = u2, col = 'gray45', lwd = .7)
+      text(x = xvalue, y = .13, label = mare, col = 'gray45', cex = 1.2)
+      # text(x = xvalue[which(mare != 0)], y = .13, 
+      #   label = mare[which(mare != 0)], col = 'gray45', cex = 1.2)
     })
     box(col = 'black')
 
@@ -66,3 +70,4 @@ plot.order <- c("unrealistic G0 A + L", "rich G0 A + L",  "rich - late survey G0
   mtext('Unrealistic', side = 3, outer = TRUE, at = .17)
   mtext('Rich', side = 3, outer = TRUE, at = .5)
   mtext('Rich - Late Survey', side = 3, outer = TRUE, at = .85)
+dev.off()
