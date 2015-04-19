@@ -81,5 +81,5 @@ dev.off()
 
 png(width = 7.5, height = 5.8, units = 'in', res = 200,
   "/Volumes/home/Empirical/figs/yellow_selectivity_re.png")
-plot_selex(d = d.yellow)
+plot_selex(d = d.yellow, yy = .05)
 dev.off()
