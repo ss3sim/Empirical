@@ -71,6 +71,8 @@ results.sc$runtime <- results.sc$RunTime
 
 #Drop fixed parameters(columns of 0)
 results.sc <- results.sc[,-which(apply(results.sc, 2, function(x) all(x==0)))]
+results.sc <- subset(results.sc, max_grad <= 0.1)
+
 re.names <- names(results.sc)[grep('_re', names(results.sc))]
 
 results.sc.long <-
@@ -88,6 +90,9 @@ results.sc.long.selex$variable <- gsub("_", ".", results.sc.long.selex$variable)
 management.names <- c("SSB_MSY_re", "depletion_re", "SSB_Unfished_re", "Catch_endyear_re")
 results.sc.long.management <- droplevels(subset(results.sc.long, variable %in% management.names))
 results.sc.long.management$variable <- gsub("_re", "", results.sc.long.management$variable)
+
+###
+
 
 #Time series calculations
 results.ts <- calculate_re(results.ts)
@@ -149,7 +154,25 @@ results.sc.long.management[which(results.sc.long.management$D == 'D2' | results.
 results.sc.long.management[which(results.sc.long.management$D == 'D3' | results.sc.long.management$X == 'X3'), 
   'data.amount'] <- 'rich'
 results.sc.long.management[which(results.sc.long.management$D == 'D4' | results.sc.long.management$X == 'X4'), 
-  'data.amount'] <- 'aa rich - late survey'
+  'data.amount'] <- 'rich - late survey'
+
+#Add informative labels for selex data
+gg <- data.frame(G = as.factor(c("G0", 'G1')), 
+  g.desc = c('invariant', 'varying'))
+results.sc.long.selex <- merge(results.sc.long.selex, gg, by = 'G', all = TRUE)
+
+results.sc.long.selex$data.desc <- 1
+results.sc.long.selex[grep("E" , results.sc.long.selex$scenario), 'data.desc'] <- 'A + L'
+results.sc.long.selex[grep("X" , results.sc.long.selex$scenario), 'data.desc'] <- 'WtAtAge'
+
+results.sc.long.selex$data.amount <- 1
+results.sc.long.selex$D <- as.character(results.sc.long.selex$D)
+results.sc.long.selex[which(results.sc.long.selex$D == 'D2' | results.sc.long.selex$X == 'X2'), 
+  'data.amount'] <- 'unrealistic'
+results.sc.long.selex[which(results.sc.long.selex$D == 'D3' | results.sc.long.selex$X == 'X3'), 
+  'data.amount'] <- 'rich'
+results.sc.long.selex[which(results.sc.long.selex$D == 'D4' | results.sc.long.selex$X == 'X4'), 
+  'data.amount'] <- 'rich - late survey'
 
 
 #only converged runs
@@ -162,7 +185,6 @@ yellow <- subset(ssb.ts.long, converged == 'yes' & species == 'yellow-age' &
   run_date == 'lab')
 yellow.w <- yellow[is.na(yellow$X) == FALSE, ]
 yellow.l <- yellow[is.na(yellow$X), ]
-
 
 #Checks
 checks <- subset(ssb.ts.long, converged == 'yes' & run_date != 'lab')
