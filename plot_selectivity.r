@@ -1,5 +1,10 @@
 # head(results.sc.long.selex)
-
+print.letter <- function(label="(a)",xy=c(0.1,0.925),...) {
+    tmp <- par("usr")
+    text.x <- tmp[1]+xy[1]*diff(tmp[1:2])   #x position, diff=difference
+    text.y <- tmp[3]+xy[2]*diff(tmp[3:4])   #y position
+    text(x=text.x, y=text.y, labels=label, ...)
+}
 
 species <- c('hake-age', 'yellow-age')
 spp <- c('hake-age', 'yellow-age')
@@ -30,6 +35,7 @@ plot.order <- c("unrealistic G0 A + L", "rich G0 A + L",  "rich - late survey G0
 
 png(width = 7.5, height = 5.8, units = 'in', res = 200,
   "/Volumes/home/Empirical/figs/selectivity_re.png")
+ 
   par(mfrow=c(2, 3), mar=c(0,0,0,0), oma=c(4, 6,2,3))
   for(ii in 1:6){
     temp <- subset(d, d$unq == plot.order[ii])
@@ -62,6 +68,7 @@ png(width = 7.5, height = 5.8, units = 'in', res = 200,
 
     if(ii %in% c(1, 4)) axis(side = 2, at = seq(-.1, .1, by = .1), las = 2, cex = 1.2)
     if(ii >=4) axis(side = 1, at = c(1.1, 2.1, 3.1, 4.1), labels = temp$par.name, las = 1, cex = 1.2)
+    print.letter(paste0("(", letters[ii], ")"), xy = c(.05, 0.05), cex = 1.2)
   }
   mtext('Time-Invariant', side = 4, line = .7, outer = TRUE, at = .75)
   mtext('Time-Varying', side = 4, line = .7, outer = TRUE, at = .25)
@@ -70,4 +77,5 @@ png(width = 7.5, height = 5.8, units = 'in', res = 200,
   mtext('Unrealistic', side = 3, outer = TRUE, at = .17)
   mtext('Rich', side = 3, outer = TRUE, at = .5)
   mtext('Rich - Late Survey', side = 3, outer = TRUE, at = .85)
+
 dev.off()
