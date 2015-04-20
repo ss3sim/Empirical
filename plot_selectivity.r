@@ -74,6 +74,7 @@ plot.order <- c("unrealistic G0 A + L", "rich G0 A + L",  "rich - late survey G0
 d.hake <- subset(d, species == 'hake-age')
 d.yellow <- subset(d, species == 'yellow-age')
 
+#Save Plots
 png(width = 7.5, height = 5.8, units = 'in', res = 200,
   "/Volumes/home/Empirical/figs/hake_selectivity_re.png")
 plot_selex(d = d.hake, yy = .2)

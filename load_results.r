@@ -1,11 +1,11 @@
 #######################################
 ### Load required packages
 #devtools::install_github("ss3sim/ss3sim")
-require(ss3sim)
-require(plyr)
-require(dplyr)
-require(reshape2)
-require(ggplot2)
+library(ss3sim)
+library(plyr)
+library(dplyr)
+library(reshape2)
+library(ggplot2)
 
 #######################################
 ### Set wd
@@ -92,12 +92,11 @@ results.sc.long.management <- droplevels(subset(results.sc.long, variable %in% m
 results.sc.long.management$variable <- gsub("_re", "", results.sc.long.management$variable)
 
 ###
-
-
 #Time series calculations
 results.ts <- calculate_re(results.ts)
 results.ts <- merge(results.ts, results.sc[, c('log_max_grad', 'ID')],
   by = 'ID', all = TRUE)
+
 
 #Add end year b, last 10 year b, last 25 year b
 results.ts <- results.ts %>% group_by(ID) %>% 
@@ -106,8 +105,9 @@ results.ts <- results.ts %>% group_by(ID) %>%
     last.25.b_re = mean(SpawnBio_re[year >= 76]),
     last.60.b_re = mean(SpawnBio_re[year >= 40]),
     last.50.b_re = mean(SpawnBio_re[year >= 50]),
-    mare = median(abs(SpawnBio_re)),
-    mre = median(SpawnBio_re))
+    median_ = median(SpawnBio_re))
+    # mare = median(abs(SpawnBio_re)),
+    # mre = median(SpawnBio_re))
 results.ts <- as.data.frame(results.ts)
 
 results.ts$converged <- ifelse(results.ts$log_max_grad <= log(0.1), 'yes', 'no')
@@ -117,7 +117,7 @@ ssb.ts.long <- melt(results.ts, measure.vars = 'SpawnBio_re',
   id.vars= c("ID","species", "replicate",
          "log_max_grad", "year", 'D', 'X', 'G', 'E',
          "end.b_re", 'last.10.b_re', 'last.25.b_re', 'converged',
-         'last.60.b_re', 'mare', 'mre', 'run_date', 'scenario',
+         'last.60.b_re', 'median_', 'run_date', 'scenario',
          "last.50.b_re"))
 
 #Add informative label for growth
@@ -136,7 +136,7 @@ ssb.ts.long[which(ssb.ts.long$D == 'D2' | ssb.ts.long$X == 'X2'),
 ssb.ts.long[which(ssb.ts.long$D == 'D3' | ssb.ts.long$X == 'X3'), 
   'data.amount'] <- 'rich'
 ssb.ts.long[which(ssb.ts.long$D == 'D4' | ssb.ts.long$X == 'X4'), 
-  'data.amount'] <- 'aa rich - late survey'
+  'data.amount'] <- 'rich - late survey'
 
 #Add informative labels for management data
 gg <- data.frame(G = as.factor(c("G0", 'G1')), 
