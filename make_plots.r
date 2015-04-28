@@ -1,3 +1,6 @@
+#------------------------------------------------------------------------
+#TS plots for paper
+
 
 #------------------------------------------------------------------------
 #Relative error in biomass trajectories
@@ -143,6 +146,7 @@ g <- plot_scalar_boxplot(data = subset(results.sc.long.management,
   variable == "SSB_MSY"), x = 'data.desc', y = 'value', 
 vert = 'data.amount', horiz = 'g.desc', print = TRUE)
 
+source('TS_plots_for_paper2.R')
 
 #Biomass trajectories
 # g <- plot_ts_lines

@@ -7,7 +7,7 @@ setwd('/Volumes/home/Empirical/')
 # setwd("Y:\\Empirical\\")
 
 #Set working directory for results
-# results.dir <- "/Users/peterkuriyama/Desktop/test_runs"
+results.dir <- "/Users/peterkuriyama/Desktop/test_runs"
 #results.dir <- "/Users/peterkuriyama/Desktop/april_10_check"
 # results.dir <- "c:\\Users\\ptrkrym\\Desktop\\test_runs"
 # results.dir <- "F:\\Peter\\results_blackfish"
@@ -21,7 +21,7 @@ library(reshape2)
 #------------------------------------------------------------------------
 #Set Up Parallels and Register cores
 library('doParallel')
-registerDoParallel(cores = 4)
+registerDoParallel(cores = 2)
 library('foreach')
 message(paste(getDoParWorkers(), "cores have been registered for",
     "parallel processing."))
@@ -98,7 +98,7 @@ for(ii in 1:length(species.vec))
 
 #Globally set iterations to run
 # iters <- 57:112
-iters <- 1:6
+iters <- 100
 
 ####################################
 #Age-Based Scenarios, "X = 1"
@@ -106,17 +106,19 @@ iters <- 1:6
 scens1 <- expand_scenarios(cases = list(F = 0, D = 1, X = 1,
     G = 0:1), species = species.vec)
 scens2 <- expand_scenarios(cases = list(F = 0, D = 2, X = 2,
-    # G = 0:1), species = species.vec)
-    G = 7:8), species = species.vec)
+    G = 0:1), species = species.vec)
+    #G = 7:8), species = species.vec)
 scens3 <- expand_scenarios(cases = list(F = 0, D = 3, X = 3,
-    # G = 0:1), species = species.vec)
-    G = 7:8), species = species.vec)
+    G = 0:1), species = species.vec)
+    #G = 7:8), species = species.vec)
+# scens4 <- expand_scenarios(cases = list(F = 0, D = 4, X = 4,
+#     G = 0:1), species = species.vec)
 scens4 <- expand_scenarios(cases = list(F = 0, D = 4, X = 4,
-    # G = 0:1), species = species.vec)
-    G = 7:8), species = species.vec)
+    G = 1:4), species = species.vec)
+    #G = 7:8), species = species.vec)
 
-# scenariosW <- c(scens1, scens2, scens3, scens4)
-scenariosW <- c(scens2, scens3, scens4)
+scenariosW <- scens4
+# scenariosW <- c(scens2, scens3, scens4)
 
 #Specify Case Files
 case_files <- list(F = 'F', D = c('index', 'agecomp'), X = 'wtatage', 
@@ -145,7 +147,7 @@ for(ii in 1:length(scenariosW))
 ####################################
 #Length-Based Scenarios
 scenariosL <- expand_scenarios(cases = list(F = 0, D = 2:4,
-    G = 7:8, E = 2), species = species.vec)
+    G = 0:1, E = 2), species = species.vec)
 
 #Define length_based case files, No X cases
 case_files <- list(F = 'F', D = c('index', 'agecomp', 'lcomp'),
@@ -164,7 +166,7 @@ for(ii in 1:length(scenariosL))
     
     case_folder1 <- paste0('cases', '/', spp)
 
-    run_ss3sim(iterations = iters, scenarios = scenariosL[ii], case_folder = case_folder1,
+    run_ss3sim(iterations = iters, scenarios = scenariosL[ii], case_	folder = case_folder1,
         om_dir = ss3model(spp, 'om'), em_dir = ss3model(spp, 'em'),
         case_files = case_files, parallel = TRUE, parallel_iterations = TRUE)
 }
@@ -176,20 +178,25 @@ scenarios <- c(scenariosW, scenariosL)
 get_results_all(dir = getwd(), user_scenarios = scenarios, 
                 parallel = TRUE, over = TRUE)
 
+
+
 # results.sc <- read.csv('ss3sim_scalar_lab.csv')
 # results.ts <- read.csv('ss3sim_ts_lab.csv')
 
-# results.sc <- read.csv('ss3sim_scalar_april10.csv')
-# results.ts <- read.csv('ss3sim_ts_april10.csv')
+results.sc <- read.csv('ss3sim_scalar_blackfish410.csv')
+results.ts <- read.csv('ss3sim_ts_blackfish410.csv')
 
-# save(results.sc, file =  'ss3sim_scalar_april10.Rdata')
-# save(results.ts, file =  'ss3sim_ts_april10.Rdata')
+save(results.sc, file =  'ss3sim_scalar_blackfish410.Rdata')
+save(results.ts, file =  'ss3sim_ts_blackfish410.Rdata')
 
 #Copy Rdata file into results
-# file.copy('ss3sim_scalar_april10.Rdata', 
-#     '/Volumes/home/Empirical/results')
-# file.copy('ss3sim_ts_april10.Rdata', 
-#     '/Volumes/home/Empirical/results')
+file.copy('ss3sim_scalar_blackfish410.Rdata', 
+	"Y:\\Empirical\\results")    
+#'/Volumes/home/Empirical/results')
+
+file.copy('ss3sim_ts_blackfish410.Rdata',
+	"Y:\\Empirical\\results")
+#    '/Volumes/home/Empirical/results')
 
 
 #------------------------------------------------------------------------
@@ -199,6 +206,32 @@ source('plotting_functions.r')
 width <- 12
 height <- 8
 source('make_plots.r')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ##---------------------------------------
 #Plot Time Series

@@ -29,6 +29,9 @@ plot.order <- c("unrealistic G0 A + L", "rich G0 A + L",  "rich - late survey G0
 mini.results <- mini.results[order(mini.results$ID, mini.results$year), ]
 mini.results <- mini.results[is.na(mini.results$converged) == FALSE, ]
 
+# unique(subset(mini.results, scenario == "D3-F0-G1-X3-yellow-age")$mare)
+# unique(subset(mini.results, scenario == "D4-F0-G1-X4-yellow-age")$mare)
+
 #
 d.amount <- c("Unrealistic", "Rich", "Rich - Late Survey")
 
@@ -46,7 +49,7 @@ plot_ssb_with_mare <- function(data){
     box()
     abline(h=0)
     temp <- subset(data, unq == plot.order[ii])
-    
+    # cat(ii, unique(temp$mare), '\n')
     unq.reps <- unique(temp$replicate)
     for(jj in 1:length(unq.reps)){
       tr <- subset(temp, replicate == unq.reps[jj])
