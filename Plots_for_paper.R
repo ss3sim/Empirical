@@ -8,7 +8,7 @@ makeimage <- function(agevec=0:15, yrvec=1975:2013, mat, interpmat=NULL, maxWt=m
     meanvec <- mat[,1]
     mat <- mat[,-1]
   }
-  
+
   ### Set colors
   if(is.null(Colors)){
     Colors <- rainbow(60)[1:50]
@@ -26,6 +26,8 @@ makeimage <- function(agevec=0:15, yrvec=1975:2013, mat, interpmat=NULL, maxWt=m
   # print(dim(mat2))
   image(x=agevec, y=yrvec2, z=mat2, axes=FALSE, xlab="", ylab="",
         col=Colors, main=main,breaks=seq(0,ceiling(maxWt),length=51))
+  rect(-2, 35, 100, 39.5, col = 'white', border = NA)
+# browser()
   # add text
   if(addText) {
     zdataframe <- expand.grid(yr=yrvec2,age=agevec)

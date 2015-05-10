@@ -4,7 +4,6 @@
 setwd("/Volumes/home/Empirical")
 source("load_results.r")
 
-
 library(RColorBrewer)
 ColPal <- colorRampPalette(brewer.pal(9, "Greys")[-1])
 
@@ -14,11 +13,12 @@ mini.results <- ssb.ts.long
 
 #remove g7 and g8
 mini.results <- subset(mini.results, G != "G7" & G != "G8")
+mini.results$after.fishery <- ifelse(mini.results$year >= 25, 'yes', 'no')
 
 # mini.results <- data.frame(species=results.ts$species, D=results.ts$D, G=results.ts$G, replicate=results.ts$replicate, 
 #                            E=results.ts$E, X=results.ts$X, 
 #                            year=results.ts$year, converged=results.ts$converged, SpawnBio_re=results.ts$SpawnBio_re)
-mini.results <- mini.results %>% group_by(scenario) %>% 
+mini.results <- mini.results %>% group_by(scenario, after.fishery) %>% 
   mutate(mare = 100 * round((median(abs(value), na.rm = TRUE)), digits = 2))
 mini.results <- as.data.frame(mini.results)
 mini.results$unq <- paste(mini.results$data.amount, mini.results$G,
@@ -50,18 +50,18 @@ plot_ssb_with_mare <- function(data){
     box()
     abline(h=0)
     temp <- subset(data, unq == plot.order[ii])
-    
+    temp.mare <-subset(temp, after.fishery == 'yes')
     unq.reps <- unique(temp$replicate)
     for(jj in 1:length(unq.reps)){
       
       tr <- subset(temp, replicate == unq.reps[jj])
-      # lines(tr$year, tr$value, col = 'gray20')
-      lines(tr$year, tr$value, col = ColPal(length(unq.reps))[jj])
+      # lines(tr$year, tr$value, col = ColPal(length(unq.reps))[jj])
+      lines(tr$year, tr$value, col = "#00000040")
     }
     
     #add mare value
     text(x = -5, y=1.4, labels=paste0(letters[ii],"."), cex = 1.2)
-    text(paste0("MARE=", unique(temp$mare)), x= 22, y = 1.4, cex = 1)
+    text(paste0("MARE=", unique(temp.mare$mare)), x= 85, y = 1.4, cex = 1)
     
     if(ii == 1) mtext(side = 3, text = 'Age + Length', line = 2.5, cex = 1.2, adj = 0)
     if(ii == 7) mtext(side = 3, text = 'Weight-at-Age', line = .25, cex = 1.2, adj = 0)
@@ -81,14 +81,37 @@ plot_ssb_with_mare <- function(data){
 
 #save plots
 ssb.hake <- subset(mini.results, species == 'hake-age')
-png(height = 8, width = 7, units = 'in', res = 200, 
-  file = "/Volumes/home/Empirical/figs/hake_ssb_re.png")
+
+tiff(height = 8, width = 7, units = 'in', res = 200, 
+  file = "/Volumes/home/Empirical/figs/hake_ssb_re.tiff")
+plot_ssb_with_mare(ssb.hake)
+dev.off()
+
+
+pdf(height = 8, width = 7, 
+  file = "/Volumes/home/Empirical/figs/FIG2.pdf")
+plot_ssb_with_mare(ssb.hake)
+dev.off()
+
+jpeg(height = 8, width = 7, units = 'in', res = 300, 
+  file = "/Volumes/home/Empirical/figs/hake_ssb_re.jpg")
 plot_ssb_with_mare(ssb.hake)
 dev.off()
 
 ssb.yellow <- subset(mini.results, species == 'yellow-age')
 png(height = 8, width = 7, units = 'in', res = 200, 
   file = "/Volumes/home/Empirical/figs/yellow_ssb_re.png")
+plot_ssb_with_mare(ssb.yellow)
+dev.off()
+
+pdf(height = 8, width = 7,
+  file = "/Volumes/home/Empirical/figs/FIG3.pdf")
+plot_ssb_with_mare(ssb.yellow)
+dev.off()
+
+
+jpeg(height = 8, width = 7, units = 'in', res = 300, 
+  file = "/Volumes/home/Empirical/figs/yellow_ssb_re.jpg")
 plot_ssb_with_mare(ssb.yellow)
 dev.off()
 

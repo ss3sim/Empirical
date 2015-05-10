@@ -17,12 +17,12 @@ plot_selex_hake <- function(d, yy = .1){
 
 cat(ii, temp$mare, temp1$mare, '\n')
     # cbind(temp, temp1)
-    plot(0, 0, type = 'n', xlim = c(.2, 4.5), ylim = c(-yy - .01, yy + .07),
+    plot(0, 0, type = 'n', xlim = c(.6, 4.5), ylim = c(-yy - .01, yy + .07),
       axes = FALSE, ann = FALSE)
     abline(h = 0, col = 'gray50')
     #plot temp
     with(temp, {
-      points(x = xvalue, y = median_, pch = 16, cex = .85, col = 'black');
+      points(x = xvalue, y = median_, pch = 16, cex = 1.2, col = 'black');
       segments(x0 = xvalue, y0 = l2, y1 = u2, col = 'black', lwd = .7);
       text(x = xvalue, y = yy + .05, label = mare, col = 'black', cex = 1.2)
       # text(x = xvalue[which(mare != 0)], y = .12, 
@@ -30,7 +30,7 @@ cat(ii, temp$mare, temp1$mare, '\n')
     })
     #plot temp1
     with(temp1, {
-      points(x = xvalue, y = median_, pch = 16, cex = .85, col = 'gray45')
+      points(x = xvalue, y = median_, pch = 16, cex = 1.2, col = 'gray45')
       segments(x0 = xvalue, y0 = l2, y1 = u2, col = 'gray45', lwd = .7)
       text(x = xvalue, y = yy + .06, label = mare, col = 'gray45', cex = 1.2)
       # text(x = xvalue[which(mare != 0)], y = .13, 
@@ -55,6 +55,7 @@ cat(ii, temp$mare, temp1$mare, '\n')
 }
 
 # plot_selex(d = d.hake, yy = .1)
+# results.sc.long.selex$after.fishery
 
 d <- subset(results.sc.long.selex, G != 'G7' & G != 'G8')
 d <- ddply(d, .(G, variable, data.desc, data.amount, species), mutate, 
@@ -64,7 +65,6 @@ d <- ddply(d, .(G, variable, data.desc, data.amount, species), mutate,
   mare = 100 * round(median(abs(value), na.rm = TRUE), 2),
   count = length(value))
 d$unq <- paste(d$data.amount, d$G, d$data.desc)
-
 
 #better parameter names
 pars <- data.frame(variable = unique(d$variable),
@@ -88,6 +88,16 @@ png(width = 7.5, height = 5.8, units = 'in', res = 200,
 plot_selex_hake(d = d.hake, yy = .1)
 dev.off()
 
+jpeg(width = 7.5, height = 5.8, units = 'in', res = 500,
+  "/Volumes/home/Empirical/figs/hake_selectivity_re.jpg")
+plot_selex_hake(d = d.hake, yy = .1)
+dev.off()
+
+pdf(width = 7.5, height = 5.8, 
+  "/Volumes/home/Empirical/figs/FIG4.pdf")
+plot_selex_hake(d = d.hake, yy = .1)
+dev.off()
+
 
 plot_selex_yellow <- function(d, yy = .05){
   print(unique(d$species))
@@ -101,12 +111,12 @@ plot_selex_yellow <- function(d, yy = .05){
 
 cat(ii, temp$mare, temp1$mare, '\n')
     # cbind(temp, temp1)
-    plot(0, 0, type = 'n', xlim = c(.2, 4.5), ylim = c(-yy, yy + .005),
+    plot(0, 0, type = 'n', xlim = c(.6, 4.5), ylim = c(-yy, yy + .005),
       axes = FALSE, ann = FALSE)
     abline(h = 0, col = 'gray50')
     #plot temp
     with(temp, {
-      points(x = xvalue, y = median_, pch = 16, cex = .85, col = 'black');
+      points(x = xvalue, y = median_, pch = 16, cex = 1.2, col = 'black');
       segments(x0 = xvalue, y0 = l2, y1 = u2, col = 'black', lwd = .7);
       text(x = xvalue, y = yy , label = mare, col = 'black', cex = 1.2)
       # text(x = xvalue[which(mare != 0)], y = .12, 
@@ -114,7 +124,7 @@ cat(ii, temp$mare, temp1$mare, '\n')
     })
     #plot temp1
     with(temp1, {
-      points(x = xvalue, y = median_, pch = 16, cex = .85, col = 'gray45')
+      points(x = xvalue, y = median_, pch = 16, cex = 1.2, col = 'gray45')
       segments(x0 = xvalue, y0 = l2, y1 = u2, col = 'gray45', lwd = .7)
       text(x = xvalue, y = yy + .005, label = mare, col = 'gray45', cex = 1.2)
       # text(x = xvalue[which(mare != 0)], y = .13, 
@@ -144,3 +154,14 @@ png(width = 7.5, height = 5.8, units = 'in', res = 200,
   "/Volumes/home/Empirical/figs/yellow_selectivity_re.png")
 plot_selex_yellow(d = d.yellow, yy = .05)
 dev.off()
+
+jpeg(width = 7.5, height = 5.8, units = 'in', res = 500,
+  "/Volumes/home/Empirical/figs/yellow_selectivity_re.jpg")
+plot_selex_yellow(d = d.yellow, yy = .05)
+dev.off()
+
+pdf(width = 7.5, height = 5.8, 
+  "/Volumes/home/Empirical/figs/FIG5.pdf")
+plot_selex_yellow(d = d.yellow, yy = .05)
+dev.off()
+
