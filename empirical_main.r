@@ -3,15 +3,15 @@
 
 #------------------------------------------------------------------------
 #Set Working Directory
-#setwd('/Volumes/home/Empirical/')
+setwd('/Volumes/home/Empirical/')
 #setwd("Y:\\Empirical\\")
-setwd("F:\\Peter\\Empirical")
+# setwd("F:\\Peter\\Empirical")
 
 #Set working directory for results
 #results.dir <- "/Users/peterkuriyama/Desktop/revised_runs"
 #results.dir <- "/Users/peterkuriyama/Desktop/april_10_check"
 # results.dir <- "c:\\Users\\ptrkrym\\Desktop\\test_runs"
-results.dir <- "F:\\Peter\\revised_results"
+# results.dir <- "F:\\Peter\\revised_results"
 
 #Paths are structured as they are in the ss3sim repo
 library(ggplot2)
@@ -29,15 +29,15 @@ message(paste(getDoParWorkers(), "cores have been registered for",
 
 #------------------------------------------------------------------------
 library(devtools)
-devtools::install_github('r4ss/r4ss')
-devtools::install_github('ss3sim/ss3sim')
-devtools::install_github('ss3models')
+# devtools::install_github('r4ss/r4ss')
+# devtools::install_github('ss3sim/ss3sim')
+# devtools::install_github('ss3models')
 
 #clone ss3sim and ss3models locally and load_all
 #**Make sure both repos are up to date**#
-#load_all('../r4ss')
-#load_all('../ss3sim')
-#load_all('../ss3models')
+load_all('../r4ss')
+load_all('../ss3sim')
+load_all('../ss3models')
 
 library(r4ss)
 library(ss3sim)
@@ -186,19 +186,21 @@ get_results_all(dir = "F:\\Peter\\Empirical" , user_scenarios = scenarios,
 # results.sc <- read.csv('ss3sim_scalar_lab.csv')
 # results.ts <- read.csv('ss3sim_ts_lab.csv')
 
-results.sc <- read.csv('ss3sim_scalar_blackfish410.csv')
-results.ts <- read.csv('ss3sim_ts_blackfish410.csv')
+# results.sc <- read.csv('ss3sim_scalar_7_12.csv')
+# results.ts <- read.csv('ss3sim_ts_7_12.csv')
 
-save(results.sc, file =  'ss3sim_scalar_blackfish410.Rdata')
-save(results.ts, file =  'ss3sim_ts_blackfish410.Rdata')
+# save(results.sc, file =  'ss3sim_scalar_7_12.Rdata')
+# save(results.ts, file =  'ss3sim_ts_7_12.Rdata')
+
+#Results should be in results folder now
 
 #Copy Rdata file into results
 file.copy('ss3sim_scalar_blackfish410.Rdata', 
 	"Y:\\Empirical\\results")    
 #'/Volumes/home/Empirical/results')
 
-file.copy('ss3sim_ts_blackfish410.Rdata',
-	"Y:\\Empirical\\results")
+# file.copy('ss3sim_ts_blackfish410.Rdata',
+# 	"Y:\\Empirical\\results")
 #    '/Volumes/home/Empirical/results')
 
 
@@ -207,10 +209,15 @@ source('load_results.r')
 source('plotting_functions.r')
 
 
+#Time series Plots
+source("TS_plots_for_paper3.R")
 
-width <- 12
-height <- 8
-source('make_plots.r')
+
+
+
+# width <- 12
+# height <- 8
+# source('make_plots.r')
 
 
 

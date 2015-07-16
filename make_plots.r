@@ -125,7 +125,6 @@ g <- plot_scalar_boxplot(data = yellow, x = 'data.desc', y = 'last.25.b_re',
   title = 'yelloweye') + theme_bw()
 ggsave('results_figures/yellow_last25_ssb.png', g)
 
-
 #--------------------------------------------------------------------------------
 #Exploratory plots that are not saved
 #--------------------------------------------------------------------------------
