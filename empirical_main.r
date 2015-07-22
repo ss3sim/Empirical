@@ -3,15 +3,15 @@
 
 #------------------------------------------------------------------------
 #Set Working Directory
-setwd('/Volumes/home/Empirical/')
+# setwd('/Volumes/home/Empirical/')
 #setwd("Y:\\Empirical\\")
-# setwd("F:\\Peter\\Empirical")
+setwd("F:\\Peter\\Empirical")
 
 #Set working directory for results
 #results.dir <- "/Users/peterkuriyama/Desktop/revised_runs"
 #results.dir <- "/Users/peterkuriyama/Desktop/april_10_check"
 # results.dir <- "c:\\Users\\ptrkrym\\Desktop\\test_runs"
-# results.dir <- "F:\\Peter\\revised_results"
+results.dir <- "F:\\Peter\\revised_results"
 
 #Paths are structured as they are in the ss3sim repo
 library(ggplot2)
@@ -22,22 +22,22 @@ library(reshape2)
 #------------------------------------------------------------------------
 #Set Up Parallels and Register cores
 library('doParallel')
-registerDoParallel(cores = 4)
+registerDoParallel(cores = 6)
 library('foreach')
 message(paste(getDoParWorkers(), "cores have been registered for",
     "parallel processing."))
 
 #------------------------------------------------------------------------
 library(devtools)
-# devtools::install_github('r4ss/r4ss')
-# devtools::install_github('ss3sim/ss3sim')
-# devtools::install_github('ss3models')
+devtools::install_github('r4ss/r4ss')
+devtools::install_github('ss3sim/ss3sim')
+devtools::install_github('ss3models')
 
 #clone ss3sim and ss3models locally and load_all
 #**Make sure both repos are up to date**#
-load_all('../r4ss')
-load_all('../ss3sim')
-load_all('../ss3models')
+# load_all('../r4ss')
+# load_all('../ss3sim')
+# load_all('../ss3models')
 
 library(r4ss)
 library(ss3sim)
@@ -99,15 +99,15 @@ for(ii in 1:length(species.vec))
 #Run ss3sim 
 
 #Globally set iterations to run
-iters <- 22:122
+iters <- 1:200
 
 ####################################
 #Age-Based Scenarios, "X = 1"
 #D and X numbers have to be identical
-scens1 <- expand_scenarios(cases = list(F = 1, D = 1, X = 1,
-    G = 0:1), species = species.vec)
-scens2 <- expand_scenarios(cases = list(F = 1, D = 2, X = 2,
-    G = 0:1), species = species.vec)
+# scens1 <- expand_scenarios(cases = list(F = 1, D = 1, X = 1,
+#     G = 0:1), species = species.vec)
+# scens2 <- expand_scenarios(cases = list(F = 1, D = 2, X = 2,
+#     G = 0:1), species = species.vec)
 scens3 <- expand_scenarios(cases = list(F = 1, D = 3, X = 3,
     G = 0:1), species = species.vec)
 scens4 <- expand_scenarios(cases = list(F = 1, D = 4, X = 4,
@@ -115,8 +115,7 @@ scens4 <- expand_scenarios(cases = list(F = 1, D = 4, X = 4,
 scens5 <- expand_scenarios(cases = list(F = 1, D = 5, X = 5,
     G = 0:1), species = species.vec)
 
-scenariosW <- c(scens2, scens3, scens4, scens5)
-scenariosW <- c(scens4, scens5)
+scenariosW <- c(scens3, scens4, scens5)
 
 #Specify Case Files
 case_files <- list(F = 'F', D = c('index', 'agecomp'), X = 'wtatage', 
@@ -147,7 +146,7 @@ get_caseargs(folder = case_folder1, scenario = scenariosW[ii],
 
 ####################################
 #Length-Based Scenarios
-scenariosL <- expand_scenarios(cases = list(F = 1, D = 2:5,
+scenariosL <- expand_scenarios(cases = list(F = 1, D = 3:5,
     G = 0:1, E = 2), species = species.vec)
 
 #Define length_based case files, No X cases
@@ -173,6 +172,12 @@ for(ii in 1:length(scenariosL))
 }
 
 scenarios <- c(scenariosW, scenariosL)
+
+#------------------------------------------------------------------------
+#Now Run Length estimated in blocks
+iters <- 1:50
+
+species.vec <- c('yellowrw-age', 'hakerw-age')
 
 #------------------------------------------------------------------------
 #Read in  Results
