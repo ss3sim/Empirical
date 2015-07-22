@@ -9,44 +9,14 @@ library(reshape2)
 
 #######################################
 ### Set wd
-setwd("/Volumes/home/Empirical/results")
-
+# setwd("/Volumes/home/Empirical/results")
+setwd("Y://Empirical//results")
 #load results into R
-load('ss3sim_scalar_7_15.Rdata')
-load('ss3sim_ts_7_15.Rdata')
+load('ss3sim_scalar_7_22.Rdata')
+load('ss3sim_ts_7_22.Rdata')
 
 results.sc <- scalar.all
 results.ts <- ts.all
-
-#Check growth pattern runs
-#Change to 410 (for april 10th)
-
-# results.sc.410 <- results.sc
-# results.sc.410$run_date <- 'april 10'
-
-# results.ts.410 <- results.ts
-# results.ts.410$run_date <- 'april 10'
-
-# #from lab computer, 1-56
-# load('ss3sim_scalar_1_56.Rdata')
-# load('ss3sim_ts_1_56.Rdata')
-# # results.sc <- read.csv('ss3sim_scalar_lab.csv')
-# results.sc$run_date <- 'lab'
-# # results.ts <- read.csv('ss3sim_ts_lab.csv')
-# results.ts$run_date <- 'lab'
-
-# #Check Names
-# names(results.sc.410)[names(results.sc.410) %in%  names(results.sc) == FALSE]
-# results.sc.410$VonBert_K_Fem_GP_1_ENV_add_om <- NULL
-# # names(results.ts.410)[names(results.ts.410) %in%  names(results.ts) == FALSE]
-
-# #Combine data
-# results.ts <- rbind(results.ts, results.ts.410)
-# results.sc <- rbind(results.sc, results.sc.410)
-
-# #Remove G2 results
-# results.sc <- subset(results.sc, G != "G2")
-# results.ts <- subset(results.ts, G != "G2")
 
 # #---------------------------------------
 # #Change so results.ts and results.sc handle hyphens 
