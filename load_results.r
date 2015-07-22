@@ -9,8 +9,8 @@ library(reshape2)
 
 #######################################
 ### Set wd
-# setwd("/Volumes/home/Empirical/results")
-setwd("Y://Empirical//results")
+setwd("/Volumes/home/Empirical/results")
+# setwd("Y://Empirical//results")
 #load results into R
 load('ss3sim_scalar_7_22.Rdata')
 load('ss3sim_ts_7_22.Rdata')
@@ -95,7 +95,7 @@ temp <- merge(temp1, temp2, by = 'scenario', all = TRUE)
 #----------------------------------------------------------------------------
 #Subset only converged Runs
 results.ts <- subset(results.ts, converged == 'yes')
-results.ts <- results.ts[-which(is.infinite(results.ts$log_max_grad) == TRUE), ]
+# results.ts <- results.ts[-which(is.infinite(results.ts$log_max_grad) == TRUE), ]
 #----------------------------------------------------------------------------
 # unique(results.ts[is.infinite(results.ts$log_max_grad), "ID"])
 #Remove Duplicated
