@@ -3,9 +3,9 @@
 
 #------------------------------------------------------------------------
 #Set Working Directory
-# setwd('/Volumes/home/Empirical/')
+setwd('/Volumes/home/Empirical/')
 #setwd("Y:\\Empirical\\")
-setwd("F:\\Peter\\Empirical")
+# setwd("F:\\Peter\\Empirical")
 
 #Set working directory for results
 #results.dir <- "/Users/peterkuriyama/Desktop/revised_runs"
@@ -31,7 +31,7 @@ message(paste(getDoParWorkers(), "cores have been registered for",
 library(devtools)
 devtools::install_github('r4ss/r4ss')
 devtools::install_github('ss3sim/ss3sim')
-devtools::install_github('ss3models')
+devtools::install_github('ss3sim/ss3models')
 
 #clone ss3sim and ss3models locally and load_all
 #**Make sure both repos are up to date**#

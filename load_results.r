@@ -11,12 +11,34 @@ library(reshape2)
 ### Set wd
 setwd("/Volumes/home/Empirical/results")
 # setwd("Y://Empirical//results")
-#load results into R
-load('ss3sim_scalar_7_22.Rdata')
-load('ss3sim_ts_7_22.Rdata')
+# #load results into R
+load('ss3sim_scalar_7_23.Rdata')
+load('ss3sim_ts_7_23.Rdata')
 
 results.sc <- scalar.all
 results.ts <- ts.all
+rm(scalar.all)
+rm(ts.all)
+
+load("ss3sim_scalar_7_22_block.Rdata")
+results.sc.block <- scalar.all 
+load("ss3sim_ts_7_22_block.Rdata")
+results.ts.block <- ts.all
+
+#Get dimensions right on each data frame
+results.sc.block$X <- 'none'
+# names(results.sc)[names(results.sc) %in% names(results.sc.block) == FALSE]
+# names(results.sc.block)[names(results.sc.block) %in% names(results.sc) == FALSE]
+results.sc$L_at_Amax_Fem_GP_1_BLK1repl_40_em <- 'none'
+results.sc$L_at_Amax_Fem_GP_1_BLK1repl_60_em <- 'none'
+
+results.sc <- rbind(results.sc, results.sc.block)
+
+results.ts.block$X <- 'none'
+results.ts <- rbind(results.ts, results.ts.block)
+
+# names(results.ts)[names(results.ts) %in% names(results.ts.block) == FALSE]
+# names(results.ts.block)[names(results.ts.block) %in% names(results.ts) == FALSE]
 
 # #---------------------------------------
 # #Change so results.ts and results.sc handle hyphens 
@@ -71,6 +93,10 @@ results.ts <- merge(results.ts, results.sc[, c('log_max_grad', 'ID')],
 
 #Add column indicating convergence
 results.ts$converged <- ifelse(results.ts$log_max_grad <= log(0.1), 'yes', 'no')
+
+#----------------------------------------------------------------------------
+
+
 #----------------------------------------------------------------------------
 #Check numbers that converged
 temp1 <- as.data.frame(subset(results.ts, converged == 'yes') %>% group_by(scenario) %>% 
@@ -96,9 +122,22 @@ temp <- merge(temp1, temp2, by = 'scenario', all = TRUE)
 #Subset only converged Runs
 results.ts <- subset(results.ts, converged == 'yes')
 # results.ts <- results.ts[-which(is.infinite(results.ts$log_max_grad) == TRUE), ]
+# results.ts %>% group_by(scenario) %>% summarise(nroww = length(unique(replicate))) %>% as.data.frame
+
+# xxx <- subset(results.ts, year > 25)
+
+
+# xxx <- xxx %>% group_by(scenario, replicate) %>% mutate(maxx = max(SpawnBio_re)) %>% as.data.frame
+
+# xxx2 <- xxx[-which(xxx$maxx > 1), ]
+
+
 #----------------------------------------------------------------------------
 # unique(results.ts[is.infinite(results.ts$log_max_grad), "ID"])
 #Remove Duplicated
+
+#Check some plots out
+# ggplot(xxx, aes(x = year, y = SpawnBio_re, group = replicate)) + facet_wrap(~scenario) + geom_line()
 
 # results.ts$unq <- paste(result.ts$ID, results.ts)
 
@@ -112,13 +151,15 @@ results.ts <- results.ts %>% distinct(ID, year) %>% group_by(ID) %>%
     last.50.b_re = mean(SpawnBio_re[year >= 50]),
     median_ = median(SpawnBio_re)) %>% group_by(scenario) %>% mutate(first.100 = 
     unique(replicate, na.rm = TRUE)[order(unique(replicate, 
-      na.rm = TRUE))][100])
+      na.rm = TRUE))][100]) %>% as.data.frame
     # mare = median(abs(SpawnBio_re)),
     # mre = median(SpawnBio_re))
-results.ts <- as.data.frame(results.ts)
+# results.ts <- as.data.frame(results.ts)
 
 #
-results.ts <- subset(results.ts, replicate <= first.100)
+
+# results.ts <- subset(results.ts, replicate <= first.100)
+
 # xx <- results.ts %>% group_by(scenario) %>% summarise(Nreps = length(unique(replicate)))
 
 #----------------------------------------------------------------------------
@@ -149,7 +190,6 @@ ssb.ts.long[which(ssb.ts.long$D == 'D4' | ssb.ts.long$X == 'X4'),
   'data.amount'] <- 'rich - late survey'
 ssb.ts.long[which(ssb.ts.long$D == 'D5' | ssb.ts.long$X == 'X5'), 
   'data.amount'] <- 'moderate'
-
 
 #Add informative labels for management data
 gg <- data.frame(G = as.factor(c("G0", 'G1')), 
@@ -191,21 +231,23 @@ results.sc.long.selex[which(results.sc.long.selex$D == 'D4' | results.sc.long.se
 results.sc.long.selex[which(results.sc.long.selex$D == 'D5' | results.sc.long.selex$X == 'X5'), 
   'data.amount'] <- 'moderate'
 
-#only converged runs
-hake <- subset(ssb.ts.long, converged == 'yes' & species == 'hake-age')
-hake.w <- hake[is.na(hake$X) == FALSE, ]
-hake.l <- hake[is.na(hake$X), ]
 
-yellow <- subset(ssb.ts.long, converged == 'yes' & species == 'yellow-age')
-yellow.w <- yellow[is.na(yellow$X) == FALSE, ]
-yellow.l <- yellow[is.na(yellow$X), ]
 
-#Checks
-checks <- subset(ssb.ts.long, converged == 'yes')  
-checks.e <- subset(ssb.ts.long, converged == 'yes' & 
-  data.desc == 'A + L')
-checks.x <- subset(ssb.ts.long, converged == 'yes' & 
-  data.desc == 'WtAtAge')
+# #only converged runs
+# hake <- subset(ssb.ts.long, converged == 'yes' & species == 'hake-age')
+# hake.w <- hake[is.na(hake$X) == FALSE, ]
+# hake.l <- hake[is.na(hake$X), ]
+
+# yellow <- subset(ssb.ts.long, converged == 'yes' & species == 'yellow-age')
+# yellow.w <- yellow[is.na(yellow$X) == FALSE, ]
+# yellow.l <- yellow[is.na(yellow$X), ]
+
+# #Checks
+# checks <- subset(ssb.ts.long, converged == 'yes')  
+# checks.e <- subset(ssb.ts.long, converged == 'yes' & 
+#   data.desc == 'A + L')
+# checks.x <- subset(ssb.ts.long, converged == 'yes' & 
+#   data.desc == 'WtAtAge')
 
 
 
