@@ -28,6 +28,9 @@ mini.results <- as.data.frame(mini.results)
 mini.results$unq <- paste(mini.results$data.amount, mini.results$G,
  mini.results$data.desc)
 
+mini.results <- mini.results %>% group_by(scenario, year) %>% mutate(mre = median(value, na.rm = T)) %>% 
+        as.data.frame
+
 #Order Everything
 mini.results <- mini.results[order(mini.results$ID, mini.results$year), ]
 # mini.results <- mini.results[is.na(mini.results$converged) == FALSE, ]
@@ -70,8 +73,12 @@ plot_ssb_with_mare <- function(data, cex = 1){
     #add mare value
     # text(x = -5, y=1.4, labels=paste0(letters[ii],"."), cex = 1.2 * cex)
     text(x = .5, y=1.4, labels=paste0(letters[ii],"."), cex = 1.2 * cex)
-    text(paste0("MARE=", unique(temp.mare$mare)), x= 85, y = 1.4, cex = 1 * cex)
     
+    mtext(side = 3, paste0("MARE=", unique(temp.mare$mare)), line = -.9, cex = .6 * cex, adj = .97)        
+    mtext(side = 3, paste0("Max=", round(max(temp.mare$mre), digits = 2) * 100), line = -1.6, cex = .6 * cex, adj = .97)        
+    mtext(side = 3, paste0("Min=", round(min(temp.mare$mre), digits = 2) * 100), line = -2.3, cex = .6 * cex, adj = .97)        
+    
+
     if(ii == 1) mtext(side = 3, text = 'Age + Length', line = 2.2, cex = 1.2 * cex, adj = 0)
     if(ii == 7) mtext(side = 3, text = 'Weight-at-Age', line = .25, cex = 1.2 * cex, adj = 0)
     if(ii %in% c(1, 2, 3)) mtext(side = 3, line = .5, 
@@ -92,15 +99,36 @@ plot_ssb_with_mare <- function(data, cex = 1){
 ssb.hake <- subset(mini.results, species == 'hake-age')
 ssb.yellow <- subset(mini.results, species == 'yellow-age')
 
+#------------------------------------------------
+#Plots of all scenarios
+#two column - 190mm - 
+#1.5 column - 140mm - 5.5 inches
+#1 column - 90mm
 
-#------------------------------------------------------------------------------------------------------------------------------------------------------------
-#Compare F patterns 
-# fpatts <- ssb.hake[ssb.hake$scenario %in% c("D3-E2-F0-G1-hake-age", "D3-E2-F1-G1-hake-age" ), ]
-# fpatts <- subset(fpatts, replicate != 1)
-# # which(fpatts$value  == max(fpatts$value))
+#Hake
+tiff(height = 160, width = 140, units = 'mm', res = 300,
+  file = "/Volumes/home/Empirical/figs/FIG2_hake_ssb.tiff")
+plot_ssb_with_mare(ssb.hake, cex = .8)
+dev.off()
 
-# # subset(fpatts, value < )
-# ggplot(fpatts, aes(x = year, y = value, group = replicate)) + geom_line() + facet_wrap(~scenario)
+png(height = 160, width = 140, units = 'mm', res = 200,
+  file = "/Volumes/home/Empirical/figs/FIG2_hake_ssb.png")
+plot_ssb_with_mare(ssb.hake, cex = .8)
+dev.off()
+
+#Yelloweye
+tiff(height = 160, width = 140, units = 'mm', res = 300,
+  file = "/Volumes/home/Empirical/figs/FIG3_yellow_ssb.tiff")
+plot_ssb_with_mare(ssb.yellow, cex = .8)
+dev.off()
+
+png(height = 160, width = 140, units = 'mm', res = 300,
+  file = "/Volumes/home/Empirical/figs/FIG3_yellow_ssb.png")
+plot_ssb_with_mare(ssb.yellow, cex = .8)
+dev.off()
+
+
+
 
 #------------------------------------------------------------------------------------------------------------------------------------------------------------
 #Compare time-varying block estimation to three methods, only data rich
@@ -158,14 +186,17 @@ plot_ssb_with_block <- function(data, cex = .8){
       # lines(tr$year, tr$value, col = ColPal(length(unq.reps))[jj])
       lines(tr$year, tr$value, col = "#00000040")
     }
-    
+
     #add mare value
-    # text(x = -5, y=1.4, labels=paste0(letters[ii],"."), cex = 1.2 * cex)
-    # text(x = .5, y=1.4, labels=paste0(letters[ii],"."), cex = 1.2 * cex)
-    mtext(side = 3, plot.order[ii], adj = .1, outer = F, line = -2, cex = 1 * cex)
+    mtext(side = 3, plot.order[ii], adj = .04, outer = F, line = -1.4, cex = 1 * cex)
     # text(x = .5, y=1.4, labels=plot.order[ii], cex = 1.2 * cex)
     mtext(side = 3, paste0("MARE = ", unique(temp.mare$mare)), cex = .8 * cex, adj = .95,
-      line = -2)
+      line = -1.2)
+    mtext(side = 3, paste0("Max = ", round(max(temp.mare$mre) * 100, digits = 0)), cex = .8 * cex, adj = .95,
+      line = -2.2)
+    mtext(side = 3, paste0("Min = ", round(min(temp.mare$mre) * 100, digits = 0)), cex = .8 * cex, adj = .95,
+      line = -3.2)
+
     # text(paste0("MARE=", unique(temp.mare$mare)), x= 85, y = 1.4, cex = 1 * cex)
     if(ii == 1) axis(side = 2, at = c(-1, -.5, 0, .5, 1), las = 2, cex.axis = 1 * cex)
     axis(side = 1, cex.axis = 1 * cex, at = seq(0, 100, 20))
@@ -179,56 +210,29 @@ plot_ssb_with_block <- function(data, cex = .8){
 
 #------------------------------------------------
 #Plots of Time-Varying stuff
-plot_ssb_with_block(data = rich.hake, cex = .8)
+# plot_ssb_with_block(data = rich.hake, cex = .8)
 
 png(height = 80, width = 140, units = 'mm', res = 150,
-  file = "/Volumes/home/Empirical/figs/FIG6_tv_hake_ssb.png")
+  file = "/Volumes/home/Empirical/figs/FIG4_tv_hake_ssb.png")
 plot_ssb_with_block(data = rich.hake, cex = .8)
 dev.off()
 
 png(height = 80, width = 140, units = 'mm', res = 150,
-  file = "/Volumes/home/Empirical/figs/FIG7_tv_yellow_ssb.png")
+  file = "/Volumes/home/Empirical/figs/FIG5_tv_yellow_ssb.png")
 plot_ssb_with_block(data = rich.yellow, cex = .8)
 dev.off()
 
 
 tiff(height = 80, width = 140, units = 'mm', res = 300,
-  file = "/Volumes/home/Empirical/figs/FIG6_tv_hake_ssb.tiff")
+  file = "/Volumes/home/Empirical/figs/FIG4_tv_hake_ssb.tiff")
 plot_ssb_with_block(data = rich.hake, cex = .8)
 dev.off()
 
 tiff(height = 80, width = 140, units = 'mm', res = 300,
-  file = "/Volumes/home/Empirical/figs/FIG7_tv_yellow_ssb.tiff")
+  file = "/Volumes/home/Empirical/figs/FIG5_tv_yellow_ssb.tiff")
 plot_ssb_with_block(data = rich.yellow, cex = .8)
 dev.off()
 
-#------------------------------------------------
-#Plots of all scenarios
-#two column - 190mm
-#1.5 column - 140mm
-#1 column - 90mm
-
-#Hake
-tiff(height = 160, width = 140, units = 'mm', res = 300,
-  file = "/Volumes/home/Empirical/figs/FIG2_hake_ssb.tiff")
-plot_ssb_with_mare(ssb.hake, cex = .8)
-dev.off()
-
-png(height = 160, width = 140, units = 'mm', res = 200,
-  file = "/Volumes/home/Empirical/figs/FIG2_hake_ssb.png")
-plot_ssb_with_mare(ssb.hake, cex = .8)
-dev.off()
-
-#Yelloweye
-tiff(height = 160, width = 140, units = 'mm', res = 300,
-  file = "/Volumes/home/Empirical/figs/FIG3_yellow_ssb.tiff")
-plot_ssb_with_mare(ssb.yellow, cex = .8)
-dev.off()
-
-png(height = 160, width = 140, units = 'mm', res = 300,
-  file = "/Volumes/home/Empirical/figs/FIG3_yellow_ssb.png")
-plot_ssb_with_mare(ssb.yellow, cex = .8)
-dev.off()
 
 
 
@@ -240,8 +244,14 @@ dev.off()
 
 
 
+#------------------------------------------------------------------------------------------------------------------------------------------------------------
+#Compare F patterns 
+# fpatts <- ssb.hake[ssb.hake$scenario %in% c("D3-E2-F0-G1-hake-age", "D3-E2-F1-G1-hake-age" ), ]
+# fpatts <- subset(fpatts, replicate != 1)
+# # which(fpatts$value  == max(fpatts$value))
 
-
+# # subset(fpatts, value < )
+# ggplot(fpatts, aes(x = year, y = value, group = replicate)) + geom_line() + facet_wrap(~scenario)
 
 
 # #------------------------------------------------------------------------------------------------------------------------------------------------------------

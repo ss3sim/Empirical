@@ -152,28 +152,28 @@ d.hake <- subset(d, species == 'hake-age')
 d.yellow <- subset(d, species == 'yellow-age')
 
 
-dev.new(width = 5.5, height = 6, units = 'in')
+# dev.new(width = 5.5, height = 6, units = 'in')
 #-------------------------------------------------------------------------------------
 #Save Plots
 tiff(width = 140, height = 160, units = 'mm', res = 300, 
-  file = "/Volumes/home/Empirical/figs/FIG4_hake_selex.tiff")
+  file = "/Volumes/home/Empirical/figs/hake_selex.tiff")
   # hake_selectivity_re_hires.tiff")
 plot_selex_hake(d = d.hake, yy = .15, cex = 1)
 dev.off()
 
 png(width = 140, height = 160, units = 'mm', res = 200, 
-  file = "/Volumes/home/Empirical/figs/FIG4_hake_selex.png")
+  file = "/Volumes/home/Empirical/figs/hake_selex.png")
 plot_selex_hake(d = d.hake, yy = .15, cex = 1)
 dev.off()
 
 #yelloweye
 tiff(width = 140, height = 160, units = 'mm', res = 300, 
-  file = "/Volumes/home/Empirical/figs/FIG5_yellow_selex.tiff")
+  file = "/Volumes/home/Empirical/figs/yellow_selex.tiff")
 plot_selex_yellow(d = d.yellow, yy = .07, add.to.y = .007)
 dev.off()
 
 png(width = 140, height = 160, units = 'mm', res = 200, 
-  file = "/Volumes/home/Empirical/figs/FIG5_yellow_selex.png")
+  file = "/Volumes/home/Empirical/figs/yellow_selex.png")
 plot_selex_yellow(d = d.yellow, yy = .07, add.to.y = .007)
 dev.off()
 
