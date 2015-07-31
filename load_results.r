@@ -106,6 +106,17 @@ temp2 <- as.data.frame(subset(results.ts, is.na(converged)) %>% group_by(scenari
   summarise(Nunconverged = length(unique(replicate, na.rm = TRUE))))
 
 temp <- merge(temp1, temp2, by = 'scenario', all = TRUE)
+
+xx <- temp %>% group_by(scenario) %>% mutate(some = sum(Nconverged, Nunconverged, na.rm = TRUE)) %>%
+  as.data.frame
+
+yy <- subset(xx, some >= 120)
+yy$ratio <- yy$Nconverged / yy$some
+
+$ratio <- 
+
+te
+temp$ssumm <- sum(temp$Nconverged, temp$Nunconverged, na.rm = T)
 # temp[temp$Nconverged < 120, 'scenario']
 
 #Which ones didn't converge?

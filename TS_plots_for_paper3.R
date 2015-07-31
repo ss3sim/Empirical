@@ -224,7 +224,7 @@ dev.off()
 
 
 tiff(height = 80, width = 140, units = 'mm', res = 300,
-  file = "/Volumes/home/Empirical/figs/FIG4_tv_hake_ssb.tiff")
+  file = "/Volumes/home/Empirical/figs/FIG_tv_hake_ssb.tiff")
 plot_ssb_with_block(data = rich.hake, cex = .8)
 dev.off()
 
